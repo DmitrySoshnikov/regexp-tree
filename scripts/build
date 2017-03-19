@@ -1,0 +1,1 @@
+./node_modules/syntax-cli/bin/syntax -g ./regexp.bnf -o "`pwd`/generated/regexp-tree.js" -m lalr1 --loc

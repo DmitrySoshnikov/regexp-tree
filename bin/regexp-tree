@@ -1,0 +1,43 @@
+#!/usr/bin/env node
+
+'use strict';
+
+const fs = require('fs');
+const regexpTree = require('../index');
+
+const options = require('nomnom')
+  .script('regexp-tree')
+  .options({
+    expression: {
+      abbr: 'e',
+      help: 'A regular expression to be parsed',
+      type: 'string',
+      required: true,
+    },
+    loc: {
+      abbr: 'l',
+      help: 'Whether to capture AST node locations',
+      flag: true,
+    },
+  })
+  .parse();
+
+function main() {
+  let {
+    expression,
+    loc,
+  } = options;
+
+  if (loc) {
+    regexpTree.setOptions({
+      captureLocations: true,
+    });
+  }
+
+  const parsed = regexpTree.parse(expression);
+  console.info(JSON.stringify(parsed, null, 2));
+}
+
+if (require.main === module) {
+    main();
+}

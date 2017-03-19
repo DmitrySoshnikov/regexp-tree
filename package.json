@@ -1,0 +1,35 @@
+{
+  "name": "regexp-tree",
+  "version": "0.0.1",
+  "license": "MIT",
+  "description": "Regular Expressions parser in JavaScript",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/DmitrySoshnikov/regexp-tree.git"
+  },
+  "bugs": "https://github.com/DmitrySoshnikov/regexp-tree/issues",
+  "main": "index.js",
+  "scripts": {
+    "build": "./scripts/build",
+    "test": "./scripts/test"
+  },
+  "bin": {
+    "regexp-tree": "./bin/regexp-tree"
+  },
+  "keywords": [
+    "regexp",
+    "parser",
+    "AST",
+    "tree",
+    "JavaScript",
+    "ECMAScript"
+  ],
+  "author": "Dmitry Soshnikov",
+  "dependencies": {
+    "nomnom": "^1.8.1"
+  },
+  "devDependencies": {
+    "syntax-cli": "^0.0.85",
+    "jest-cli": "^19.0.2"
+  }
+}
