@@ -908,11 +908,11 @@ a{1,3}?
 
 #### Assertions
 
-Assertions appear as separate AST nodes, however instread of manipulating on the characters themselves, they _assert_ certain conditions of a matching string. Examples: `^` -- beging of a string (or a line in multiline mode), `$` -- end of a string, etc.
+Assertions appear as separate AST nodes, however instread of manipulating on the characters themselves, they _assert_ certain conditions of a matching string. Examples: `^` -- beginning of a string (or a line in multiline mode), `$` -- end of a string, etc.
 
 ##### ^ begin marker
 
-The `^` assertion checks whether a scanner is at the begining of a string (or a line in multiline mode).
+The `^` assertion checks whether a scanner is at the beginning of a string (or a line in multiline mode).
 
 In the example below `^` is not a property of the `a` symbol, but a separate AST node for the assertion. The parsed node is actually an `Alternative` with two nodes:
 
@@ -939,7 +939,7 @@ The node:
 }
 ```
 
-Since assertion is a separate node, it may appear anywhere in the matching string. The following regexp is completely valid, and asserts begining of the string; it'll match an empty string:
+Since assertion is a separate node, it may appear anywhere in the matching string. The following regexp is completely valid, and asserts beginning of the string; it'll match an empty string:
 
 ```
 ^^^^^
