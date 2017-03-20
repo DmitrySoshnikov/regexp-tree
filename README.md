@@ -12,7 +12,7 @@ Regular expressions parser
 
 ### Installation
 
-The parser can be installed as an NPM module:
+The parser can be installed as an [npm module](https://www.npmjs.com/package/regexp-tree):
 
 ```
 npm install -g regexp-tree
@@ -88,6 +88,8 @@ Which produces an AST node corresponding to this regular expression:
 }
 ```
 
+> NOTE: the format of a regexp is `/ Body / OptionalFlags`.
+
 ### Usage from Node
 
 The parser can also be used as a Node module:
@@ -157,8 +159,6 @@ const parsed = regexpTree
   .setOptions({captureLocations: true})
   .parse('/a|b/');
 ```
-
-> NOTE: the format of a regexp should be `/Body/Flags`. The flags can be optional.
 
 ### AST nodes specification
 
