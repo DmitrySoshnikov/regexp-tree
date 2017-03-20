@@ -97,4 +97,110 @@ describe('basic', () => {
     });
   });
 
+  it('empty group', () => {
+    expect(re(/()/)).toEqual({
+      type: 'RegExp',
+      body: {
+        type: 'Group',
+        capturing: true,
+        expression: null,
+      },
+      flags: [],
+    });
+
+    expect(re(/(?:)/)).toEqual({
+      type: 'RegExp',
+      body: {
+        type: 'Group',
+        capturing: false,
+        expression: null,
+      },
+      flags: [],
+    });
+  });
+
+  it('non-empty group', () => {
+    expect(re(/(a)/)).toEqual({
+      type: 'RegExp',
+      body: {
+        type: 'Group',
+        capturing: true,
+        expression: {
+          type: 'Char',
+          value: 'a',
+          kind: 'simple'
+        },
+      },
+      flags: [],
+    });
+
+    expect(re(/(?:a)/)).toEqual({
+      type: 'RegExp',
+      body: {
+        type: 'Group',
+        capturing: false,
+        expression: {
+          type: 'Char',
+          value: 'a',
+          kind: 'simple'
+        },
+      },
+      flags: [],
+    });
+  });
+
+  it('empty LA assertion', () => {
+    expect(re(/(?=)/)).toEqual({
+      type: 'RegExp',
+      body: {
+        type: 'Assertion',
+        kind: 'Lookahead',
+        assertion: null,
+      },
+      flags: [],
+    });
+
+    expect(re(/(?!)/)).toEqual({
+      type: 'RegExp',
+      body: {
+        type: 'Assertion',
+        kind: 'Lookahead',
+        negative: true,
+        assertion: null,
+      },
+      flags: [],
+    });
+  });
+
+  it('non-empty LA assertion', () => {
+    expect(re(/(?=a)/)).toEqual({
+      type: 'RegExp',
+      body: {
+        type: 'Assertion',
+        kind: 'Lookahead',
+        assertion: {
+          type: 'Char',
+          value: 'a',
+          kind: 'simple'
+        },
+      },
+      flags: [],
+    });
+
+    expect(re(/(?!a)/)).toEqual({
+      type: 'RegExp',
+      body: {
+        type: 'Assertion',
+        kind: 'Lookahead',
+        negative: true,
+        assertion: {
+          type: 'Char',
+          value: 'a',
+          kind: 'simple'
+        },
+      },
+      flags: [],
+    });
+  });
+
 });

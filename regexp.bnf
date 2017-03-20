@@ -58,8 +58,8 @@ U                       [0-9a-fA-F]
 <class>'('              return 'CHAR'
 <class>')'              return 'CHAR'
 
-'(?='                   return 'POS_LH_ASSERT'
-'(?!'                   return 'NEG_LH_ASSERT'
+'(?='                   return 'POS_LA_ASSERT'
+'(?!'                   return 'NEG_LA_ASSERT'
 
 '(?:'                   return 'NON_CAPTURE_GROUP'
 
@@ -213,6 +213,11 @@ Disjunction
 Alternative
   : AlternativeEntries
     {
+      if ($1.length === 0) {
+        $$ = null;
+        return;
+      }
+
       if ($1.length === 1) {
         $$ = Node($1[0], @$);
       } else {
@@ -225,8 +230,8 @@ Alternative
   ;
 
 AlternativeEntries
-  : Term
-    { $$ = [$1] }
+  : /* empty */
+    { $$ = [] }
 
   | AlternativeEntries Term
     { $$ = $1; $1.push($2) }
@@ -256,7 +261,7 @@ Assertion
   | ESC_b     { $$ = { kind: '\\b' } }
   | ESC_B     { $$ = { kind: '\\B' } }
 
-  | POS_LH_ASSERT Disjunction R_PAREN
+  | POS_LA_ASSERT Disjunction R_PAREN
     {
       $$ = {
         kind: 'Lookahead',
@@ -264,7 +269,7 @@ Assertion
       }
     }
 
-  | NEG_LH_ASSERT Disjunction R_PAREN
+  | NEG_LA_ASSERT Disjunction R_PAREN
     {
       $$ = {
         kind: 'Lookahead',
@@ -395,7 +400,7 @@ Group
   ;
 
 CapturingGroup
-  : L_PAREN OptDisjunction R_PAREN
+  : L_PAREN Disjunction R_PAREN
     {
       capturingGroupsCount++;
       $$ = Node({
@@ -407,7 +412,7 @@ CapturingGroup
   ;
 
 NonCapturingGroup
-  : NON_CAPTURE_GROUP OptDisjunction R_PAREN
+  : NON_CAPTURE_GROUP Disjunction R_PAREN
     {
       $$ = Node({
         type: 'Group',
@@ -415,11 +420,6 @@ NonCapturingGroup
         expression: $2,
       }, @$)
     }
-  ;
-
-OptDisjunction
-  : Disjunction
-  | /* empty */
   ;
 
 CharacterClass
