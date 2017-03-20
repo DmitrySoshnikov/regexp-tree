@@ -1093,6 +1093,7 @@ A node is similar, just `negative` flag is added:
     {
       type: 'Assertion',
       kind: 'Lookahead',
+      negative: true,
       assertion: {
         type: 'Char',
         value: 'b',
