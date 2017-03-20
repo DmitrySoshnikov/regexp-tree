@@ -19,6 +19,11 @@ Regular expressions parser
     - [Decimal char-code](#decimal-char-code)
     - [Octal char-code](#octal-char-code)
     - [Unicode](#unicode)
+  - [Quantifiers](#quantifiers)
+    - [? zero-or-one](#zero-or-one)
+    - [* zero-or-more](#zero-or-more)
+    - [+ one-or-more](#one-or-more)
+    - [Non-greedy](#non-greedy)
 
 ### Installation
 
@@ -178,7 +183,7 @@ Below are the AST node types corresponding to different regular expressions sub-
 
 A basic building block, single character. Can be _escaped_, and be of different _kinds_.
 
-#### Simple char
+##### Simple char
 
 Basic _non-escaped_ char in a regexp:
 
@@ -188,7 +193,7 @@ z
 
 Node:
 
-```
+```js
 {
   type: 'Char',
   value: 'z',
@@ -198,7 +203,7 @@ Node:
 
 > NOTE: to test this from CLI, the char should be in an actual regexp -- `/z/`.
 
-#### Escaped char
+##### Escaped char
 
 ```
 \z
@@ -206,7 +211,7 @@ Node:
 
 The same value, `escaped` flag is added:
 
-```
+```js
 {
   type: 'Char',
   value: 'z',
@@ -228,7 +233,7 @@ Escaping is mostly used with meta symbols:
 
 OK, node:
 
-```
+```js
 {
   type: 'Char',
   value: '*',
@@ -237,7 +242,7 @@ OK, node:
 }
 ```
 
-#### Meta char
+##### Meta char
 
 A _meta character_ should not be confused with an [escaped char](#escaped-char).
 
@@ -249,7 +254,7 @@ Example:
 
 Node:
 
-```
+```js
 {
   type: 'Char',
   value: '\\n',
@@ -261,7 +266,7 @@ Among other meta character are: `\f`, `\r`, `\n`, `\t`, `\v`, `\0`, `[\b]` (back
 
 > NOTE: `\b` and `\B` are parsed as `Assertion` node type, not `Char`.
 
-#### Control char
+##### Control char
 
 A char preceded with `\c`, e.g. `\cx`, which stands for `CTRL+x`:
 
@@ -271,7 +276,7 @@ A char preceded with `\c`, e.g. `\cx`, which stands for `CTRL+x`:
 
 Node:
 
-```
+```js
 {
   type: 'Char',
   value: '\\cx',
@@ -279,7 +284,7 @@ Node:
 }
 ```
 
-#### HEX char-code
+##### HEX char-code
 
 A char preceded with `\x`, followed by a HEX-code, e.g. `\x3B` (symbol `;`):
 
@@ -289,7 +294,7 @@ A char preceded with `\x`, followed by a HEX-code, e.g. `\x3B` (symbol `;`):
 
 Node:
 
-```
+```js
 {
   type: 'Char',
   value: '\\x3B',
@@ -297,7 +302,7 @@ Node:
 }
 ```
 
-#### Decimal char-code
+##### Decimal char-code
 
 Char-code:
 
@@ -307,7 +312,7 @@ Char-code:
 
 Node:
 
-```
+```js
 {
   type: 'Char',
   value: '\\42',
@@ -315,7 +320,7 @@ Node:
 }
 ```
 
-#### Octal char-code
+##### Octal char-code
 
 Char-code started with `\0`, followed by an octal number:
 
@@ -325,7 +330,7 @@ Char-code started with `\0`, followed by an octal number:
 
 Node:
 
-```
+```js
 {
   type: 'Char',
   value: '\\073',
@@ -333,7 +338,7 @@ Node:
 }
 ```
 
-#### Unicode
+##### Unicode
 
 Unicode char started with `\u`, followed by an hex number:
 
@@ -344,10 +349,115 @@ Unicode char started with `\u`, followed by an hex number:
 
 Node:
 
-```
+```js
 {
   type: 'Char',
   value: '\\u003B',
   kind: 'unicode',
+}
+```
+
+#### Quantifiers
+
+Quantifiers specify _repetition_ if regular expression (or its part). Below are the quantifiers which wrap a parsed expression into a `Repetition` node.
+
+##### ? zero-or-one
+
+The `?` quantifier is short for `{0,1}`.
+
+```
+a?
+```
+
+Node:
+
+```js
+{
+  type: 'Repetition',
+  expression: {
+    type: 'Char',
+    value: 'a',
+    kind: 'simple'
+  },
+  quantifier: {
+    type: "?",
+    greedy: true
+  }
+}
+```
+
+##### * zero-or-more
+
+The `*` quantifier is short for `{0,}`.
+
+```
+a?
+```
+
+Node:
+
+```js
+{
+  type: 'Repetition',
+  expression: {
+    type: 'Char',
+    value: 'a',
+    kind: 'simple'
+  },
+  quantifier: {
+    type: "*",
+    greedy: true
+  }
+}
+```
+
+##### * one-or-more
+
+The `+` quantifier is short for `{1,}`.
+
+```
+// Same as `aa*`, or `a{1,}`
+a+
+```
+
+Node:
+
+```js
+{
+  type: 'Repetition',
+  expression: {
+    type: 'Char',
+    value: 'a',
+    kind: 'simple'
+  },
+  quantifier: {
+    type: "+",
+    greedy: true
+  }
+}
+```
+
+##### Non-greedy
+
+If any quantifier is followed by the `?`, it turns the quantifier into a _non-greedy_ one. Examples: `a??`, `a+?`, `a*?`, `a{1,}?`, etc.
+
+```
+a+?
+```
+
+Node:
+
+```js
+{
+  type: 'Repetition',
+  expression: {
+    type: 'Char',
+    value: 'a',
+    kind: 'simple'
+  },
+  quantifier: {
+    type: "+",
+    greedy: false
+  }
 }
 ```
