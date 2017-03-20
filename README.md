@@ -10,20 +10,6 @@ Regular expressions parser
 - [Usage from Node](#usage-from-node)
 - [Capturing locations](#capturing-locations)
 - [AST nodes specification](#ast-nodes-specification)
-  - [Char](#char)
-    - [Simple char](#simple-char)
-    - [Escaped char](#escaped-char)
-    - [Meta char](#meta-char)
-    - [Control char](#control-char)
-    - [Hex char-code](#hex-char-code)
-    - [Decimal char-code](#decimal-char-code)
-    - [Octal char-code](#octal-char-code)
-    - [Unicode](#unicode)
-  - [Quantifiers](#quantifiers)
-    - [? zero-or-one](#-zero-or-one)
-    - [* zero-or-more](#-zero-or-more)
-    - [+ one-or-more](#-one-or-more)
-    - [Non-greedy](#non-greedy)
 
 ### Installation
 
@@ -177,7 +163,26 @@ const parsed = regexpTree
 
 ### AST nodes specification
 
-Below are the AST node types corresponding to different regular expressions sub-patterns:
+Below are the AST node types for different regular expressions patterns:
+
+- [Char](#char)
+  - [Simple char](#simple-char)
+  - [Escaped char](#escaped-char)
+  - [Meta char](#meta-char)
+  - [Control char](#control-char)
+  - [Hex char-code](#hex-char-code)
+  - [Decimal char-code](#decimal-char-code)
+  - [Octal char-code](#octal-char-code)
+  - [Unicode](#unicode)
+- [Quantifiers](#quantifiers)
+  - [? zero-or-one](#-zero-or-one)
+  - [* zero-or-more](#-zero-or-more)
+  - [+ one-or-more](#-one-or-more)
+  - [Range-based quantifiers](#range-based-quantifiers)
+    - [Exact number of matches](#exact-number-of-matches)
+    - [Open range](#open-range)
+    - [Closed range](#closed-range)
+  - [Non-greedy](#non-greedy)
 
 #### Char
 
@@ -340,11 +345,11 @@ Node:
 
 ##### Unicode
 
-Unicode char started with `\u`, followed by an hex number:
+Unicode char started with `\u`, followed by a hex number:
 
 ```
 \u003B
-\{u003B}
+\u{003B}
 ```
 
 Node:
@@ -359,7 +364,7 @@ Node:
 
 #### Quantifiers
 
-Quantifiers specify _repetition_ if regular expression (or its part). Below are the quantifiers which wrap a parsed expression into a `Repetition` node.
+Quantifiers specify _repetition_ of a regular expression (or of its part). Below are the quantifiers which _wrap_ a parsed expression into a `Repetition` node.
 
 ##### ? zero-or-one
 
@@ -437,6 +442,90 @@ Node:
 }
 ```
 
+##### Range-based quantifiers
+
+Explicit _range-based_ quantifiers are parsed as follows:
+
+###### Exact number of matches
+
+```
+a{3}
+```
+
+The type of the quantifier is `Range`, and `from`, and `to` properties have the same value:
+
+```
+{
+  "type": "Repetition",
+  "expression": {
+    "type": "Char",
+    "value": "a",
+    "kind": "simple"
+  },
+  "quantifier": {
+    "type": "Range",
+    "from": 3,
+    "to": 3
+  }
+}
+```
+
+###### Open range
+
+An open range doesn't have max value (assuming semantic "more", or Infinity value):
+
+```
+a{3,}
+```
+
+An AST node for such range doesn't contain `to` property:
+
+```
+{
+  "type": "Repetition",
+  "expression": {
+    "type": "Char",
+    "value": "a",
+    "kind": "simple"
+  },
+  "quantifier": {
+    "type": "Range",
+    "from": 3
+  }
+}
+```
+
+###### Closed range
+
+A closed range has explicit max value: (which syntactically can be the same as min value):
+
+```
+a{3,5}
+
+// Same as a{3}
+a{3,3}
+```
+
+An AST node for a closed range:
+
+```
+{
+  "type": "Repetition",
+  "expression": {
+    "type": "Char",
+    "value": "a",
+    "kind": "simple"
+  },
+  "quantifier": {
+    "type": "Range",
+    "from": 3,
+    "to": 5
+  }
+}
+```
+
+> NOTE: it is a _syntax error_ if the max value is less than min value: `/a{3,2}/`
+
 ##### Non-greedy
 
 If any quantifier is followed by the `?`, it turns the quantifier into a _non-greedy_ one. Examples: `a??`, `a+?`, `a*?`, `a{1,}?`, etc.
@@ -460,4 +549,14 @@ Node:
     greedy: false
   }
 }
+```
+
+Other examples:
+
+```
+a??
+a*?
+a{1}?
+a{1,}?
+a{1,3}?
 ```
