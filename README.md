@@ -20,9 +20,9 @@ Regular expressions parser
     - [Octal char-code](#octal-char-code)
     - [Unicode](#unicode)
   - [Quantifiers](#quantifiers)
-    - [? zero-or-one](#zero-or-one)
-    - [* zero-or-more](#zero-or-more)
-    - [+ one-or-more](#one-or-more)
+    - [? zero-or-one](#-zero-or-one)
+    - [* zero-or-more](#-zero-or-more)
+    - [+ one-or-more](#-one-or-more)
     - [Non-greedy](#non-greedy)
 
 ### Installation
@@ -391,7 +391,7 @@ Node:
 The `*` quantifier is short for `{0,}`.
 
 ```
-a?
+a*
 ```
 
 Node:
@@ -411,7 +411,7 @@ Node:
 }
 ```
 
-##### * one-or-more
+##### + one-or-more
 
 The `+` quantifier is short for `{1,}`.
 
