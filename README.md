@@ -362,6 +362,118 @@ Node:
 }
 ```
 
+#### Character class
+
+Character classes define a _set_ of characters. A set may include as simple characters, as well as _character ranges_. A class can be _positive_ (any from the characters in the class match), or _negative_ (any _but_ the characters from the class match).
+
+##### Positive character class
+
+A positive character class is defined between `[` and `]` brackets:
+
+```
+[a*]
+```
+
+A node:
+
+```js
+{
+  type: 'CharacterClass',
+  expressions: [
+    {
+      type: 'Char',
+      value: 'a',
+      kind: 'simple'
+    },
+    {
+      type: 'Char',
+      value: '*',
+      kind: 'simple'
+    }
+  ]
+}
+```
+
+> NOTE: some meta symbols are treated as normal characters in a character class. E.g. `*` is not a repetition quantifier, but a simple char.
+
+##### Negative character class
+
+A negative character class is defined between `[^` and `]` brackets:
+
+```
+[^ab]
+```
+
+An AST node is the same, just `negative` property is added:
+
+```js
+{
+  type: 'CharacterClass',
+  negative: true,
+  expressions: [
+    {
+      type: 'Char',
+      value: 'a',
+      kind: 'simple'
+    },
+    {
+      type: 'Char',
+      value: 'b',
+      kind: 'simple'
+    }
+  ]
+}
+```
+
+##### Character class ranges
+
+As mentioned, a character class may also contain _ranges_ of symbols:
+
+```
+[a-z]
+```
+
+A node:
+
+```js
+{
+  type: 'CharacterClass',
+  expressions: [
+    {
+      type: 'ClassRange',
+      from: {
+        type: 'Char',
+        value: 'a',
+        kind: 'simple'
+      },
+      to: {
+        type: 'Char',
+        value: 'z',
+        kind: 'simple'
+      }
+    }
+  ]
+}
+```
+
+> NOTE: it is a _syntax error_ if `to` value is less than `from` value: `/[z-a]/`.
+
+The range value can be the same for `from` and `to`, and the special range `-` character is treated as a simple character when it stands in a char position:
+
+```
+// from: 'a', to: 'a'
+[a-a]
+
+// from: '-', to: '-'
+[---]
+
+// simple '-' char:
+[-]
+
+// 3 ranges:
+[a-zA-Z0-9]+
+```
+
 #### Quantifiers
 
 Quantifiers specify _repetition_ of a regular expression (or of its part). Below are the quantifiers which _wrap_ a parsed expression into a `Repetition` node.
@@ -528,7 +640,7 @@ An AST node for a closed range:
 
 ##### Non-greedy
 
-If any quantifier is followed by the `?`, it becomes a _non-greedy_ quantifier.
+If any quantifier is followed by the `?`, the quantifier becomes _non-greedy_.
 
 Example:
 
