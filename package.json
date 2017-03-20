@@ -11,7 +11,8 @@
   "main": "index.js",
   "scripts": {
     "build": "./scripts/build",
-    "test": "./scripts/test"
+    "test": "./scripts/test",
+    "prepublish": "npm test && npm run build"
   },
   "bin": {
     "regexp-tree": "./bin/regexp-tree"
