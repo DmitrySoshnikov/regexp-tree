@@ -178,6 +178,12 @@ Below are the AST node types for different regular expressions patterns:
   - [Positive character class](#positive-character-class)
   - [Negative character class](#negative-character-class)
   - [Character class ranges](#character-class-ranges)
+- [Alternative](#alternative)
+- [Disjunction](#disjunction)
+- [Groups](#groups)
+  - [Capturing group](#capturing-group)
+  - [Non-capturing group](#non-capturing-group)
+  - [Backreferences](#backreferences)
 - [Quantifiers](#quantifiers)
   - [? zero-or-one](#-zero-or-one)
   - [* zero-or-more](#-zero-or-more)
@@ -187,6 +193,14 @@ Below are the AST node types for different regular expressions patterns:
     - [Open range](#open-range)
     - [Closed range](#closed-range)
   - [Non-greedy](#non-greedy)
+- [Assertions](#assertions)
+  - [^ begin marker](#-begin-marker)
+  - [$ end marker](#-end-marker)
+  - [Boundary assertions](#boundary-assertions)
+  - [Lookahead assertions](#lookahead-assertions)
+    - [Positive lookahead assertions](#positive-lookahead-assertions)
+    - [Negative lookahead assertions](#negative-lookahead-assertions)
+  - [Lookbehind assertions](#lookbehind-assertions)
 
 #### Char
 
@@ -478,6 +492,212 @@ The range value can be the same for `from` and `to`, and the special range `-` c
 [a-zA-Z0-9]+
 ```
 
+#### Alternative
+
+An _alternative_ (or _concatenation_) of symbols defines a chain of patterns followed one after another:
+
+```
+abc
+```
+
+A node:
+
+```js
+{
+  type: 'Alternative',
+  expressions: [
+    {
+      type: 'Char',
+      value: 'a',
+      kind: 'simple'
+    },
+    {
+      type: 'Char',
+      value: 'b',
+      kind: 'simple'
+    },
+    {
+      type: 'Char',
+      value: 'c',
+      kind: 'simple'
+    }
+  ]
+}
+```
+
+Another examples:
+
+```
+// 'a' with a quantifier, followed by 'b'
+a?b
+
+// A group followed by a class:
+(ab)[a-z]
+```
+
+#### Disjunction
+
+The _disjunction_ defines "OR" operation for regexp patterns. It's a _binary_ operation, having `left`, and `right` nodes.
+
+Matches `a` or `b`:
+
+```
+a|b
+```
+
+A node:
+
+```js
+{
+  type: 'Disjunction',
+  left: {
+    type: 'Char',
+    value: 'a',
+    kind: 'simple'
+  },
+  right: {
+    type: 'Char',
+    value: 'b',
+    kind: 'simple'
+  }
+}
+```
+
+#### Groups
+
+The groups play two roles: they define grouping precedence, and allow to capture needed sub-expressions in case of a capturing group.
+
+##### Capturing group
+
+_"Capturing"_ means the matched string can be referred later by a user, including the pattern itself using [backreferences](#backreferences).
+
+Char `a`, and `b` are grouped, followed by the `c` char:
+
+```
+(ab)c
+```
+
+A node:
+
+```js
+{
+  type: 'Alternative',
+  expressions: [
+    {
+      type: 'Group',
+      capturing: true,
+      expression: {
+        type: 'Alternative',
+        expressions: [
+          {
+            type: 'Char',
+            value: 'a',
+            kind: 'simple'
+          },
+          {
+            type: 'Char',
+            value: 'b',
+            kind: 'simple'
+          }
+        ]
+      }
+    },
+    {
+      type: 'Char',
+      value: 'c',
+      kind: 'simple'
+    }
+  ]
+}
+```
+
+##### Non-capturing group
+
+Sometimes we don't need to actually capture the matched string from a group. In this case we can use a _non-capturing_ group:
+
+Char `a`, and `b` are grouped, _but not captured_, followed by the `c` char:
+
+```
+(?:ab)c
+```
+
+The same node, the `capturing` flag is `false`:
+
+```js
+{
+  type: 'Alternative',
+  expressions: [
+    {
+      type: 'Group',
+      capturing: false,
+      expression: {
+        type: 'Alternative',
+        expressions: [
+          {
+            type: 'Char',
+            value: 'a',
+            kind: 'simple'
+          },
+          {
+            type: 'Char',
+            value: 'b',
+            kind: 'simple'
+          }
+        ]
+      }
+    },
+    {
+      type: 'Char',
+      value: 'c',
+      kind: 'simple'
+    }
+  ]
+}
+```
+
+##### Backreferences
+
+The notation used for decimal char codes can be used to refer a matched capturing group.
+
+Matches `abab` string:
+
+```
+(ab)\1
+```
+
+A node:
+
+```
+{
+  type: 'Alternative',
+  expressions: [
+    {
+      type: 'Group',
+      capturing: false,
+      expression: {
+        type: 'Alternative',
+        expressions: [
+          {
+            type: 'Char',
+            value: 'a',
+            kind: 'simple'
+          },
+          {
+            type: 'Char',
+            value: 'b',
+            kind: 'simple'
+          }
+        ]
+      }
+    },
+    {
+      type: 'Backreference',
+      reference: 1,
+    }
+  ]
+}
+```
+
 #### Quantifiers
 
 Quantifiers specify _repetition_ of a regular expression (or of its part). Below are the quantifiers which _wrap_ a parsed expression into a `Repetition` node.
@@ -678,3 +898,204 @@ a{1}?
 a{1,}?
 a{1,3}?
 ```
+
+#### Assertions
+
+Assertions appear as separate AST nodes, however instread of manipulating on the characters themselves, they _assert_ certain conditions of a matching string. Examples: `^` -- beging of a string (or a line in multiline mode), `$` -- end of a string, etc.
+
+##### ^ begin marker
+
+The `^` assertion checks whether a scanner is at the begining of a string (or a line in multiline mode).
+
+In the example below `^` is not a property of the `a` symbol, but a separate AST node for the assertion. The parsed node is actually an `Alternative` with two nodes:
+
+```
+^a
+```
+
+The node:
+
+```js
+{
+  type: 'Alternative',
+  expressions: [
+    {
+      type: 'Assertion',
+      kind: '^'
+    },
+    {
+      type: 'Char',
+      value: 'a',
+      kind: 'simple'
+    }
+  ]
+}
+```
+
+Since assertion is a separate node, it may appear anywhere in the matching string. The following regexp is completely valid, and asserts begining of the string; it'll match an empty string:
+
+```
+^^^^^
+```
+
+##### $ end marker
+
+The `$` assertion is similar to `^`, but asserts the end of a string (or a line in a multiline mode):
+
+```
+a$
+```
+
+A node:
+
+```js
+{
+  type: 'Alternative',
+  expressions: [
+    {
+      type: 'Char',
+      value: 'a',
+      kind: 'simple'
+    },
+    {
+      type: 'Assertion',
+      kind: '$'
+    }
+  ]
+}
+```
+
+And again, this is a completely valid regexp, and matches an empty string:
+
+```
+^^^^$$$$$
+
+// valid too:
+$^
+```
+
+##### Boundary assertions
+
+The `\b` assertion check for _word boundary_, i.e. the position between a word and a space.
+
+Matches `x` in `x y`, but not in `xy`:
+
+```
+x\b
+```
+
+A node:
+
+```js
+{
+  type: 'Alternative',
+  expressions: [
+    {
+      type: 'Char',
+      value: 'x',
+      kind: 'simple'
+    },
+    {
+      type: 'Assertion',
+      kind: '\\b'
+    }
+  ]
+}
+```
+
+The `\B` is vice-versa checks for _non-word_ boundary. The following example matches `x` in `xy`, but not in `x y`:
+
+```
+x\B
+```
+
+A node is the same:
+
+```js
+{
+  type: 'Alternative',
+  expressions: [
+    {
+      type: 'Char',
+      value: 'x',
+      kind: 'simple'
+    },
+    {
+      type: 'Assertion',
+      kind: '\\B'
+    }
+  ]
+}
+```
+
+##### Lookahead assertions
+
+These assertions check whether a pattern is _followed_ (or not followed for the negative assertion) by another pattern.
+
+###### Positive lookahead assertion
+
+Matches `a` only if it's followed by `b`:
+
+```
+a(?=b)
+```
+
+A node:
+
+```js
+{
+  type: 'Alternative',
+  expressions: [
+    {
+      type: 'Char',
+      value: 'a',
+      kind: 'simple'
+    },
+    {
+      type: 'Assertion',
+      kind: 'Lookahead',
+      assertion: {
+        type: 'Char',
+        value: 'b',
+        kind: 'simple'
+      }
+    }
+  ]
+}
+```
+
+###### Negative lookahead assertion
+
+Matches `a` only if it's _not_ followed by `b`:
+
+```
+a(?!b)
+```
+
+A node is similar, just `negative` flag is added:
+
+```js
+{
+  type: 'Alternative',
+  expressions: [
+    {
+      type: 'Char',
+      value: 'a',
+      kind: 'simple'
+    },
+    {
+      type: 'Assertion',
+      kind: 'Lookahead',
+      assertion: {
+        type: 'Char',
+        value: 'b',
+        kind: 'simple'
+      }
+    }
+  ]
+}
+```
+
+###### Lookbehind assertions
+
+_Lookbehind_ assertions are not yet supported (since the grammar is based on ECMAScript regular expressions which don't support lookbehind assertions), however the support can be added later.
