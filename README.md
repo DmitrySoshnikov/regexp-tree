@@ -69,22 +69,22 @@ Which produces an AST node corresponding to this regular expression:
 
 ```js
 {
-  "type": "RegExp",
-  "body": {
-    "type": "Disjunction",
-    "left": {
-      "type": "Char",
-      "value": "a",
-      "kind": "simple"
+  type: 'RegExp',
+  body: {
+    type: 'Disjunction',
+    left: {
+      type: 'Char',
+      value: 'a',
+      kind: 'simple'
     },
-    "right": {
-      "type": "Char",
-      "value": "b",
-      "kind": "simple"
+    right: {
+      type: 'Char',
+      value: 'b',
+      kind: 'simple'
     }
   },
-  "flags": [
-    "i"
+  flags: [
+    'i'
   ]
 }
 ```
@@ -115,38 +115,38 @@ This attaches `loc` object to each AST node:
 
 ```js
 {
-  "type": "RegExp",
-  "body": {
-    "type": "Alternative",
-    "expressions": [
+  type: 'RegExp',
+  body: {
+    type: 'Alternative',
+    expressions: [
       {
-        "type": "Char",
-        "value": "a",
-        "kind": "simple",
-        "loc": {
-          "start": 1,
-          "end": 2
+        type: 'Char',
+        value: 'a',
+        kind: 'simple',
+        loc: {
+          start: 1,
+          end: 2
         }
       },
       {
-        "type": "Char",
-        "value": "b",
-        "kind": "simple",
-        "loc": {
-          "start": 2,
-          "end": 3
+        type: 'Char',
+        value: 'b',
+        kind: 'simple',
+        loc: {
+          start: 2,
+          end: 3
         }
       }
     ],
-    "loc": {
-      "start": 1,
-      "end": 3
+    loc: {
+      start: 1,
+      end: 3
     }
   },
-  "flags": [],
-  "loc": {
-    "start": 0,
-    "end": 4
+  flags: [],
+  loc: {
+    start: 0,
+    end: 4
   }
 }
 ```
@@ -494,7 +494,7 @@ The range value can be the same for `from` and `to`, and the special range `-` c
 
 #### Alternative
 
-An _alternative_ (or _concatenation_) of symbols defines a chain of patterns followed one after another:
+An _alternative_ (or _concatenation_) defines a chain of patterns followed one after another:
 
 ```
 abc
@@ -565,11 +565,11 @@ A node:
 
 #### Groups
 
-The groups play two roles: they define grouping precedence, and allow to capture needed sub-expressions in case of a capturing group.
+The groups play two roles: they define _grouping precedence_, and allow to _capture_ needed sub-expressions in case of a capturing group.
 
 ##### Capturing group
 
-_"Capturing"_ means the matched string can be referred later by a user, including the pattern itself using [backreferences](#backreferences).
+_"Capturing"_ means the matched string can be referred later by a user, including in the pattern itself -- by using [backreferences](#backreferences).
 
 Char `a`, and `b` are grouped, followed by the `c` char:
 
@@ -609,6 +609,13 @@ A node:
     }
   ]
 }
+```
+
+Another example:
+
+```
+// A grouped disjunction of a symbol, and a character class:
+(5|[a-z])
 ```
 
 ##### Non-capturing group
@@ -657,7 +664,7 @@ The same node, the `capturing` flag is `false`:
 
 ##### Backreferences
 
-The notation used for decimal char codes can be used to refer a matched capturing group.
+A captured group can be referenced in the pattern using notation of an escaped group number.
 
 Matches `abab` string:
 
@@ -667,7 +674,7 @@ Matches `abab` string:
 
 A node:
 
-```
+```js
 {
   type: 'Alternative',
   expressions: [
@@ -721,7 +728,7 @@ Node:
     kind: 'simple'
   },
   quantifier: {
-    type: "?",
+    type: '?',
     greedy: true
   }
 }
@@ -746,7 +753,7 @@ Node:
     kind: 'simple'
   },
   quantifier: {
-    type: "*",
+    type: '*',
     greedy: true
   }
 }
@@ -772,7 +779,7 @@ Node:
     kind: 'simple'
   },
   quantifier: {
-    type: "+",
+    type: '+',
     greedy: true
   }
 }
@@ -792,16 +799,16 @@ The type of the quantifier is `Range`, and `from`, and `to` properties have the 
 
 ```js
 {
-  "type": "Repetition",
-  "expression": {
-    "type": "Char",
-    "value": "a",
-    "kind": "simple"
+  type: 'Repetition',
+  expression: {
+    type: 'Char',
+    value: 'a',
+    kind: 'simple'
   },
-  "quantifier": {
-    "type": "Range",
-    "from": 3,
-    "to": 3
+  quantifier: {
+    type: 'Range',
+    from: 3,
+    to: 3
   }
 }
 ```
@@ -818,15 +825,15 @@ An AST node for such range doesn't contain `to` property:
 
 ```js
 {
-  "type": "Repetition",
-  "expression": {
-    "type": "Char",
-    "value": "a",
-    "kind": "simple"
+  type: 'Repetition',
+  expression: {
+    type: 'Char',
+    value: 'a',
+    kind: 'simple'
   },
-  "quantifier": {
-    "type": "Range",
-    "from": 3
+  quantifier: {
+    type: 'Range',
+    from: 3
   }
 }
 ```
@@ -846,16 +853,16 @@ An AST node for a closed range:
 
 ```js
 {
-  "type": "Repetition",
-  "expression": {
-    "type": "Char",
-    "value": "a",
-    "kind": "simple"
+  type: 'Repetition',
+  expression: {
+    type: 'Char',
+    value: 'a',
+    kind: 'simple'
   },
-  "quantifier": {
-    "type": "Range",
-    "from": 3,
-    "to": 5
+  quantifier: {
+    type: 'Range',
+    from: 3,
+    to: 5
   }
 }
 ```
@@ -883,7 +890,7 @@ Node:
     kind: 'simple'
   },
   quantifier: {
-    type: "+",
+    type: '+',
     greedy: false
   }
 }
