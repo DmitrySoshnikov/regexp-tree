@@ -454,7 +454,7 @@ a{3}
 
 The type of the quantifier is `Range`, and `from`, and `to` properties have the same value:
 
-```
+```js
 {
   "type": "Repetition",
   "expression": {
@@ -480,7 +480,7 @@ a{3,}
 
 An AST node for such range doesn't contain `to` property:
 
-```
+```js
 {
   "type": "Repetition",
   "expression": {
@@ -508,7 +508,7 @@ a{3,3}
 
 An AST node for a closed range:
 
-```
+```js
 {
   "type": "Repetition",
   "expression": {
@@ -528,7 +528,9 @@ An AST node for a closed range:
 
 ##### Non-greedy
 
-If any quantifier is followed by the `?`, it turns the quantifier into a _non-greedy_ one. Examples: `a??`, `a+?`, `a*?`, `a{1,}?`, etc.
+If any quantifier is followed by the `?`, it becomes a _non-greedy_ quantifier.
+
+Example:
 
 ```
 a+?
