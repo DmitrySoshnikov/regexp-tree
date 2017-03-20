@@ -10,6 +10,15 @@ Regular expressions parser
 - [Usage from Node](#usage-from-node)
 - [Capturing locations](#capturing-locations)
 - [AST nodes specification](#ast-nodes-specification)
+  - [Char](#char)
+    - [Simple char](#simple-char)
+    - [Escaped char](#escaped-char)
+    - [Meta char](#meta-char)
+    - [Control char](#control-char)
+    - [Hex char-code](#hex-char-code)
+    - [Decimal char-code](#decimal-char-code)
+    - [Octal char-code](#octal-char-code)
+    - [Unicode](#unicode)
 
 ### Installation
 
@@ -165,4 +174,180 @@ const parsed = regexpTree
 
 Below are the AST node types corresponding to different regular expressions sub-patterns:
 
-TODO
+#### Char
+
+A basic building block, single character. Can be _escaped_, and be of different _kinds_.
+
+#### Simple char
+
+Basic _non-escaped_ char in a regexp:
+
+```
+z
+```
+
+Node:
+
+```
+{
+  type: 'Char',
+  value: 'z',
+  kind: 'simple'
+}
+```
+
+> NOTE: to test this from CLI, the char should be in an actual regexp -- `/z/`.
+
+#### Escaped char
+
+```
+\z
+```
+
+The same value, `escaped` flag is added:
+
+```
+{
+  type: 'Char',
+  value: 'z',
+  kind: 'simple',
+  escaped: true
+}
+```
+
+Escaping is mostly used with meta symbols:
+
+```
+// Syntax error
+*
+```
+
+```
+\*
+```
+
+OK, node:
+
+```
+{
+  type: 'Char',
+  value: '*',
+  kind: 'simple',
+  escaped: true
+}
+```
+
+#### Meta char
+
+A _meta character_ should not be confused with an [escaped char](#escaped-char).
+
+Example:
+
+```
+\n
+```
+
+Node:
+
+```
+{
+  type: 'Char',
+  value: '\\n',
+  kind: 'meta',
+}
+```
+
+Among other meta character are: `\f`, `\r`, `\n`, `\t`, `\v`, `\0`, `[\b]` (backspace char), `\s`, `\S`, `\w`, `\W`, `\d`, `\D`.
+
+> NOTE: `\b` and `\B` are parsed as `Assertion` node type, not `Char`.
+
+#### Control char
+
+A char preceded with `\c`, e.g. `\cx`, which stands for `CTRL+x`:
+
+```
+\cx
+```
+
+Node:
+
+```
+{
+  type: 'Char',
+  value: '\\cx',
+  kind: 'control',
+}
+```
+
+#### HEX char-code
+
+A char preceded with `\x`, followed by a HEX-code, e.g. `\x3B` (symbol `;`):
+
+```
+\x3B
+```
+
+Node:
+
+```
+{
+  type: 'Char',
+  value: '\\x3B',
+  kind: 'hex',
+}
+```
+
+#### Decimal char-code
+
+Char-code:
+
+```
+\42
+```
+
+Node:
+
+```
+{
+  type: 'Char',
+  value: '\\42',
+  kind: 'decimal',
+}
+```
+
+#### Octal char-code
+
+Char-code started with `\0`, followed by an octal number:
+
+```
+\073
+```
+
+Node:
+
+```
+{
+  type: 'Char',
+  value: '\\073',
+  kind: 'oct',
+}
+```
+
+#### Unicode
+
+Unicode char started with `\u`, followed by an hex number:
+
+```
+\u003B
+\{u003B}
+```
+
+Node:
+
+```
+{
+  type: 'Char',
+  value: '\\u003B',
+  kind: 'unicode',
+}
+```
