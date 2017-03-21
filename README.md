@@ -105,7 +105,7 @@ console.log(regexpTree.parse(regexpString)); // RegExp AST
 
 ### Capturing locations
 
-For source code transformation tools it might be useful also to capture _locations_ of the AST nodes. From the command line it's controlled via the '-l' option:
+For source code transformation tools it might be useful also to capture _locations_ of the AST nodes. From the command line it's controlled via the `-l` option:
 
 ```
 regexp-tree -e '/ab/' -l
