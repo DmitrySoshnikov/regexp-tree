@@ -680,7 +680,7 @@ A node:
   expressions: [
     {
       type: 'Group',
-      capturing: false,
+      capturing: true,
       expression: {
         type: 'Alternative',
         expressions: [
