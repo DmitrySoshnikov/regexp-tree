@@ -20,6 +20,20 @@ CHAR                    [^*?+\[\(\)]
 ESC                     \\
 U                       [0-9a-fA-F]
 
+/**
+ * Lexer state for character class.
+ *
+ * Some meta symbols inside a character class are treated as simple
+ * symbols, so we return different token types for them.
+ *
+ * E.g. `(` yields L_PAREN token by default, however in a character
+ * class it's  a simple symbol:
+ *
+ *   '('          return 'L_PAREN'
+ *   <class>'('   return 'CHAR'
+ *
+ * This allows making BNF grammar simpler with less productions, and states.
+ */
 %s class
 
 %%
