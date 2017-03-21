@@ -203,4 +203,55 @@ describe('basic', () => {
     });
   });
 
+  it('backreferences', () => {
+    expect(re(/(a)\1/)).toEqual({
+      type: 'RegExp',
+      body: {
+        type: 'Alternative',
+        expressions: [
+          {
+            type: 'Group',
+            capturing: true,
+            expression: {
+              type: 'Char',
+              value: 'a',
+              kind: 'simple'
+            }
+          },
+          {
+            type: 'Backreference',
+            reference: 1
+          }
+        ]
+      },
+      flags: []
+    });
+  });
+
+  it('non-backreferences', () => {
+    expect(re(/(?:a)\1/)).toEqual({
+      type: 'RegExp',
+      body: {
+        type: 'Alternative',
+        expressions: [
+          {
+            type: 'Group',
+            capturing: false,
+            expression: {
+              type: 'Char',
+              value: 'a',
+              kind: 'simple'
+            }
+          },
+          {
+            type: 'Char',
+            value: '\\1',
+            kind: 'decimal'
+          }
+        ]
+      },
+      flags: []
+    });
+  });
+
 });

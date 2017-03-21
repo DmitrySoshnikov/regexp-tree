@@ -101,6 +101,10 @@ U                       [0-9a-fA-F]
  */
 let capturingGroupsCount = 0;
 
+yyparse.onParseBegin = (_string) => {
+  capturingGroupsCount = 0;
+};
+
 /**
  * Extracts ranges from the range string.
  */
