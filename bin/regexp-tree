@@ -29,7 +29,7 @@ function main() {
   } = options;
 
   if (loc) {
-    regexpTree.setOptions({
+    regexpTree.setParserOptions({
       captureLocations: true,
     });
   }
