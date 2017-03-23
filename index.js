@@ -3,15 +3,17 @@
  * Copyright (c) 2017-present Dmitry Soshnikov <dmitry.soshnikov@gmail.com>
  */
 
-const regexpTreeParser = require('./generated/regexp-tree');
-
-// By default do not capture locations; callers may override.
-regexpTreeParser.setOptions({captureLocations: false});
+const regexpTreeParser = require('./src/parser');
 
 /**
  * An API object for RegExp processing (parsing/transform/generation).
  */
 const regexpTree = {
+  /**
+   * Parser module exposed.
+   */
+  parser: regexpTreeParser,
+
   /**
    * Parses a regexp string, producing an AST.
    *
@@ -20,14 +22,6 @@ const regexpTree = {
    */
   parse(regexp) {
     return regexpTreeParser.parse(regexp);
-  },
-
-  /**
-   * Sets parser options.
-   * @param Object options
-   */
-  setParserOptions(options) {
-    regexpTreeParser.setOptions(options);
   },
 
   /**
@@ -40,7 +34,7 @@ const regexpTree = {
    * node types. Example:
    *
    *   regexpTree.traverse(ast, {
-   *     onChar(node, parent) {
+   *     onChar(node) {
    *       ...
    *     },
    *   });

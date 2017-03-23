@@ -28,7 +28,7 @@ regexp-tree --help
 3. Make sure `npm test` still passes (add new tests if needed)
 4. Submit a PR
 
-The _regexp-tree_ parser is implemented as an automatic LR parser using [Syntax](https://www.npmjs.com/package/syntax-cli) tool. The parser module is generated from the [regexp grammar](https://github.com/DmitrySoshnikov/regexp-tree/blob/master/regexp.bnf), which is based on the regular expressions grammar used in ECMAScript.
+The _regexp-tree_ parser is implemented as an automatic LR parser using [Syntax](https://www.npmjs.com/package/syntax-cli) tool. The parser module is generated from the [regexp grammar](https://github.com/DmitrySoshnikov/regexp-tree/blob/master/src/parser/regexp.bnf), which is based on the regular expressions grammar used in ECMAScript.
 
 For development from the github repository, run `build` command to generate the parser module:
 
