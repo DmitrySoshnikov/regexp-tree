@@ -7,6 +7,7 @@
     "type": "git",
     "url": "https://github.com/DmitrySoshnikov/regexp-tree.git"
   },
+  "homepage": "https://github.com/DmitrySoshnikov/regexp-tree",
   "bugs": "https://github.com/DmitrySoshnikov/regexp-tree/issues",
   "main": "index.js",
   "scripts": {
