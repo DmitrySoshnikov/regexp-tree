@@ -3,7 +3,8 @@
  * Copyright (c) 2017-present Dmitry Soshnikov <dmitry.soshnikov@gmail.com>
  */
 
-const regexpTreeParser = require('./src/parser');
+const parser = require('./src/parser');
+const traverse = require('./src/traverse');
 
 /**
  * An API object for RegExp processing (parsing/transform/generation).
@@ -12,7 +13,7 @@ const regexpTree = {
   /**
    * Parser module exposed.
    */
-  parser: regexpTreeParser,
+  parser,
 
   /**
    * Parses a regexp string, producing an AST.
@@ -21,7 +22,7 @@ const regexpTree = {
    * @return Object AST
    */
   parse(regexp) {
-    return regexpTreeParser.parse(regexp);
+    return parser.parse(regexp);
   },
 
   /**
@@ -40,7 +41,7 @@ const regexpTree = {
    *   });
    */
   traverse(ast, handler) {
-    // TODO(#6) https://github.com/DmitrySoshnikov/regexp-tree/issues/6
+    return traverse.traverse(ast, handler);
   },
 
   /**

@@ -27,6 +27,7 @@
   ],
   "author": "Dmitry Soshnikov",
   "dependencies": {
+    "ast-traverse": "^0.1.1",
     "nomnom": "^1.8.1"
   },
   "devDependencies": {
