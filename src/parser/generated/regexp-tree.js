@@ -247,7 +247,7 @@ const productions = [[-1,1,(_1,_1loc) => { __loc = yyloc(_1loc, _1loc);__ = _1 }
           type: 'ClassRange',
           from: _1,
           to: _3,
-        }, __loc)
+        }, loc(_1loc, _3loc))
       ];
 
       if (_4) {
@@ -262,7 +262,7 @@ const productions = [[-1,1,(_1,_1loc) => { __loc = yyloc(_1loc, _1loc);__ = _1 }
           type: 'ClassRange',
           from: _1,
           to: _3,
-        }, __loc),
+        }, loc(_1loc, _3loc)),
       ];
 
       if (_4) {

@@ -477,7 +477,7 @@ NonemptyClassRanges
           type: 'ClassRange',
           from: $1,
           to: $3,
-        }, @$)
+        }, loc(@1, @3))
       ];
 
       if ($4) {
@@ -498,7 +498,7 @@ NonemptyClassRangesNoDash
           type: 'ClassRange',
           from: $1,
           to: $3,
-        }, @$),
+        }, loc(@1, @3)),
       ];
 
       if ($4) {
