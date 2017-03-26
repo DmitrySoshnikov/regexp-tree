@@ -25,8 +25,8 @@ describe('traverse-basic', () => {
       onAlternative(node, parent) {
         visited.push(node.type);
 
-        expect(node.type === 'Alternative');
-        expect(parent.type === 'RegExp');
+        expect(node.type).toBe('Alternative');
+        expect(parent.type).toBe('RegExp');
 
         expect(node.expressions.length).toBe(2);
         expect(node.expressions[0].type).toBe('Repetition');
@@ -36,8 +36,8 @@ describe('traverse-basic', () => {
       onRepetition(node, parent) {
         visited.push(node.type);
 
-        expect(node.type === 'Repetition');
-        expect(parent.type === 'Alternative');
+        expect(node.type).toBe('Repetition');
+        expect(parent.type).toBe('Alternative');
 
         expect(node.expression.type).toBe('CharacterClass');
         expect(node.quantifier.type).toBe('+');
@@ -46,8 +46,8 @@ describe('traverse-basic', () => {
       onCharacterClass(node, parent) {
         visited.push(node.type);
 
-        expect(node.type === 'CharacterClass');
-        expect(parent.type === 'Repetition');
+        expect(node.type).toBe('CharacterClass');
+        expect(parent.type).toBe('Repetition');
 
         expect(node.expressions.length).toBe(1);
         expect(node.expressions[0].type).toBe('ClassRange');
@@ -56,8 +56,8 @@ describe('traverse-basic', () => {
       onClassRange(node, parent, prop, index) {
         visited.push(node.type);
 
-        expect(node.type === 'ClassRange');
-        expect(parent.type === 'CharacterClass');
+        expect(node.type).toBe('ClassRange');
+        expect(parent.type).toBe('CharacterClass');
 
         expect(node.from.type).toBe('Char');
         expect(node.to.type).toBe('Char');
@@ -69,8 +69,13 @@ describe('traverse-basic', () => {
       onChar(node, parent) {
         visited.push(node.type);
 
-        expect(node.type === 'Char');
-        expect(parent.type === 'ClassRange');
+        expect(node.type).toBe('Char');
+
+        // Char appears only in these two parent nodes:
+        expect(
+          parent.type === 'ClassRange' ||
+          parent.type === 'Alternative'
+        ).toBe(true);
       },
     });
 
