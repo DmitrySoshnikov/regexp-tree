@@ -1,10 +1,8 @@
 # regexp-tree: Traverse module
 
-Provides a _vistor_ pattern traversal API for a regexp AST. See [the specification](https://github.com/DmitrySoshnikov/regexp-tree#ast-nodes-specification) for AST nodes format.
+Provides traversal API with _vistor_ pattern for regexp ASTs. See [the specification](https://github.com/DmitrySoshnikov/regexp-tree#ast-nodes-specification) for AST nodes format.
 
-Once a regular expression is parsed, it is possible to handle needed nodes by using traversal API. E.g. the [generator](https://github.com/DmitrySoshnikov/regexp-tree/tree/master/src/generator) module uses traversal API to generate a regexp string from an AST.
-
-Example:
+Once a regular expression is parsed, it is possible to handle needed nodes by using traversal API:
 
 ```js
 const regexpTree = require('regexp-tree');
