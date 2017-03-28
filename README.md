@@ -1,6 +1,6 @@
 # regexp-tree [![Build Status](https://travis-ci.org/DmitrySoshnikov/regexp-tree.svg?branch=master)](https://travis-ci.org/DmitrySoshnikov/regexp-tree) [![npm version](https://badge.fury.io/js/regexp-tree.svg)](https://badge.fury.io/js/regexp-tree)
 
-Regular expressions parser in JavaScript
+Regular expressions processor (parser/traversal/generator) in JavaScript
 
 ### Table of Contents
 
@@ -9,6 +9,7 @@ Regular expressions parser in JavaScript
 - [Usage as a CLI](#usage-as-a-cli)
 - [Usage from Node](#usage-from-node)
 - [Capturing locations](#capturing-locations)
+- [Using traversal API](#using-traversal-api)
 - [AST nodes specification](#ast-nodes-specification)
 
 ### Installation
@@ -159,6 +160,46 @@ const regexpTree = require('regexp-tree');
 const parsed = regexpTree
   .setOptions({captureLocations: true})
   .parse('/a|b/');
+```
+
+### Using traversal API
+
+The [traverse](https://github.com/DmitrySoshnikov/regexp-tree/tree/master/src/traverse) module allows handling needed AST nodes using _visitor_ pattern. In Node the module is exposed as `regexpTree.traverse` method.
+
+Example:
+
+```js
+const regexpTree = require('regexp-tree');
+
+// Get AST.
+const ast = regexpTree.parse('/[a-z]{1,}/');
+
+// Handle nodes.
+regexpTree.traverse(ast, {
+
+  // Handle "Repetition" node type,
+  // transforming `{1,}` quantifier to `+`.
+  onRepetition(node) {
+    const {quantifier} = node;
+
+    // {1,} -> +
+    if (
+      quantifier.type === 'Range' &&
+      quantifier.from === 1 &&
+      !quantifier.to
+    ) {
+      node.quantifier = {
+        type: '+',
+        greedy: quantifier.greedy,
+      };
+    }
+  },
+});
+
+// Generate the regexp.
+const re = regexpTree.generate(ast);
+
+console.log(re); // '/[a-z]+/'
 ```
 
 ### AST nodes specification
