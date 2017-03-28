@@ -11,6 +11,7 @@ Regular expressions processor (parser/traversal/generator) in JavaScript
 - [Capturing locations](#capturing-locations)
 - [Using traversal API](#using-traversal-api)
 - [Using generator API](#using-generator-api)
+- [Creating RegExp objects](#creating-regexp-objects)
 - [AST nodes specification](#ast-nodes-specification)
 
 ### Installation
@@ -159,6 +160,7 @@ From Node it's controlled via `setOptions` method exposed on the parser:
 const regexpTree = require('regexp-tree');
 
 const parsed = regexpTree
+  .parser
   .setOptions({captureLocations: true})
   .parse('/a|b/');
 ```
@@ -219,6 +221,21 @@ const re = regexpTree.generate({
 });
 
 console.log(re); // '/a/i'
+```
+
+### Creating RegExp objects
+
+To create an actual `RegExp` JavaScript object, we can use `regexpTree.toRegExp` method:
+
+```js
+const regexpTree = require('regexp-tree');
+
+const re = regexpTree.toRegExp('/[a-z]/i');
+
+console.log(
+  re.test('a'), // true
+  re.test('Z'), // true
+);
 ```
 
 ### AST nodes specification

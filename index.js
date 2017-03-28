@@ -57,6 +57,18 @@ const regexpTree = {
   generate(ast) {
     return generator.generate(ast);
   },
+
+  /**
+   * Creates a RegExp object from a regexp string.
+   *
+   * @param string regexp
+   */
+  toRegExp(regexp) {
+    const ast = this.parse(regexp);
+    const body = this.generate(ast.body);
+    const flags = ast.flags.join('');
+    return new RegExp(body, flags);
+  },
 };
 
 module.exports = regexpTree;

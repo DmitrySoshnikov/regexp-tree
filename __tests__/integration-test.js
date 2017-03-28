@@ -17,6 +17,9 @@ describe('regexp-tree', () => {
 
     // Generator.
     expect(typeof regexpTree.generate).toBe('function');
+
+    // Create RegExp objects.
+    expect(typeof regexpTree.toRegExp).toBe('function');
   });
 
   it('operations', () => {
@@ -58,6 +61,17 @@ describe('regexp-tree', () => {
     // 3. Generate.
     expect(regexpTree.generate(ast)).toBe(re);
 
+  });
+
+  it('creates RegExp', () => {
+    const reStr = '/[a-z]/i';
+    const re = regexpTree.toRegExp(reStr);
+
+    expect(re instanceof RegExp).toBe(true);
+    expect(re.toString()).toBe(reStr);
+
+    expect(re.test('a')).toBe(true);
+    expect(re.test('Z')).toBe(true);
   });
 
 });
