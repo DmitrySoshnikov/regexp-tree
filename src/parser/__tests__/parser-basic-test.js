@@ -254,4 +254,42 @@ describe('basic', () => {
     });
   });
 
+  it('meta chars', () => {
+
+    function LettersRange(start, stop) {
+      const range = [];
+
+      for (
+        let idx = start.charCodeAt(0),
+        end = stop.charCodeAt(0);
+        idx <= end;
+        ++idx
+      ) {
+        range.push(String.fromCharCode(idx));
+      }
+
+      return range;
+    }
+
+    const metaChars = new Set([
+      't', 'n', 'r', 'd', 'D', 's',
+      'S', 'w', 'W', 'v', 'f',
+    ]);
+
+    const azAZRange = LettersRange('a', 'z').concat(LettersRange('A', 'Z'));
+
+    for (const letter of azAZRange) {
+      const parsedChar = regexpTree.parse(`/\\${letter}/`).body;
+      if (metaChars.has(letter)) {
+        expect(parsedChar.kind).toBe('meta');
+      } else {
+        expect(parsedChar.kind).not.toBe('meta');
+      }
+    }
+
+    // Special case for [\b] - Backspace
+    const backspace = regexpTree.parse('/[\\b]/').body.expressions[0];
+    expect(backspace.kind).toBe('meta');
+  });
+
 });

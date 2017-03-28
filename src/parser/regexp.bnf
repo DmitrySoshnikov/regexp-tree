@@ -62,7 +62,7 @@ U                       [0-9a-fA-F]
 
 {ESC}'x'{U}{2}          return 'HEX_CODE'
 
-{ESC}[tnrbBdDsSwWxaf]   return 'META_CHAR'
+{ESC}[tnrdDsSwWvf]      return 'META_CHAR'
 
 {ESC}'/'                return 'ESC_CHAR'
 
