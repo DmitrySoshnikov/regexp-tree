@@ -5,6 +5,7 @@
 
 const parser = require('./src/parser');
 const traverse = require('./src/traverse');
+const generator = require('./src/generator');
 
 /**
  * An API object for RegExp processing (parsing/transform/generation).
@@ -54,7 +55,7 @@ const regexpTree = {
    *   regexpTree.generate(regexpTree.parse('/[a-z]+/i')); // '/[a-z]+/i'
    */
   generate(ast) {
-    // TODO(#5) https://github.com/DmitrySoshnikov/regexp-tree/issues/5
+    return generator.generate(ast);
   },
 };
 

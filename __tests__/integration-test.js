@@ -20,7 +20,8 @@ describe('regexp-tree', () => {
   });
 
   it('operations', () => {
-    const ast = regexpTree.parse('/a/i');
+    const re = '/a/i';
+    const ast = regexpTree.parse(re);
 
     // 1. Parse.
     expect(ast).toEqual({
@@ -53,6 +54,10 @@ describe('regexp-tree', () => {
       'RegExp',
       'Char',
     ]);
+
+    // 3. Generate.
+    expect(regexpTree.generate(ast)).toBe(re);
+
   });
 
 });
