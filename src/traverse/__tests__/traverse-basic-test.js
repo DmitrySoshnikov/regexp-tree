@@ -40,7 +40,8 @@ describe('traverse-basic', () => {
         expect(parent.type).toBe('Alternative');
 
         expect(node.expression.type).toBe('CharacterClass');
-        expect(node.quantifier.type).toBe('+');
+        expect(node.quantifier.type).toBe('Quantifier');
+        expect(node.quantifier.kind).toBe('+');
       },
 
       onCharacterClass(node, parent) {
@@ -66,6 +67,12 @@ describe('traverse-basic', () => {
         expect(index).toBe(0);
       },
 
+      onQuantifier(node) {
+        visited.push(node.type);
+        expect(node.type).toBe('Quantifier');
+        expect(node.kind).toBe('+');
+      },
+
       onChar(node, parent) {
         visited.push(node.type);
 
@@ -88,6 +95,7 @@ describe('traverse-basic', () => {
       'ClassRange',
       'Char',
       'Char',
+      'Quantifier',
       'Char',
     ]);
   });

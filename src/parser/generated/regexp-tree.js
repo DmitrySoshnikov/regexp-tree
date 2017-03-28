@@ -169,42 +169,51 @@ const productions = [[-1,1,(_1,_1loc) => { __loc = yyloc(_1loc, _1loc);__ = _1 }
      }],
 [13,1,(_1,_1loc) => { __loc = yyloc(_1loc, _1loc);
       __ = Node({
-        type: _1,
+        type: 'Quantifier',
+        kind: _1,
         greedy: true,
       }, __loc)
      }],
 [13,1,(_1,_1loc) => { __loc = yyloc(_1loc, _1loc);
       __ = Node({
-        type: _1,
+        type: 'Quantifier',
+        kind: _1,
         greedy: true,
       }, __loc)
      }],
 [13,1,(_1,_1loc) => { __loc = yyloc(_1loc, _1loc);
       __ = Node({
-        type: _1,
+        type: 'Quantifier',
+        kind: _1,
         greedy: true,
       }, __loc)
      }],
 [13,1,(_1,_1loc) => { __loc = yyloc(_1loc, _1loc);
       const range = getRange(_1);
       __ = Node({
-        type: 'Range',
+        type: 'Quantifier',
+        kind: 'Range',
         from: range[0],
         to: range[0],
+        greedy: true,
       }, __loc)
      }],
 [13,1,(_1,_1loc) => { __loc = yyloc(_1loc, _1loc);
       __ = Node({
-        type: 'Range',
+        type: 'Quantifier',
+        kind: 'Range',
         from: getRange(_1)[0],
+        greedy: true,
       }, __loc)
      }],
 [13,1,(_1,_1loc) => { __loc = yyloc(_1loc, _1loc);
       const range = getRange(_1);
       __ = Node({
-        type: 'Range',
+        type: 'Quantifier',
+        kind: 'Range',
         from: range[0],
         to: range[1],
+        greedy: true,
       }, __loc)
      }],
 [14,1,(_1,_1loc) => { __loc = yyloc(_1loc, _1loc);__ = _1 }],

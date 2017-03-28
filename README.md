@@ -10,6 +10,7 @@ Regular expressions processor (parser/traversal/generator) in JavaScript
 - [Usage from Node](#usage-from-node)
 - [Capturing locations](#capturing-locations)
 - [Using traversal API](#using-traversal-api)
+- [Using generator API](#using-generator-api)
 - [AST nodes specification](#ast-nodes-specification)
 
 ### Installation
@@ -177,21 +178,17 @@ const ast = regexpTree.parse('/[a-z]{1,}/');
 // Handle nodes.
 regexpTree.traverse(ast, {
 
-  // Handle "Repetition" node type,
+  // Handle "Quantifier" node type,
   // transforming `{1,}` quantifier to `+`.
-  onRepetition(node) {
-    const {quantifier} = node;
-
+  onQuantifier(node) {
     // {1,} -> +
     if (
-      quantifier.type === 'Range' &&
-      quantifier.from === 1 &&
-      !quantifier.to
+      node.kind === 'Range' &&
+      node.from === 1 &&
+      !node.to
     ) {
-      node.quantifier = {
-        type: '+',
-        greedy: quantifier.greedy,
-      };
+      node.kind = '+';
+      delete node.from;
     }
   },
 });
@@ -200,6 +197,28 @@ regexpTree.traverse(ast, {
 const re = regexpTree.generate(ast);
 
 console.log(re); // '/[a-z]+/'
+```
+
+### Using generator API
+
+The [generator](https://github.com/DmitrySoshnikov/regexp-tree/tree/master/src/generator) module generates regular expressions from corresponding AST nodes. In Node the module is exposed as `regexpTree.generate` method.
+
+Example:
+
+```js
+const regexpTree = require('regexp-tree');
+
+const re = regexpTree.generate({
+  type: 'RegExp',
+  body: {
+    type: 'Char',
+    value: 'a',
+    kind: 'simple',
+  },
+  flags: ['i'],
+});
+
+console.log(re); // '/a/i'
 ```
 
 ### AST nodes specification
@@ -748,7 +767,7 @@ A node:
 
 #### Quantifiers
 
-Quantifiers specify _repetition_ of a regular expression (or of its part). Below are the quantifiers which _wrap_ a parsed expression into a `Repetition` node.
+Quantifiers specify _repetition_ of a regular expression (or of its part). Below are the quantifiers which _wrap_ a parsed expression into a `Repetition` node. The quantifier itself can be of different _kinds_, and has `Quantifier` node type.
 
 ##### ? zero-or-one
 
@@ -769,7 +788,8 @@ Node:
     kind: 'simple'
   },
   quantifier: {
-    type: '?',
+    type: 'Quantifier',
+    kind: '?',
     greedy: true
   }
 }
@@ -794,7 +814,8 @@ Node:
     kind: 'simple'
   },
   quantifier: {
-    type: '*',
+    type: 'Quantifier',
+    kind: '*',
     greedy: true
   }
 }
@@ -820,7 +841,8 @@ Node:
     kind: 'simple'
   },
   quantifier: {
-    type: '+',
+    type: 'Quantifier',
+    kind: '+',
     greedy: true
   }
 }
@@ -847,9 +869,11 @@ The type of the quantifier is `Range`, and `from`, and `to` properties have the 
     kind: 'simple'
   },
   quantifier: {
-    type: 'Range',
+    type: 'Quantifier',
+    kind: 'Range',
     from: 3,
-    to: 3
+    to: 3,
+    greedy: true
   }
 }
 ```
@@ -873,8 +897,10 @@ An AST node for such range doesn't contain `to` property:
     kind: 'simple'
   },
   quantifier: {
-    type: 'Range',
-    from: 3
+    type: 'Quantifier',
+    kind: 'Range',
+    from: 3,
+    greedy: true
   }
 }
 ```
@@ -901,9 +927,11 @@ An AST node for a closed range:
     kind: 'simple'
   },
   quantifier: {
-    type: 'Range',
+    type: 'Quantifier',
+    kind: 'Range',
     from: 3,
-    to: 5
+    to: 5,
+    greedy: true
   }
 }
 ```
@@ -931,7 +959,8 @@ Node:
     kind: 'simple'
   },
   quantifier: {
-    type: '+',
+    type: 'Quantifier',
+    kind: '+',
     greedy: false
   }
 }

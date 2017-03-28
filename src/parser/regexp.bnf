@@ -362,7 +362,8 @@ QuantifierPrefix
   : STAR
     {
       $$ = Node({
-        type: $1,
+        type: 'Quantifier',
+        kind: $1,
         greedy: true,
       }, @$)
     }
@@ -370,7 +371,8 @@ QuantifierPrefix
   | PLUS
     {
       $$ = Node({
-        type: $1,
+        type: 'Quantifier',
+        kind: $1,
         greedy: true,
       }, @$)
     }
@@ -378,7 +380,8 @@ QuantifierPrefix
   | Q_MARK
     {
       $$ = Node({
-        type: $1,
+        type: 'Quantifier',
+        kind: $1,
         greedy: true,
       }, @$)
     }
@@ -387,17 +390,21 @@ QuantifierPrefix
     {
       const range = getRange($1);
       $$ = Node({
-        type: 'Range',
+        type: 'Quantifier',
+        kind: 'Range',
         from: range[0],
         to: range[0],
+        greedy: true,
       }, @$)
     }
 
   | RANGE_OPEN
     {
       $$ = Node({
-        type: 'Range',
+        type: 'Quantifier',
+        kind: 'Range',
         from: getRange($1)[0],
+        greedy: true,
       }, @$)
     }
 
@@ -405,9 +412,11 @@ QuantifierPrefix
     {
       const range = getRange($1);
       $$ = Node({
-        type: 'Range',
+        type: 'Quantifier',
+        kind: 'Range',
         from: range[0],
         to: range[1],
+        greedy: true,
       }, @$)
     }
   ;

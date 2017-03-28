@@ -15,21 +15,17 @@ const ast = regexpTree.parse('/[a-z]{1,}/');
 // Handle nodes.
 regexpTree.traverse(ast, {
 
-  // Handle "Repetition" node type,
+  // Handle "Quantifier" node type,
   // transforming `{1,}` quantifier to `+`.
-  onRepetition(node) {
-    const {quantifier} = node;
-
+  onQuantifier(node) {
     // {1,} -> +
     if (
-      quantifier.type === 'Range' &&
-      quantifier.from === 1 &&
-      !quantifier.to
+      node.kind === 'Range' &&
+      node.from === 1 &&
+      !node.to
     ) {
-      node.quantifier = {
-        type: '+',
-        greedy: quantifier.greedy,
-      };
+      node.kind = '+';
+      delete node.from;
     }
   },
 });
