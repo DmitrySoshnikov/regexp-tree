@@ -48,7 +48,7 @@ describe('generator-basic', () => {
     test(/\D/);
     test(/\w/);
     test(/\W/);
-    test(/\a/);
+    test(/\v/);
     test(/\f/);
   });
 
