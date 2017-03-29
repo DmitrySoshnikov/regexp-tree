@@ -292,4 +292,47 @@ describe('basic', () => {
     expect(backspace.kind).toBe('meta');
   });
 
+  it('unicode', () => {
+    expect(re(/\u003B/).body).toEqual({
+      type: 'Char',
+      value: '\\u003B',
+      kind: 'unicode',
+    });
+
+    // Using `u` flag.
+    expect(re(/\u{003B}/u).body).toEqual({
+      type: 'Char',
+      value: '\\u{003B}',
+      kind: 'unicode',
+    });
+
+    // Using `u` flag.
+    expect(re(/\u{1D306}/u).body).toEqual({
+      type: 'Char',
+      value: '\\u{1D306}',
+      kind: 'unicode',
+    });
+
+    // TODO: without `u` flag \u{1234} should be parsed NOT as
+    // a unicode code point, but as an (escaped) `u` character,
+    // repeated 1234 times.
+
+    // expect(re(/\u{1234}/).body).toEqual({
+    //   type: 'Repetition',
+    //   expression: {
+    //     type: 'Char',
+    //     value: 'u',
+    //     kind: 'simple',
+    //     escaped: true
+    //   },
+    //   quantifier: {
+    //     type: 'Quantifier',
+    //     kind: 'Range',
+    //     from: 1234,
+    //     to: 1234,
+    //     greedy: true
+    //   }
+    // });
+  });
+
 });
