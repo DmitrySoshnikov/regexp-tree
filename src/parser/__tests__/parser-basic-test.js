@@ -299,17 +299,24 @@ describe('basic', () => {
       kind: 'unicode',
     });
 
-    // Using `u` flag.
+    // Using `u` flag, 4 digits.
     expect(re(/\u{003B}/u).body).toEqual({
       type: 'Char',
       value: '\\u{003B}',
       kind: 'unicode',
     });
 
-    // Using `u` flag.
+    // Using `u` flag, 5 digits.
     expect(re(/\u{1D306}/u).body).toEqual({
       type: 'Char',
       value: '\\u{1D306}',
+      kind: 'unicode',
+    });
+
+    // Using `u` flag, 6 digits, 10FFFF is max.
+    expect(re(/\u{10FFFF}/u).body).toEqual({
+      type: 'Char',
+      value: '\\u{10FFFF}',
       kind: 'unicode',
     });
 
