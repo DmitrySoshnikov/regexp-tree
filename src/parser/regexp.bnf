@@ -58,7 +58,7 @@ U                       [0-9a-fA-F]
 {ESC}\d{1,3}            return 'DEC_CODE'
 
 {ESC}'u'{U}{4}          return 'U_CODE'
-{ESC}'u{'{U}{4,6}'}'    return 'U_CODE'
+{ESC}'u{'{U}{1,6}'}'    return 'U_CODE'
 
 {ESC}'x'{U}{2}          return 'HEX_CODE'
 

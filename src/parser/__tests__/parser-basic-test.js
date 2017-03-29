@@ -299,10 +299,10 @@ describe('basic', () => {
       kind: 'unicode',
     });
 
-    // Using `u` flag, 4 digits.
-    expect(re(/\u{003B}/u).body).toEqual({
+    // Using `u` flag, 1 digit.
+    expect(re(/\u{9}/u).body).toEqual({
       type: 'Char',
-      value: '\\u{003B}',
+      value: '\\u{9}',
       kind: 'unicode',
     });
 
