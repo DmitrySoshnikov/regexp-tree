@@ -21,7 +21,7 @@ const generator = {
   },
 
   Alternative(node) {
-    return node.expressions
+    return (node.expressions || [])
       .map(node => gen(node))
       .join('');
   },
