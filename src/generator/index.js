@@ -4,7 +4,6 @@
  */
 
 'use strict';
-const traverse = require('../traverse');
 
 /**
  * Helper `gen` function calls node type handler.

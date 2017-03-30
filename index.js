@@ -69,6 +69,17 @@ const regexpTree = {
     const body = this.generate(ast.body);
     return new RegExp(body, ast.flags);
   },
+
+  /**
+   * Optimizes a regular expression by replacing some
+   * sub-expressions with their idiomatic patterns.
+   *
+   * @param string regexp
+   */
+  optimize(regexp) {
+    // TODO (https://github.com/DmitrySoshnikov/regexp-tree/issues/21)
+    throw new Error('`regexpTree.optimize` is not implemented yet.');
+  },
 };
 
 module.exports = regexpTree;
