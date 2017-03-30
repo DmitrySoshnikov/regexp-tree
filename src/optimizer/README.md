@@ -11,5 +11,5 @@ Example:
 Is transformed into:
 
 ```js
-/[\w\d]+e+/
+/\w+e+/
 ```
