@@ -34,7 +34,8 @@ Result:
       ]
     },
     quantifier: {
-      type: '+',
+      type: 'Quantifier',
+      kind: '+',
       greedy: true
     }
   },
