@@ -34,7 +34,7 @@ describe('regexp-tree', () => {
         value: 'a',
         kind: 'simple',
       },
-      flags: ['i'],
+      flags: 'i',
     });
 
     // 2. Traverse.
