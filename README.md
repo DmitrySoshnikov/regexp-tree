@@ -86,9 +86,7 @@ Which produces an AST node corresponding to this regular expression:
       kind: 'simple'
     }
   },
-  flags: [
-    'i'
-  ]
+  flags: 'i',
 }
 ```
 
@@ -146,7 +144,7 @@ This attaches `loc` object to each AST node:
       end: 3
     }
   },
-  flags: [],
+  flags: '',
   loc: {
     start: 0,
     end: 4
@@ -217,7 +215,7 @@ const re = regexpTree.generate({
     value: 'a',
     kind: 'simple',
   },
-  flags: ['i'],
+  flags: 'i',
 });
 
 console.log(re); // '/a/i'

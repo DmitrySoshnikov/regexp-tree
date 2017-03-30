@@ -17,7 +17,7 @@ function invalid(regexp, message) {
     regexpTree.parse(regexp);
     expect(1).not.toBe(1); // unreachable
   } catch (e) {
-    expect(e instanceof SyntaxError).toBe(true);
+    expect(e).toBeInstanceOf(SyntaxError);
 
     if (message) {
       expect(e.message.includes(message)).toBe(true);

@@ -18,7 +18,7 @@ function gen(node) {
  */
 const generator = {
   RegExp(node) {
-    return `/${gen(node.body)}/${node.flags.join('')}`;
+    return `/${gen(node.body)}/${node.flags}`;
   },
 
   Alternative(node) {

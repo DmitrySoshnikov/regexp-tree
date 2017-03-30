@@ -67,8 +67,7 @@ const regexpTree = {
   toRegExp(regexp) {
     const ast = this.parse(regexp);
     const body = this.generate(ast.body);
-    const flags = ast.flags.join('');
-    return new RegExp(body, flags);
+    return new RegExp(body, ast.flags);
   },
 };
 

@@ -4,7 +4,7 @@ Parses a regexp string into an AST. See [the specification](https://github.com/D
 
 Example:
 
-```
+```js
 console.log(regexpTreeParser.parse('/[a-z]+/'));
 ```
 
@@ -38,8 +38,6 @@ Result:
       greedy: true
     }
   },
-  flags: [
-    'i'
-  ]
+  flags: 'i',
 }
 ```

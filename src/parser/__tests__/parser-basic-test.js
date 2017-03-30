@@ -19,7 +19,7 @@ describe('basic', () => {
         value: 'a',
         kind: 'simple'
       },
-      flags: []
+      flags: '',
     });
   });
 
@@ -39,7 +39,7 @@ describe('basic', () => {
           kind: 'simple',
         }
       },
-      flags: [],
+      flags: '',
     });
   });
 
@@ -61,7 +61,7 @@ describe('basic', () => {
           }
         ],
       },
-      flags: [],
+      flags: '',
     });
   });
 
@@ -91,9 +91,7 @@ describe('basic', () => {
           }
         ]
       },
-      flags: [
-        'i'
-      ]
+      flags: 'i',
     });
   });
 
@@ -105,7 +103,7 @@ describe('basic', () => {
         capturing: true,
         expression: null,
       },
-      flags: [],
+      flags: '',
     });
 
     expect(re(/(?:)/)).toEqual({
@@ -115,7 +113,7 @@ describe('basic', () => {
         capturing: false,
         expression: null,
       },
-      flags: [],
+      flags: '',
     });
   });
 
@@ -131,7 +129,7 @@ describe('basic', () => {
           kind: 'simple'
         },
       },
-      flags: [],
+      flags: '',
     });
 
     expect(re(/(?:a)/)).toEqual({
@@ -145,7 +143,7 @@ describe('basic', () => {
           kind: 'simple'
         },
       },
-      flags: [],
+      flags: '',
     });
   });
 
@@ -157,7 +155,7 @@ describe('basic', () => {
         kind: 'Lookahead',
         assertion: null,
       },
-      flags: [],
+      flags: '',
     });
 
     expect(re(/(?!)/)).toEqual({
@@ -168,7 +166,7 @@ describe('basic', () => {
         negative: true,
         assertion: null,
       },
-      flags: [],
+      flags: '',
     });
   });
 
@@ -184,7 +182,7 @@ describe('basic', () => {
           kind: 'simple'
         },
       },
-      flags: [],
+      flags: '',
     });
 
     expect(re(/(?!a)/)).toEqual({
@@ -199,7 +197,7 @@ describe('basic', () => {
           kind: 'simple'
         },
       },
-      flags: [],
+      flags: '',
     });
   });
 
@@ -224,7 +222,7 @@ describe('basic', () => {
           }
         ]
       },
-      flags: []
+      flags: '',
     });
   });
 
@@ -250,7 +248,7 @@ describe('basic', () => {
           }
         ]
       },
-      flags: []
+      flags: '',
     });
   });
 
@@ -340,6 +338,31 @@ describe('basic', () => {
     //     greedy: true
     //   }
     // });
+  });
+
+  it('valid sorted flags', () => {
+    expect(re(/a/gimuy)).toEqual({
+      type: 'RegExp',
+      body: {
+        type: 'Char',
+        value: 'a',
+        kind: 'simple'
+      },
+      flags: 'gimuy',
+    });
+  });
+
+  it('valid not sorted flags', () => {
+    // Not using `re` helper here because `RegExp.prototype.toString` sorts flags
+    expect(regexpTree.parse("/a/mgyiu")).toEqual({
+      type: 'RegExp',
+      body: {
+        type: 'Char',
+        value: 'a',
+        kind: 'simple'
+      },
+      flags: 'gimuy',
+    });
   });
 
 });
