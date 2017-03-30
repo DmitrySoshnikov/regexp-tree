@@ -58,7 +58,7 @@ const generator = {
       }
 
       default:
-        throw new TypeError('Unknown Assertion kind: ' + node.kind);
+        throw new TypeError(`Unknown Assertion kind: ${node.kind}`);
     }
   },
 
@@ -111,7 +111,7 @@ const generator = {
         }
         break;
       default:
-        throw new TypeError('Unknown Quantifier kind: ' + node.kind);
+        throw new TypeError(`Unknown Quantifier kind: ${node.kind}`);
     }
 
     return `${quantifier}${greedy}`;
@@ -137,7 +137,7 @@ const generator = {
         return value;
 
       default:
-        throw new TypeError('Unknown Char kind: ' + node.kind);
+        throw new TypeError(`Unknown Char kind: ${node.kind}`);
     }
   },
 };
