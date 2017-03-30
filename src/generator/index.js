@@ -3,6 +3,7 @@
  * Copyright (c) 2017-present Dmitry Soshnikov <dmitry.soshnikov@gmail.com>
  */
 
+'use strict';
 const traverse = require('../traverse');
 
 /**
@@ -83,6 +84,7 @@ const generator = {
   },
 
   Quantifier(node) {
+    let quantifier;
     const greedy = node.greedy ? '' : '?';
 
     switch (node.kind) {
