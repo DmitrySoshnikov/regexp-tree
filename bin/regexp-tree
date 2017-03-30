@@ -23,7 +23,7 @@ const options = require('nomnom')
   .parse();
 
 function main() {
-  let {
+  const {
     expression,
     loc,
   } = options;
