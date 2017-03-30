@@ -100,4 +100,45 @@ describe('traverse-basic', () => {
     ]);
   });
 
+  it('modifies a direct node', () => {
+    const ast = parser.parse('/a{1,}/');
+
+    traverse.traverse(ast, {
+      onQuantifier(node) {
+        if (node.kind === 'Range' && node.from == 1 && !node.to) {
+          node.kind = '+';
+          delete node.from;
+        }
+      },
+    });
+
+    expect(ast.body.quantifier).toEqual({
+      type: 'Quantifier',
+      kind: '+',
+      greedy: true,
+    });
+  });
+
+  it('replaces a node using parent', () => {
+    const ast = parser.parse('/a{1,}?/');
+
+    traverse.traverse(ast, {
+      onQuantifier(node, parent, prop) {
+        if (node.kind === 'Range' && node.from == 1 && !node.to) {
+          parent[prop] = {
+            type: 'Quantifier',
+            kind: '+',
+            greedy: node.greedy,
+          };
+        }
+      },
+    });
+
+    expect(ast.body.quantifier).toEqual({
+      type: 'Quantifier',
+      kind: '+',
+      greedy: false,
+    });
+  });
+
 });
