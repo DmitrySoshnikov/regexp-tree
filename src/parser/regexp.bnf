@@ -142,19 +142,15 @@ function Char(value, kind, loc) {
  * we don't duplicate flags.
  */
 function checkFlags(flags) {
-  if (!flags) {
-    return [];
-  }
-
-  let map = {};
-  for (let i = 0; i < flags.length; i++) {
-    if (map.hasOwnProperty(flags[i]) || !/[gimuy]/.test(flags[i])) {
-      throw new SyntaxError('Invalid flags: ' + flags);
+  const seen = new Set();
+  for (const flag of flags) {
+    if (seen.has(flag) || !/[gimuy]/.test(flag)) {
+      throw new SyntaxError(`Invalid flags: ${flags}`);
     }
-    map[flags[i]] = true;
+    seen.add(flag);
   }
 
-  return flags.split('');
+  return flags.split('').sort().join('');
 }
 
 /**
