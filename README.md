@@ -99,9 +99,7 @@ The parser can also be used as a Node module:
 ```js
 const regexpTree = require('regexp-tree');
 
-const regexpString = (/a|b/i).toString();
-
-console.log(regexpTree.parse(regexpString)); // RegExp AST
+console.log(regexpTree.parse(/a|b/i)); // RegExp AST
 ```
 
 ### Capturing locations
