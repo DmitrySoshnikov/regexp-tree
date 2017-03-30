@@ -60,12 +60,28 @@ describe('generator-basic', () => {
     test(/a|b/);
   });
 
+  it('disjunction - empty left', () => {
+    test(/|a/);
+  });
+
+  it('disjunction - empty right', () => {
+    test(/a|/);
+  });
+
   it('capturing group', () => {
     test(/(ab)/);
   });
 
+  it('empty capturing group', () => {
+    test(/()/);
+  });
+
   it('non-capturing group', () => {
     test(/(?:ab)/);
+  });
+
+  it('empty non-capturing group', () => {
+    test(/(?:)/);
   });
 
   it('basic-assertion', () => {
@@ -95,8 +111,16 @@ describe('generator-basic', () => {
     test(/(?=abc)/);
   });
 
+  it('empty positive lookahead assertion', () => {
+    test(/(?=)/);
+  });
+
   it('negative lookahead assertion', () => {
     test(/(?!abc)/);
+  });
+
+  it('empty negative lookahead assertion', () => {
+    test(/(?!)/);
   });
 
   it('simple greedy quantifier', () => {

@@ -9,7 +9,7 @@
  * Helper `gen` function calls node type handler.
  */
 function gen(node) {
-  return generator[node.type](node);
+  return node ? generator[node.type](node) : '';
 }
 
 /**
@@ -21,7 +21,7 @@ const generator = {
   },
 
   Alternative(node) {
-    return node.expressions
+    return (node.expressions || [])
       .map(node => gen(node))
       .join('');
   },
