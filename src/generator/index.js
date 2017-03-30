@@ -42,10 +42,11 @@ const generator = {
 
   Assertion(node) {
     switch (node.kind) {
-      case '^': return '^';
-      case '$': return '$';
-      case '\\b': return '\\b';
-      case '\\B': return '\\B';
+      case '^':
+      case '$':
+      case '\\b':
+      case '\\B':
+        return node.kind;
 
       case 'Lookahead': {
         const assertion = gen(node.assertion);
@@ -88,13 +89,9 @@ const generator = {
 
     switch (node.kind) {
       case '+':
-        quantifier = `+`;
-        break;
       case '?':
-        quantifier = `?`;
-        break;
       case '*':
-        quantifier = `*`;
+        quantifier = node.kind;
         break;
       case 'Range':
         // Exact: {1}
