@@ -74,4 +74,10 @@ describe('regexp-tree', () => {
     expect(re.test('Z')).toBe(true);
   });
 
+  it('calls `ToString` in `parse`', () => {
+    const reStr = '/m/m';
+    const ast = regexpTree.parse({toString: () => reStr});
+    expect(regexpTree.generate(ast)).toBe(reStr);
+  });
+
 });

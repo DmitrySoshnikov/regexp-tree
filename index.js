@@ -24,7 +24,7 @@ const regexpTree = {
    * @return Object AST
    */
   parse(regexp) {
-    return parser.parse(regexp);
+    return parser.parse(`${regexp}`);
   },
 
   /**
