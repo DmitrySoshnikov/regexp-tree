@@ -3,13 +3,9 @@
   "version": "0.0.19",
   "license": "MIT",
   "description": "Regular Expressions parser in JavaScript",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/DmitrySoshnikov/regexp-tree.git"
-  },
+  "repository": "DmitrySoshnikov/regexp-tree",
   "homepage": "https://github.com/DmitrySoshnikov/regexp-tree",
   "bugs": "https://github.com/DmitrySoshnikov/regexp-tree/issues",
-  "main": "index.js",
   "scripts": {
     "build": "./scripts/build",
     "test": "jest",
