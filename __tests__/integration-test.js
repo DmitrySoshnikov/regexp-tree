@@ -67,7 +67,7 @@ describe('regexp-tree', () => {
     const reStr = '/[a-z]/i';
     const re = regexpTree.toRegExp(reStr);
 
-    expect(re instanceof RegExp).toBe(true);
+    expect(re).toBeInstanceOf(RegExp);
     expect(re.toString()).toBe(reStr);
 
     expect(re.test('a')).toBe(true);
