@@ -3,7 +3,7 @@
  * Copyright (c) 2017-present Dmitry Soshnikov <dmitry.soshnikov@gmail.com>
  */
 
-const traverse = require('../index');
+const traverse = require('..');
 const parser = require('../../parser');
 
 const defaultAst = parser.parse('/[a-z]+a/i');

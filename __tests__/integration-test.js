@@ -3,7 +3,7 @@
  * Copyright (c) 2017-present Dmitry Soshnikov <dmitry.soshnikov@gmail.com>
  */
 
-const regexpTree = require('../index');
+const regexpTree = require('..');
 
 describe('regexp-tree', () => {
 
