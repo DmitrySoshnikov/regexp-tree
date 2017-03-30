@@ -22,7 +22,7 @@ const generator = {
 
   Alternative(node) {
     return (node.expressions || [])
-      .map(node => gen(node))
+      .map(gen)
       .join('');
   },
 
@@ -65,7 +65,7 @@ const generator = {
 
   CharacterClass(node) {
     const expressions = (node.expressions || [])
-      .map(node => gen(node))
+      .map(gen)
       .join('');
 
     if (node.negative) {
