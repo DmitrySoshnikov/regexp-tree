@@ -9,7 +9,7 @@ const traverse = require('../traverse');
  * Helper `gen` function calls node type handler.
  */
 function gen(node) {
-  return generator[node.type](node);
+  return node ? generator[node.type](node) : '';
 }
 
 /**
