@@ -79,8 +79,16 @@ describe('generator-basic', () => {
     test(/[a-z0]/);
   });
 
+  it('empty positive character class', () => {
+    test(/[]/);
+  });
+
   it('negative character class', () => {
     test(/[^a-z0]/);
+  });
+
+  it('empty negative character class', () => {
+    test(/[^]/);
   });
 
   it('positive lookahead assertion', () => {
