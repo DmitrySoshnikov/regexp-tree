@@ -3,7 +3,7 @@
 'use strict';
 
 const fs = require('fs');
-const regexpTree = require('../index');
+const regexpTree = require('..');
 
 const options = require('nomnom')
   .script('regexp-tree')
@@ -23,7 +23,7 @@ const options = require('nomnom')
   .parse();
 
 function main() {
-  let {
+  const {
     expression,
     loc,
   } = options;
@@ -39,5 +39,5 @@ function main() {
 }
 
 if (require.main === module) {
-    main();
+  main();
 }

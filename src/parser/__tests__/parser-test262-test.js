@@ -6,7 +6,7 @@
 // Below are the RegExp tests defined by `test262` suite:
 // https://github.com/tc39/test262/tree/master/test/built-ins/RegExp/
 
-const regexpTree = require('../index');
+const regexpTree = require('..');
 
 function re(regexp) {
   return regexpTree.parse(regexp.toString());
