@@ -102,6 +102,26 @@ const regexpTree = require('regexp-tree');
 console.log(regexpTree.parse(/a|b/i)); // RegExp AST
 ```
 
+Note, _regexp-tree_ supports parsing regexes from strings, and also from actual `RegExp` objects (in general -- from any object which can be coerced to a string). If some feature is not implemented yet in an actual JavaScript RegExp, it should be passed as a string:
+
+```js
+// Pass an actual JS RegExp object.
+regexpTree.parse(/a|b/i);
+
+// Pass a string, since `s` flag may not be supported in older versions.
+regexpTree.parse('/./s');
+```
+
+Also note, that in string-mode, escaping is done using two slashes `\\` per JavaScript:
+
+```js
+// As an actual regexp.
+regexpTree.parse(/\n/);
+
+// As a string.
+regexpTree.parse('/\\n/');
+```
+
 ### Capturing locations
 
 For source code transformation tools it might be useful also to capture _locations_ of the AST nodes. From the command line it's controlled via the `-l` option:
