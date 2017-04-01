@@ -767,8 +767,10 @@ function Char(value, kind, loc) {
  */
 function checkFlags(flags) {
   const seen = new Set();
+  const valid = 'gimsuy';
+
   for (const flag of flags) {
-    if (seen.has(flag) || !/[gimuy]/.test(flag)) {
+    if (seen.has(flag) || !valid.includes(flag)) {
       throw new SyntaxError(`Invalid flags: ${flags}`);
     }
     seen.add(flag);
