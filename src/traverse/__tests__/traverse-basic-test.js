@@ -141,4 +141,28 @@ describe('traverse-basic', () => {
     });
   });
 
+  it('multiple handlers', () => {
+    const ast = parser.parse('/a/');
+
+    expect(ast.body.value).toBe('a');
+
+    // Trow handlers.
+    const handlers = [
+      {
+        onChar(node) {
+          node.value = 'b';
+        },
+      },
+      {
+        onChar(node) {
+          node.value += 'c';
+        },
+      }
+    ];
+
+    traverse.traverse(ast, handlers);
+
+    expect(ast.body.value).toBe('bc');
+  });
+
 });
