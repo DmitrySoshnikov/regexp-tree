@@ -354,7 +354,7 @@ describe('basic', () => {
 
   it('valid not sorted flags', () => {
     // Not using `re` helper here because `RegExp.prototype.toString` sorts flags
-    expect(regexpTree.parse("/a/mgyiu")).toEqual({
+    expect(regexpTree.parse('/a/mgyiu')).toEqual({
       type: 'RegExp',
       body: {
         type: 'Char',
@@ -362,6 +362,19 @@ describe('basic', () => {
         kind: 'simple'
       },
       flags: 'gimuy',
+    });
+  });
+
+  it('dotAll (/s) flag', () => {
+    // Not using `re` helper here because /s flag is not yet implemented
+    expect(regexpTree.parse('/a/s')).toEqual({
+      type: 'RegExp',
+      body: {
+        type: 'Char',
+        value: 'a',
+        kind: 'simple'
+      },
+      flags: 's',
     });
   });
 
