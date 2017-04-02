@@ -754,10 +754,33 @@ function getRange(text) {
  * Creates a character node.
  */
 function Char(value, kind, loc) {
+  let symbol;
+
+  switch (kind) {
+    case 'decimal': {
+      const code = Number(value.slice(1));
+      symbol = String.fromCodePoint(code);
+      break;
+    }
+    case 'oct': {
+      const code = parseInt(value.slice(1), 8);
+      symbol = String.fromCodePoint(code);
+      break;
+    }
+    case 'hex':
+    case 'unicode': {
+      const hex = value.slice(2).replace('{', '');
+      const code = parseInt(hex, 16);
+      symbol = String.fromCodePoint(code);
+      break;
+    }
+  }
+
   return Node({
     type: 'Char',
     value,
     kind,
+    symbol,
   }, loc);
 }
 

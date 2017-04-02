@@ -244,6 +244,7 @@ describe('basic', () => {
           {
             type: 'Char',
             value: '\\1',
+            symbol: String.fromCodePoint(1),
             kind: 'decimal'
           }
         ]
@@ -263,7 +264,7 @@ describe('basic', () => {
         idx <= end;
         ++idx
       ) {
-        range.push(String.fromCharCode(idx));
+        range.push(String.fromCodePoint(idx));
       }
 
       return range;
@@ -294,6 +295,7 @@ describe('basic', () => {
     expect(re(/\u003B/).body).toEqual({
       type: 'Char',
       value: '\\u003B',
+      symbol: String.fromCodePoint(0x003b),
       kind: 'unicode',
     });
 
@@ -301,6 +303,7 @@ describe('basic', () => {
     expect(re(/\u{9}/u).body).toEqual({
       type: 'Char',
       value: '\\u{9}',
+      symbol: String.fromCodePoint(9),
       kind: 'unicode',
     });
 
@@ -308,6 +311,7 @@ describe('basic', () => {
     expect(re(/\u{10FFFF}/u).body).toEqual({
       type: 'Char',
       value: '\\u{10FFFF}',
+      symbol: String.fromCodePoint(0x10ffff),
       kind: 'unicode',
     });
 
@@ -315,6 +319,7 @@ describe('basic', () => {
     expect(re(/\u{000001D306}/u).body).toEqual({
       type: 'Char',
       value: '\\u{000001D306}',
+      symbol: String.fromCodePoint(0x000001d306),
       kind: 'unicode',
     });
 
@@ -362,6 +367,32 @@ describe('basic', () => {
         kind: 'simple'
       },
       flags: 'gimuy',
+    });
+  });
+  
+  it('hex escape', () => {
+    expect(re(/\x33/)).toEqual({
+      type: 'RegExp',
+      body: {
+        type: 'Char',
+        value: '\\x33',
+        kind: 'hex',
+        symbol: String.fromCodePoint(0x33),
+      },
+      flags: '',
+    });
+  });
+
+  it('decimal escape', () => {
+    expect(re(/\99/)).toEqual({
+      type: 'RegExp',
+      body: {
+        type: 'Char',
+        value: '\\99',
+        kind: 'decimal',
+        symbol: String.fromCodePoint(99),
+      },
+      flags: '',
     });
   });
 
