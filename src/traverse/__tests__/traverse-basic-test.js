@@ -146,7 +146,7 @@ describe('traverse-basic', () => {
 
     expect(ast.body.value).toBe('a');
 
-    // Trow handlers.
+    // Two handlers.
     const handlers = [
       {
         onChar(node) {
@@ -163,6 +163,76 @@ describe('traverse-basic', () => {
     traverse.traverse(ast, handlers);
 
     expect(ast.body.value).toBe('bc');
+  });
+
+  it('shouldRun hook', () => {
+    const handler = {
+      shouldRun(ast) {
+        return ast.flags.includes('s');
+      },
+
+      onRegExp(node) {
+        node.flags = node.flags.replace('s', '');
+      },
+
+      onChar(node, parent, prop) {
+        if (node.kind === 'meta' && node.value === '.') {
+          parent[prop] = {
+            type: 'CharacterClass',
+            negative: true,
+          };
+        }
+      },
+    };
+
+    // Should run.
+    let ast = parser.parse('/./s');
+    traverse.traverse(ast, handler);
+
+    expect(ast).toEqual({
+      type: 'RegExp',
+      body: {
+        type: 'CharacterClass',
+        negative: true,
+      },
+      flags: '',
+    });
+
+    // Should not run.
+    ast = parser.parse('/./');
+    traverse.traverse(ast, handler);
+
+    expect(ast).toEqual({
+      type: 'RegExp',
+      body: {
+        type: 'Char',
+        value: '.',
+        kind: 'meta',
+      },
+      flags: '',
+    });
+
+    // Should run (not `shouldRun` hook present).
+    ast = parser.parse('/./');
+    traverse.traverse(ast, {
+      onChar(node, parent, prop) {
+        if (node.kind === 'meta' && node.value === '.') {
+          parent[prop] = {
+            type: 'CharacterClass',
+            negative: true,
+          };
+        }
+      },
+    });
+
+    expect(ast).toEqual({
+      type: 'RegExp',
+      body: {
+        type: 'CharacterClass',
+        negative: true,
+      },
+      flags: '',
+    });
   });
 
 });

@@ -11,10 +11,16 @@ module.exports = {
    * Traverses an AST.
    *
    * @param Object ast - an AST node
+   *
    * @param Array<Object>|Object handlers - an object (or an array of objects)
    *        containing handler function per node. In case of an array of
    *        handlers, they are applied in order. A handler may return a
    *        transformed node (or a different type).
+   *
+   * Special hooks:
+   *
+   *   - `shouldRun(ast)` - a predicate determining whether the handler
+   *                        should be applied.
    *
    * Multiple handlers are used as an optimization of applying all of them
    * in one AST traversal pass. Alternatively, one can choose to run several
@@ -27,6 +33,15 @@ module.exports = {
       handlers = [handlers];
     }
 
+    // Filter out handlers by result of `shouldRun`, if the method presents.
+    handlers = handlers.filter(handler => {
+      if (typeof handler.shouldRun !== 'function') {
+        return true;
+      }
+      return handler.shouldRun(ast);
+    });
+
+    // Handle actual nodes.
     astTraverse(ast, {
 
       /**
