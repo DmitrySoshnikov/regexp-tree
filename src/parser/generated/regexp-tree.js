@@ -739,7 +739,7 @@ const yyparse = {
  */
 let capturingGroupsCount = 0;
 
-yyparse.onParseBegin = (_string) => {
+yyparse.onParseBegin = () => {
   capturingGroupsCount = 0;
 };
 

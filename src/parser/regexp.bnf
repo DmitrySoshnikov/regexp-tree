@@ -115,7 +115,7 @@ U                       [0-9a-fA-F]
  */
 let capturingGroupsCount = 0;
 
-yyparse.onParseBegin = (_string) => {
+yyparse.onParseBegin = () => {
   capturingGroupsCount = 0;
 };
 
