@@ -263,7 +263,7 @@ describe('basic', () => {
         idx <= end;
         ++idx
       ) {
-        range.push(String.fromCharCode(idx));
+        range.push(String.fromCodePoint(idx));
       }
 
       return range;
