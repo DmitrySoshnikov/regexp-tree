@@ -161,13 +161,20 @@ function Char(value, kind, loc) {
 }
 
 /**
+ * Valid flags per current ECMAScript spec and
+ * stage 3+ proposals.
+ */
+const validFlags = 'gimsuy';
+
+/**
  * Checks the flags are valid, and that
  * we don't duplicate flags.
  */
 function checkFlags(flags) {
   const seen = new Set();
+
   for (const flag of flags) {
-    if (seen.has(flag) || !/[gimuy]/.test(flag)) {
+    if (seen.has(flag) || !validFlags.includes(flag)) {
       throw new SyntaxError(`Invalid flags: ${flags}`);
     }
     seen.add(flag);

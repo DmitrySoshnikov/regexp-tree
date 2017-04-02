@@ -4,7 +4,7 @@
  */
 
 const parser = require('../../parser');
-const generator = require('../index');
+const generator = require('..');
 
 function test(re) {
   const reStr = re.toString();

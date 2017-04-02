@@ -3,7 +3,7 @@
  * Copyright (c) 2017-present Dmitry Soshnikov <dmitry.soshnikov@gmail.com>
  */
 
-const regexpTree = require('../index');
+const regexpTree = require('..');
 
 function re(regexp) {
   return regexpTree.parse(regexp.toString());
@@ -359,7 +359,7 @@ describe('basic', () => {
 
   it('valid not sorted flags', () => {
     // Not using `re` helper here because `RegExp.prototype.toString` sorts flags
-    expect(regexpTree.parse("/a/mgyiu")).toEqual({
+    expect(regexpTree.parse('/a/mgyiu')).toEqual({
       type: 'RegExp',
       body: {
         type: 'Char',
@@ -369,7 +369,7 @@ describe('basic', () => {
       flags: 'gimuy',
     });
   });
-
+  
   it('hex escape', () => {
     expect(re(/\x33/)).toEqual({
       type: 'RegExp',
@@ -393,6 +393,19 @@ describe('basic', () => {
         symbol: String.fromCodePoint(99),
       },
       flags: '',
+    });
+  });
+
+  it('dotAll (/s) flag', () => {
+    // Not using `re` helper here because /s flag is not yet implemented
+    expect(regexpTree.parse('/a/s')).toEqual({
+      type: 'RegExp',
+      body: {
+        type: 'Char',
+        value: 'a',
+        kind: 'simple'
+      },
+      flags: 's',
     });
   });
 

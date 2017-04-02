@@ -99,9 +99,27 @@ The parser can also be used as a Node module:
 ```js
 const regexpTree = require('regexp-tree');
 
-const regexpString = (/a|b/i).toString();
+console.log(regexpTree.parse(/a|b/i)); // RegExp AST
+```
 
-console.log(regexpTree.parse(regexpString)); // RegExp AST
+Note, _regexp-tree_ supports parsing regexes from strings, and also from actual `RegExp` objects (in general -- from any object which can be coerced to a string). If some feature is not implemented yet in an actual JavaScript RegExp, it should be passed as a string:
+
+```js
+// Pass an actual JS RegExp object.
+regexpTree.parse(/a|b/i);
+
+// Pass a string, since `s` flag may not be supported in older versions.
+regexpTree.parse('/./s');
+```
+
+Also note, that in string-mode, escaping is done using two slashes `\\` per JavaScript:
+
+```js
+// As an actual regexp.
+regexpTree.parse(/\n/);
+
+// As a string.
+regexpTree.parse('/\\n/');
 ```
 
 ### Capturing locations
