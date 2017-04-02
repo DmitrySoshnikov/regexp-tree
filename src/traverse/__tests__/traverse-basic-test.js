@@ -235,4 +235,22 @@ describe('traverse-basic', () => {
     });
   });
 
+  it('catch-all * handler', () => {
+    const ast = parser.parse('/a+/');
+    const visited = [];
+
+    traverse.traverse(ast, {
+      '*': node => {
+        visited.push(node.type);
+      },
+    });
+
+    expect(visited).toEqual([
+      'RegExp',
+      'Repetition',
+      'Char',
+      'Quantifier',
+    ]);
+  });
+
 });

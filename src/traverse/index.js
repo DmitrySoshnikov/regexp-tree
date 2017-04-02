@@ -49,6 +49,12 @@ module.exports = {
        */
       pre(node, parent, prop, index) {
         for (const handler of handlers) {
+          // "Catch-all" `*` handler.
+          if (typeof handler['*'] === 'function') {
+            handler['*'](node, parent, prop, index);
+          }
+
+          // Per-node handler.
           const handlerName = `on${node.type}`;
           if (typeof handler[handlerName] === 'function') {
             handler[handlerName](node, parent, prop, index);
