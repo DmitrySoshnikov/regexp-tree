@@ -370,4 +370,30 @@ describe('basic', () => {
     });
   });
 
+  it('hex escape', () => {
+    expect(re(/\x33/)).toEqual({
+      type: 'RegExp',
+      body: {
+        type: 'Char',
+        value: '\\x33',
+        kind: 'hex',
+        symbol: String.fromCodePoint(0x33),
+      },
+      flags: '',
+    });
+  });
+
+  it('decimal escape', () => {
+    expect(re(/\99/)).toEqual({
+      type: 'RegExp',
+      body: {
+        type: 'Char',
+        value: '\\99',
+        kind: 'decimal',
+        symbol: String.fromCodePoint(99),
+      },
+      flags: '',
+    });
+  });
+
 });
