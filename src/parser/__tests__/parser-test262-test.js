@@ -8,10 +8,6 @@
 
 const regexpTree = require('..');
 
-function re(regexp) {
-  return regexpTree.parse(regexp.toString());
-}
-
 function invalid(regexp, message) {
   try {
     regexpTree.parse(regexp);
@@ -29,10 +25,8 @@ function valid(regexp) {
   expect(() => regexpTree.parse(regexp)).not.toThrow(SyntaxError);
 }
 
-const UT = 'Unexpected token:';
-
 function ut(message) {
-  return `${UT} ${message}`;
+  return `Unexpected token: ${message}`;
 }
 
 describe('test262', () => {
