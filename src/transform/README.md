@@ -10,7 +10,7 @@ Example:
 const regexpTree = require('regexp-tree');
 
 const re = regexpTree.transform('/[a-z]{1,}/',
-  api => {
+  api => ({
     // Handle "Quantifier" node type,
     // transforming `{1,}` quantifier to `+`.
     onQuantifier(node) {
@@ -30,7 +30,7 @@ const re = regexpTree.transform('/[a-z]{1,}/',
         });
       }
     },
-  },
+  }),
 });
 
 console.log(re.toRegExp()); // /[a-z]+/
