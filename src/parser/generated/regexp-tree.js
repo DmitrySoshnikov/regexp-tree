@@ -758,7 +758,7 @@ function Char(value, kind, loc) {
 
   switch (kind) {
     case 'decimal': {
-      const code = parseInt(value.slice(1));
+      const code = Number(value.slice(1));
       symbol = String.fromCodePoint(code);
       break;
     }
