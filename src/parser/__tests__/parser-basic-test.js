@@ -244,6 +244,7 @@ describe('basic', () => {
           {
             type: 'Char',
             value: '\\1',
+            symbol: String.fromCodePoint(1),
             kind: 'decimal'
           }
         ]
@@ -294,6 +295,7 @@ describe('basic', () => {
     expect(re(/\u003B/).body).toEqual({
       type: 'Char',
       value: '\\u003B',
+      symbol: String.fromCodePoint(0x003b),
       kind: 'unicode',
     });
 
@@ -301,6 +303,7 @@ describe('basic', () => {
     expect(re(/\u{9}/u).body).toEqual({
       type: 'Char',
       value: '\\u{9}',
+      symbol: String.fromCodePoint(9),
       kind: 'unicode',
     });
 
@@ -308,6 +311,7 @@ describe('basic', () => {
     expect(re(/\u{10FFFF}/u).body).toEqual({
       type: 'Char',
       value: '\\u{10FFFF}',
+      symbol: String.fromCodePoint(0x10ffff),
       kind: 'unicode',
     });
 
@@ -315,6 +319,7 @@ describe('basic', () => {
     expect(re(/\u{000001D306}/u).body).toEqual({
       type: 'Char',
       value: '\\u{000001D306}',
+      symbol: String.fromCodePoint(0x000001d306),
       kind: 'unicode',
     });
 
