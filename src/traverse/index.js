@@ -4,6 +4,7 @@
  */
 
 'use strict';
+
 const astTraverse = require('ast-traverse');
 
 module.exports = {
