@@ -59,8 +59,17 @@ module.exports = class NodePath {
   replace(newNode) {
     this.node = newNode;
 
-    if (this.parent) {
-      this.parent[this.property] = newNode;
+    if (!this.parent) {
+      return;
     }
+
+    // A node is in a collection.
+    if (this.index != null) {
+      this.parent[this.property][this.index] = newNode;
+      return;
+    }
+
+    // A simple node.
+    this.parent[this.property] = newNode;
   }
 }

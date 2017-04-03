@@ -29,7 +29,7 @@ describe('NodePath', () => {
     expect(charPath.index).toBe(null);
   });
 
-  it('remove a node', () => {
+  it('removes a node', () => {
     const ast = parser.parse('/[ab]/');
 
     const bCharPath = new NodePath(
@@ -54,6 +54,43 @@ describe('NodePath', () => {
             kind: 'simple',
           },
           // No 'b' char.
+        ]
+      },
+      flags: '',
+    });
+  });
+
+  it('replaces a node', () => {
+    const ast = parser.parse('/[ab]/');
+
+    const bCharPath = new NodePath(
+      ast.body.expressions[1],
+      new NodePath(ast.body),
+      'expressions',
+      1,
+    );
+
+    const cNode = {
+      type: 'Char',
+      value: 'c',
+      kind: 'simple',
+    };
+
+    bCharPath.replace(cNode);
+    expect(bCharPath.node).toEqual(cNode);
+
+    expect(ast).toEqual({
+      type: 'RegExp',
+      body: {
+        type: 'CharacterClass',
+        expressions: [
+          {
+            type: 'Char',
+            value: 'a',
+            kind: 'simple',
+          },
+          // 'a' replaced with 'c'
+          cNode
         ]
       },
       flags: '',
