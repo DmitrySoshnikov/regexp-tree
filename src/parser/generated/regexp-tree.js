@@ -739,7 +739,7 @@ const yyparse = {
  */
 let capturingGroupsCount = 0;
 
-yyparse.onParseBegin = (_string) => {
+yyparse.onParseBegin = () => {
   capturingGroupsCount = 0;
 };
 
@@ -771,6 +771,10 @@ function Char(value, kind, loc) {
     case 'unicode': {
       const hex = value.slice(2).replace('{', '');
       const code = parseInt(hex, 16);
+      if (code > 0x10ffff) {
+        throw new SyntaxError(`Bad character escape sequence: ${value}`);
+      }
+
       symbol = String.fromCodePoint(code);
       break;
     }
