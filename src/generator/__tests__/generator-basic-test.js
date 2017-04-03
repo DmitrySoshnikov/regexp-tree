@@ -123,6 +123,22 @@ describe('generator-basic', () => {
     test(/(?!)/);
   });
 
+  it('positive lookbehind assertion', () => {
+    test('/(?<=abc)/');
+  });
+
+  it('empty positive lookbehind assertion', () => {
+    test('/(?<=)/');
+  });
+
+  it('negative lookbehind assertion', () => {
+    test('/(?<!abc)/');
+  });
+
+  it('empty negative lookbehind assertion', () => {
+    test('/(?<!)/');
+  });
+
   it('simple greedy quantifier', () => {
     test(/a?/);
     test(/a*/);

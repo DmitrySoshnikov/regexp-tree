@@ -58,6 +58,16 @@ const generator = {
         return `(?=${assertion})`;
       }
 
+      case 'Lookbehind': {
+        const assertion = gen(node.assertion);
+
+        if (node.negative) {
+          return `(?<!${assertion})`;
+        }
+
+        return `(?<=${assertion})`;
+      }
+
       default:
         throw new TypeError(`Unknown Assertion kind: ${node.kind}`);
     }
