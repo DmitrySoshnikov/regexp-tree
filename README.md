@@ -1209,4 +1209,71 @@ A node is similar, just `negative` flag is added:
 
 ###### Lookbehind assertions
 
-_Lookbehind_ assertions are not yet supported (since the grammar is based on ECMAScript regular expressions which don't support lookbehind assertions), however the support can be added later.
+> NOTE: _Lookbehind assertions_ are not yet supported by JavaScript RegExp. It is an ECMAScript [proposal](https://tc39.github.io/proposal-regexp-lookbehind/) which is at stage 3 at the moment.
+
+These assertions check whether a pattern is _preceded_ (or not preceded for the negative assertion) by another pattern.
+
+###### Positive lookbehind assertion
+
+Matches `b` only if it's preceded by `a`:
+
+```
+(?<=a)b
+```
+
+A node:
+
+```js
+{
+  type: 'Alternative',
+  expressions: [
+    {
+      type: 'Assertion',
+      kind: 'Lookbehind',
+      assertion: {
+        type: 'Char',
+        value: 'a',
+        kind: 'simple'
+      }
+    },
+    {
+      type: 'Char',
+      value: 'b',
+      kind: 'simple'
+    },
+  ]
+}
+```
+
+###### Negative lookbehind assertion
+
+Matches `b` only if it's preceded by `a`:
+
+```
+(?<!a)b
+```
+
+A node:
+
+```js
+{
+  type: 'Alternative',
+  expressions: [
+    {
+      type: 'Assertion',
+      kind: 'Lookbehind',
+      negative: true,
+      assertion: {
+        type: 'Char',
+        value: 'a',
+        kind: 'simple'
+      }
+    },
+    {
+      type: 'Char',
+      value: 'b',
+      kind: 'simple'
+    },
+  ]
+}
+```

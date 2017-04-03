@@ -201,6 +201,64 @@ describe('basic', () => {
     });
   });
 
+  it('empty LB assertion', () => {
+    // Not using `re` helper here because lookbehind
+    // assertions are not yet implemented in JS.
+    expect(regexpTree.parse('/(?<=)/')).toEqual({
+      type: 'RegExp',
+      body: {
+        type: 'Assertion',
+        kind: 'Lookbehind',
+        assertion: null,
+      },
+      flags: '',
+    });
+
+    expect(regexpTree.parse('/(?<!)/')).toEqual({
+      type: 'RegExp',
+      body: {
+        type: 'Assertion',
+        kind: 'Lookbehind',
+        negative: true,
+        assertion: null,
+      },
+      flags: '',
+    });
+  });
+
+  it('non-empty LB assertion', () => {
+    // Not using `re` helper here because lookbehind
+    // assertions are not yet implemented in JS.
+    expect(re('/(?<=a)/')).toEqual({
+      type: 'RegExp',
+      body: {
+        type: 'Assertion',
+        kind: 'Lookbehind',
+        assertion: {
+          type: 'Char',
+          value: 'a',
+          kind: 'simple'
+        },
+      },
+      flags: '',
+    });
+
+    expect(regexpTree.parse('/(?<!a)/')).toEqual({
+      type: 'RegExp',
+      body: {
+        type: 'Assertion',
+        kind: 'Lookbehind',
+        negative: true,
+        assertion: {
+          type: 'Char',
+          value: 'a',
+          kind: 'simple'
+        },
+      },
+      flags: '',
+    });
+  });
+
   it('backreferences', () => {
     expect(re(/(a)\1/)).toEqual({
       type: 'RegExp',
@@ -369,7 +427,7 @@ describe('basic', () => {
       flags: 'gimuy',
     });
   });
-  
+
   it('hex escape', () => {
     expect(re(/\x33/)).toEqual({
       type: 'RegExp',

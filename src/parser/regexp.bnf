@@ -75,6 +75,9 @@ U                       [0-9a-fA-F]
 '(?='                   return 'POS_LA_ASSERT'
 '(?!'                   return 'NEG_LA_ASSERT'
 
+'(?<='                   return 'POS_LB_ASSERT'
+'(?<!'                   return 'NEG_LB_ASSERT'
+
 '(?:'                   return 'NON_CAPTURE_GROUP'
 
 '('                     return 'L_PAREN'
@@ -321,6 +324,23 @@ Assertion
     {
       $$ = {
         kind: 'Lookahead',
+        negative: true,
+        assertion: $2,
+      }
+    }
+
+  | POS_LB_ASSERT Disjunction R_PAREN
+    {
+      $$ = {
+        kind: 'Lookbehind',
+        assertion: $2,
+      }
+    }
+
+  | NEG_LB_ASSERT Disjunction R_PAREN
+    {
+      $$ = {
+        kind: 'Lookbehind',
         negative: true,
         assertion: $2,
       }
