@@ -1207,7 +1207,7 @@ A node is similar, just `negative` flag is added:
 }
 ```
 
-###### Lookbehind assertions
+##### Lookbehind assertions
 
 > NOTE: _Lookbehind assertions_ are not yet supported by JavaScript RegExp. It is an ECMAScript [proposal](https://tc39.github.io/proposal-regexp-lookbehind/) which is at stage 3 at the moment.
 
