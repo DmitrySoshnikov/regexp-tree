@@ -8,14 +8,10 @@
 
 const regexpTree = require('..');
 
-function re(regexp) {
-  return regexpTree.parse(regexp.toString());
-}
-
 function invalid(regexp, message) {
   try {
     regexpTree.parse(regexp);
-    expect(1).not.toBe(1); // unreachable
+    throw new Error('expected `parse` to throw');
   } catch (e) {
     expect(e).toBeInstanceOf(SyntaxError);
 
@@ -29,10 +25,8 @@ function valid(regexp) {
   expect(() => regexpTree.parse(regexp)).not.toThrow(SyntaxError);
 }
 
-const UT = 'Unexpected token:';
-
 function ut(message) {
-  return `${UT} ${message}`;
+  return `Unexpected token: ${message}`;
 }
 
 describe('test262', () => {
@@ -135,5 +129,9 @@ describe('test262', () => {
   it('invalid + 4', () => {
     // S15.10.1_A1_T9
     invalid('/+a/', ut(`"+" at 1:1`));
+  });
+
+  it('invalid unicode escape', () => {
+    invalid('/\\u{11FFFF}/u', 'Bad character escape');
   });
 });
