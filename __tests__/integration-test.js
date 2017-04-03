@@ -41,12 +41,12 @@ describe('regexp-tree', () => {
     const visited = [];
 
     regexpTree.traverse(ast, {
-      onRegExp(node) {
+      onRegExp({node}) {
         visited.push(node.type);
         expect(node.type).toBe('RegExp');
       },
 
-      onChar(node) {
+      onChar({node}) {
         visited.push(node.type);
         expect(node.type).toBe('Char');
         expect(node.value).toBe('a');

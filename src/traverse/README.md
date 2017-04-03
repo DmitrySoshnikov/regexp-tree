@@ -2,7 +2,7 @@
 
 Provides traversal API with _vistor_ pattern for regexp ASTs. See [the specification](https://github.com/DmitrySoshnikov/regexp-tree#ast-nodes-specification) for AST nodes format.
 
-Once a regular expression is parsed, it is possible to handle needed nodes by using traversal API:
+Once a regular expression is parsed, it is possible to handle needed nodes by using traversal API. Handlers receive an instance of `NodePath` class, which encapsulates `node` itself, its `parent` node, `property`, and `index` (in case if a node is a part of a collection).
 
 ```js
 const regexpTree = require('regexp-tree');
@@ -15,7 +15,7 @@ regexpTree.traverse(ast, {
 
   // Handle "Quantifier" node type,
   // transforming `{1,}` quantifier to `+`.
-  onQuantifier(node) {
+  onQuantifier({node}) {
     // {1,} -> +
     if (
       node.kind === 'Range' &&

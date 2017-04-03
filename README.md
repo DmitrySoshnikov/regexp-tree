@@ -183,7 +183,7 @@ const parsed = regexpTree
 
 ### Using traversal API
 
-The [traverse](https://github.com/DmitrySoshnikov/regexp-tree/tree/master/src/traverse) module allows handling needed AST nodes using _visitor_ pattern. In Node the module is exposed as `regexpTree.traverse` method.
+The [traverse](https://github.com/DmitrySoshnikov/regexp-tree/tree/master/src/traverse) module allows handling needed AST nodes using _visitor_ pattern. In Node the module is exposed as `regexpTree.traverse` method. Handlers receive an instance of `NodePath` class, which encapsulates `node` itself, its `parent` node, `property`, and `index` (in case if a node is a part of a collection).
 
 Example:
 
@@ -198,7 +198,7 @@ regexpTree.traverse(ast, {
 
   // Handle "Quantifier" node type,
   // transforming `{1,}` quantifier to `+`.
-  onQuantifier(node) {
+  onQuantifier({node}) {
     // {1,} -> +
     if (
       node.kind === 'Range' &&
