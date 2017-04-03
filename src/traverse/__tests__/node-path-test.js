@@ -12,21 +12,52 @@ describe('NodePath', () => {
     const ast = parser.parse('/a/');
     const node = ast.body;
 
-    const regexpNodePath = new NodePath(ast);
+    const regexpPath = new NodePath(ast);
 
-    expect(regexpNodePath.node).toBe(ast);
-    expect(regexpNodePath.parent).toBe(null);
-    expect(regexpNodePath.parentPath).toBe(null);
-    expect(regexpNodePath.property).toBe(null);
-    expect(regexpNodePath.index).toBe(null);
+    expect(regexpPath.node).toBe(ast);
+    expect(regexpPath.parent).toBe(null);
+    expect(regexpPath.parentPath).toBe(null);
+    expect(regexpPath.property).toBe(null);
+    expect(regexpPath.index).toBe(null);
 
-    const charNodePath = new NodePath(node, regexpNodePath, 'body');
+    const charPath = new NodePath(node, regexpPath, 'body');
 
-    expect(charNodePath.node).toBe(node);
-    expect(charNodePath.parent).toBe(ast);
-    expect(charNodePath.parentPath).toBe(regexpNodePath);
-    expect(charNodePath.property).toBe('body');
-    expect(charNodePath.index).toBe(null);
+    expect(charPath.node).toBe(node);
+    expect(charPath.parent).toBe(ast);
+    expect(charPath.parentPath).toBe(regexpPath);
+    expect(charPath.property).toBe('body');
+    expect(charPath.index).toBe(null);
+  });
+
+  it('remove a node', () => {
+    const ast = parser.parse('/[ab]/');
+
+    const bCharPath = new NodePath(
+      ast.body.expressions[1],
+      new NodePath(ast.body),
+      'expressions',
+      1,
+    );
+
+    bCharPath.remove();
+
+    expect(bCharPath.node).toBe(null);
+
+    expect(ast).toEqual({
+      type: 'RegExp',
+      body: {
+        type: 'CharacterClass',
+        expressions: [
+          {
+            type: 'Char',
+            value: 'a',
+            kind: 'simple',
+          },
+          // No 'b' char.
+        ]
+      },
+      flags: '',
+    });
   });
 
 });

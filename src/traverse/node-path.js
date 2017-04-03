@@ -36,7 +36,7 @@ module.exports = class NodePath {
   /**
    * Removes a node.
    */
-  removeNode() {
+  remove() {
     this.node = null;
 
     if (!this.parent) {
@@ -56,7 +56,7 @@ module.exports = class NodePath {
   /**
    * Replaces a node with the passed one.
    */
-  replaceNode(newNode) {
+  replace(newNode) {
     this.node = newNode;
 
     if (this.parent) {
