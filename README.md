@@ -245,8 +245,8 @@ const re = regexpTree.transform('/[a-z]{1,}/i', {
   },
 });
 
-console.log(re.toString()); '/[a-z]+/i'
-console.log(re.toRegExp()); /[a-z]+/i
+console.log(re.toString()); // '/[a-z]+/i'
+console.log(re.toRegExp()); // /[a-z]+/i
 console.log(re.getAST()); // AST for /[a-z]+/i
 ```
 
