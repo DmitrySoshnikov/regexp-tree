@@ -275,6 +275,7 @@ Below are the AST node types for different regular expressions patterns:
 - [Disjunction](#disjunction)
 - [Groups](#groups)
   - [Capturing group](#capturing-group)
+  - [Named capturing group](#named-capturing-group)
   - [Non-capturing group](#non-capturing-group)
   - [Backreferences](#backreferences)
 - [Quantifiers](#quantifiers)
@@ -294,6 +295,8 @@ Below are the AST node types for different regular expressions patterns:
     - [Positive lookahead assertions](#positive-lookahead-assertions)
     - [Negative lookahead assertions](#negative-lookahead-assertions)
   - [Lookbehind assertions](#lookbehind-assertions)
+    - [Positive lookbehind assertions](#positive-lookbehind-assertions)
+    - [Negative lookbehind assertions](#negative-lookbehind-assertions)
 
 #### Char
 
@@ -711,6 +714,39 @@ Another example:
 (5|[a-z])
 ```
 
+##### Named capturing group
+
+> NOTE: _Named capturing groups_ are not yet supported by JavaScript RegExp. It is an ECMAScript [proposal](https://tc39.github.io/proposal-regexp-named-groups/) which is at stage 3 at the moment.
+
+A capturing group can be given a name using the `(?<name>...)` syntax, for any identifier `name`.
+
+For example, a regular expressions for a date:
+
+```js
+/(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2})/u
+```
+
+For the group:
+
+```js
+(?<foo>x)
+```
+
+We have the following node (the `name` property with value `foo` is added):
+
+```js
+{
+  type: 'Group',
+  capturing: true,
+  name: 'foo',
+  expression: {
+    type: 'Char',
+    value: 'x',
+    kind: 'simple'
+  }
+}
+```
+
 ##### Non-capturing group
 
 Sometimes we don't need to actually capture the matched string from a group. In this case we can use a _non-capturing_ group:
@@ -757,7 +793,7 @@ The same node, the `capturing` flag is `false`:
 
 ##### Backreferences
 
-A captured group can be referenced in the pattern using notation of an escaped group number.
+A [capturing group](#capturing-group) can be referenced in the pattern using notation of an escaped group number.
 
 Matches `abab` string:
 
@@ -792,7 +828,49 @@ A node:
     },
     {
       type: 'Backreference',
+      kind: 'number',
+      number: 1,
       reference: 1,
+    }
+  ]
+}
+```
+
+A [named capturing group](#named-capturing-group) can be accessed using `\k<name>` pattern, and also using a numbered reference.
+
+Matches `www`:
+
+```js
+(?<foo>w)\k<foo>\1
+```
+
+A node:
+
+```js
+{
+  type: 'Alternative',
+  expressions: [
+    {
+      type: 'Group',
+      capturing: true,
+      name: 'foo',
+      expression: {
+        type: 'Char',
+        value: 'w',
+        kind: 'simple'
+      }
+    },
+    {
+      type: 'Backreference',
+      kind: 'name',
+      number: 1,
+      reference: 'foo'
+    },
+    {
+      type: 'Backreference',
+      kind: 'number',
+      number: 1,
+      reference: 1
     }
   ]
 }
