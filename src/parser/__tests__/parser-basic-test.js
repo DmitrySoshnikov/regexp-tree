@@ -370,6 +370,63 @@ describe('basic', () => {
     });
   });
 
+  it('non-named-backreferences with unicode', () => {
+    // Just a list of chars.
+    expect(re(/\k<ab\u003B\u{003B}c>/)).toEqual({
+      type: 'RegExp',
+      body: {
+        type: 'Alternative',
+        expressions: [
+          {
+            type: 'Char',
+            value: 'k',
+            kind: 'simple',
+            escaped: true,
+          },
+          {
+            type: 'Char',
+            value: '<',
+            kind: 'simple',
+          },
+          {
+            type: 'Char',
+            value: 'a',
+            kind: 'simple',
+          },
+          {
+            type: 'Char',
+            value: 'b',
+            kind: 'simple',
+          },
+          {
+            type: 'Char',
+            value: '\\u003B',
+            kind: 'unicode',
+            symbol: String.fromCodePoint(0x003B),
+          },
+          {
+            type: 'Char',
+            value: '\\u{003B}',
+            kind: 'unicode',
+            symbol: String.fromCodePoint(0x003B),
+          },
+          {
+            type: 'Char',
+            value: 'c',
+            kind: 'simple',
+          },
+          {
+            type: 'Char',
+            value: '>',
+            kind: 'simple',
+          },
+        ]
+      },
+      flags: ''
+    });
+
+  });
+
   it('non-backreferences', () => {
     expect(re(/(?:a)\1\k<z>/)).toEqual({
       type: 'RegExp',

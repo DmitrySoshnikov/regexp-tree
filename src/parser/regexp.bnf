@@ -223,7 +223,7 @@ function GroupRefOrDecChar(text, textLoc) {
 
 /**
  * Extracts from `\k<foo>` pattern either a backreference
- * for a named capturing group (if it presents), or parses it
+ * to a named capturing group (if it presents), or parses it
  * as a list of char: `\k`, `<`, `f`, etc.
  */
 function NamedGroupRefOrChars(text, textLoc) {
@@ -238,36 +238,63 @@ function NamedGroupRefOrChars(text, textLoc) {
     }, textLoc);
   }
 
-  // Else `\k<foo>` should be parsed as a list of `Char`s:
+  // Else `\k<foo>` should be parsed as a list of `Char`s.
+  // This is really a 0.01% edge case, but we should handle it.
 
   let startOffset = null;
 
   if (textLoc) {
-    startOffset = textLoc.startOffset + 1;
+    startOffset = textLoc.startOffset;
   }
 
-  const chars = text
-    .split('')
-    .slice(1)
-    .map(c => {
-      let loc = null;
+  const charRe = /^[\w$<>]/;
+  const uRe = /^\\u[0-9a-fA-F]{4}/;
+  const ucpRe = /^\\u\{[0-9a-fA-F]{1,}\}/;
+  let loc;
 
+  const chars = [
+    // Init to first \k, taking 2 symbols.
+    Char(
+      text.slice(1, 2),
+      'simple',
+      startOffset
+        ? {startOffset, endOffset: startOffset += 2}
+        : null
+    ),
+  ];
+
+  // For \k
+  chars[0].escaped = true;
+
+  // Other symbols.
+  text = text.slice(2);
+
+  while (text.length > 0) {
+    let matched = null;
+
+    // Unicode, \u003B or \u{003B}
+    if ((matched = text.match(uRe)) || (matched = text.match(ucpRe))) {
+      if (startOffset) {
+        loc = {
+          startOffset,
+          endOffset: (startOffset += matched[0].length),
+        };
+      }
+      chars.push(Char(matched[0], 'unicode', loc));
+      text = text.slice(matched[0].length);
+    }
+
+    // Simple char.
+    else if ((matched = text.match(charRe))) {
       if (startOffset) {
         loc = {
           startOffset,
           endOffset: ++startOffset,
         };
       }
-
-      return Char(c, 'simple', loc);
-    })
-
-  // For \k
-  chars[0].escaped = true;
-
-  // For \k offset should be two chars.
-  if (chars[0].loc) {
-    chars[0].loc.start -= 1;
+      chars.push(Char(matched[0], 'simple', loc));
+      text = text.slice(1);
+    }
   }
 
   return chars;
