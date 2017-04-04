@@ -1325,7 +1325,7 @@ A node:
 
 ###### Negative lookbehind assertion
 
-Matches `b` only if it's preceded by `a`:
+Matches `b` only if it's _not_ preceded by `a`:
 
 ```
 (?<!a)b
