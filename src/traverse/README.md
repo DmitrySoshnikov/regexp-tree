@@ -15,7 +15,7 @@ regexpTree.traverse(ast, {
 
   // Handle "Quantifier" node type,
   // transforming `{1,}` quantifier to `+`.
-  onQuantifier({node}) {
+  Quantifier({node}) {
     // {1,} -> +
     if (
       node.kind === 'Range' &&

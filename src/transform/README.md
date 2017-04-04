@@ -13,7 +13,7 @@ const re = regexpTree.transform('/[a-z]{1,}/',
   api => ({
     // Handle "Quantifier" node type,
     // transforming `{1,}` quantifier to `+`.
-    onQuantifier(node) {
+    Quantifier(node) {
       // {1,} -> +
       if (
         node.type === 'Range' &&
