@@ -875,7 +875,7 @@ function NamedGroupRefOrChars(text, textLoc) {
   let startOffset = null;
 
   if (textLoc) {
-    startOffset = textLoc.startOffset;
+    startOffset = textLoc.startOffset + 1;
   }
 
   const chars = text
@@ -896,6 +896,11 @@ function NamedGroupRefOrChars(text, textLoc) {
 
   // For \k
   chars[0].escaped = true;
+
+  // For \k offset should be two chars.
+  if (chars[0].loc) {
+    chars[0].loc.start -= 1;
+  }
 
   return chars;
 }
