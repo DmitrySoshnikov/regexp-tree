@@ -80,8 +80,24 @@ describe('generator-basic', () => {
     test(/(?:ab)/);
   });
 
+  it('named group', () => {
+    test('/(?<foo\\u003B\\u{003B}>bar)/');
+  });
+
+  it('empty named group', () => {
+    test('/(?<foo\\u003B\\u{003B}>)/');
+  });
+
   it('empty non-capturing group', () => {
     test(/(?:)/);
+  });
+
+  it('numeric backreference', () => {
+    test(/(a)\1/);
+  });
+
+  it('named backreference', () => {
+    test('/(?<foo\\u003B\\u{003B}>)\\k<foo\\u003B\\u{003B}>/');
   });
 
   it('basic-assertion', () => {

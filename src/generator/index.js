@@ -34,10 +34,27 @@ const generator = {
     const expression = gen(node.expression);
 
     if (node.capturing) {
+
+      // A named group.
+      if (node.name) {
+        return `(?<${node.name}>${expression})`;
+      }
+
       return `(${expression})`;
     }
 
     return `(?:${expression})`;
+  },
+
+  Backreference(node) {
+    switch (node.kind) {
+      case 'number':
+        return `\\${node.reference}`;
+      case 'name':
+        return `\\k<${node.reference}>`;
+      default:
+        throw new TypeError(`Unknown Backreference kind: ${node.kind}`);
+    }
   },
 
   Assertion(node) {
