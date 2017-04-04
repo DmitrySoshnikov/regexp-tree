@@ -106,6 +106,18 @@ describe('basic', () => {
       flags: '',
     });
 
+    // Not using `re` helper here because named groups are not yet implemented.
+    expect(regexpTree.parse('/(?<foo>)/')).toEqual({
+      type: 'RegExp',
+      body: {
+        type: 'Group',
+        name: 'foo',
+        capturing: true,
+        expression: null,
+      },
+      flags: '',
+    });
+
     expect(re(/(?:)/)).toEqual({
       type: 'RegExp',
       body: {
@@ -122,6 +134,22 @@ describe('basic', () => {
       type: 'RegExp',
       body: {
         type: 'Group',
+        capturing: true,
+        expression: {
+          type: 'Char',
+          value: 'a',
+          kind: 'simple'
+        },
+      },
+      flags: '',
+    });
+
+    // Not using `re` helper here because named groups are not yet implemented.
+    expect(regexpTree.parse('/(?<foo>a)/')).toEqual({
+      type: 'RegExp',
+      body: {
+        type: 'Group',
+        name: 'foo',
         capturing: true,
         expression: {
           type: 'Char',
@@ -259,8 +287,8 @@ describe('basic', () => {
     });
   });
 
-  it('backreferences', () => {
-    expect(re(/(a)\1/)).toEqual({
+  it('numeric backreference', () => {
+    expect(re(/(a)\1\2/)).toEqual({
       type: 'RegExp',
       body: {
         type: 'Alternative',
@@ -276,7 +304,15 @@ describe('basic', () => {
           },
           {
             type: 'Backreference',
+            kind: 'number',
+            number: 1,
             reference: 1
+          },
+          {
+            type: 'Char',
+            value: '\\2',
+            kind: 'decimal',
+            symbol: String.fromCodePoint(2),
           }
         ]
       },
@@ -284,8 +320,58 @@ describe('basic', () => {
     });
   });
 
+  it('named backreference', () => {
+    // Not using `re` helper here because named groups are not yet implemented
+    expect(regexpTree.parse('/(?<x>y)\\k<x>\\k<z>/')).toEqual({
+      type: 'RegExp',
+      body: {
+        type: 'Alternative',
+        expressions: [
+          {
+            type: 'Group',
+            capturing: true,
+            name: 'x',
+            expression: {
+              type: 'Char',
+              value: 'y',
+              kind: 'simple'
+            }
+          },
+          {
+            type: 'Backreference',
+            kind: 'name',
+            number: 1,
+            reference: 'x'
+          },
+          {
+            type: 'Char',
+            value: 'k',
+            kind: 'simple',
+            escaped: true,
+          },
+          {
+            type: 'Char',
+            value: '<',
+            kind: 'simple',
+          },
+          {
+            type: 'Char',
+            value: 'z',
+            kind: 'simple',
+          },
+          {
+            type: 'Char',
+            value: '>',
+            kind: 'simple',
+          },
+        ]
+      },
+      flags: '',
+    });
+  });
+
   it('non-backreferences', () => {
-    expect(re(/(?:a)\1/)).toEqual({
+    expect(re(/(?:a)\1\k<z>/)).toEqual({
       type: 'RegExp',
       body: {
         type: 'Alternative',
@@ -304,7 +390,28 @@ describe('basic', () => {
             value: '\\1',
             symbol: String.fromCodePoint(1),
             kind: 'decimal'
-          }
+          },
+          {
+            type: 'Char',
+            value: 'k',
+            kind: 'simple',
+            escaped: true,
+          },
+          {
+            type: 'Char',
+            value: '<',
+            kind: 'simple',
+          },
+          {
+            type: 'Char',
+            value: 'z',
+            kind: 'simple',
+          },
+          {
+            type: 'Char',
+            value: '>',
+            kind: 'simple',
+          },
         ]
       },
       flags: '',
