@@ -10,6 +10,7 @@ Regular expressions processor (parser/traversal/generator) in JavaScript
 - [Usage from Node](#usage-from-node)
 - [Capturing locations](#capturing-locations)
 - [Using traversal API](#using-traversal-api)
+- [Using transform API](#using-transform-api)
 - [Using generator API](#using-generator-api)
 - [Creating RegExp objects](#creating-regexp-objects)
 - [AST nodes specification](#ast-nodes-specification)
@@ -196,18 +197,9 @@ const ast = regexpTree.parse('/[a-z]{1,}/');
 // Handle nodes.
 regexpTree.traverse(ast, {
 
-  // Handle "Quantifier" node type,
-  // transforming `{1,}` quantifier to `+`.
+  // Handle "Quantifier" node type.
   Quantifier({node}) {
-    // {1,} -> +
-    if (
-      node.kind === 'Range' &&
-      node.from === 1 &&
-      !node.to
-    ) {
-      node.kind = '+';
-      delete node.from;
-    }
+    ...
   },
 });
 
@@ -215,6 +207,47 @@ regexpTree.traverse(ast, {
 const re = regexpTree.generate(ast);
 
 console.log(re); // '/[a-z]+/'
+```
+
+### Using transform API
+
+While traverse module provides basic traversal API, which can be used for any purposes of AST handling, _transform_ module focuses mainly on _transformation_ of regular expressions.
+
+It accepts a regular expressions in different formats (string, an actual `RegExp` object, or an AST), applies a set of transformations, and retuns an instance of [TransformResult](https://github.com/DmitrySoshnikov/regexp-tree/blob/master/src/transform/README.md#transformresult). Handles receive as a parameter the same [NodePath](https://github.com/DmitrySoshnikov/regexp-tree/blob/master/src/traverse/README.md#nodepath-class) object used in traverse.
+
+Example:
+
+```js
+const regexpTree = require('regexp-tree');
+
+// Handle nodes.
+const re = regexpTree.transform('/[a-z]{1,}/i', {
+
+  /**
+   * Handle "Quantifier" node type,
+   * transforming `{1,}` quantifier to `+`.
+   */
+  Quantifier(path) {
+    const {node} = path;
+
+    // {1,} -> +
+    if (
+      node.type === 'Range' &&
+      node.from === 1 &&
+      !node.to
+    ) {
+      path.replace({
+        type: 'Quantifier',
+        kind: '+',
+        greedy: node.greedy,
+      });
+    }
+  },
+});
+
+console.log(re.toString()); '/[a-z]+/i'
+console.log(re.toRegExp()); /[a-z]+/i
+console.log(re.getAST()); // AST for /[a-z]+/i
 ```
 
 ### Using generator API

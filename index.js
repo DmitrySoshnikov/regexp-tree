@@ -4,7 +4,9 @@
  */
 
 'use strict';
+
 const parser = require('./src/parser');
+const transform = require('./src/transform');
 const traverse = require('./src/traverse');
 const generator = require('./src/generator');
 
@@ -16,6 +18,11 @@ const regexpTree = {
    * Parser module exposed.
    */
   parser,
+
+  /**
+   * `TransformResult` exposed.
+   */
+  TransformResult: transform.TransformResult,
 
   /**
    * Parses a regexp string, producing an AST.
@@ -31,7 +38,7 @@ const regexpTree = {
    * Traverses a RegExp AST.
    *
    * @param Object ast
-   * @param Object handler
+   * @param Object | Array<Object> handlers
    *
    * A `handler` is an object containing handler function for needed
    * node types. Example:
@@ -42,8 +49,24 @@ const regexpTree = {
    *     },
    *   });
    */
-  traverse(ast, handler) {
-    return traverse.traverse(ast, handler);
+  traverse(ast, handlers) {
+    return traverse.traverse(ast, handlers);
+  },
+
+  /**
+   * Transforms a regular expression.
+   *
+   * A regexp can be passed in different formats (string, regexp or AST),
+   * applying a set of transformations. It is a convenient wrapper
+   * on top of "parse-traverse-generate" tool chain.
+   *
+   * @param string | AST | RegExp regexp - a regular expression;
+   * @param Object | Array<Object> handlers - a list of handlers.
+   *
+   * @return TransformResult - a transformation result.
+   */
+  transform(regexp, handlers) {
+    return transform.transform(regexp, handlers);
   },
 
   /**

@@ -5,8 +5,7 @@
 
 'use strict';
 
-// TODO (https://github.com/DmitrySoshnikov/regexp-tree/issues/7)
-
+const generator = require('../generator');
 const parser = require('../parser');
 const traverse = require('../traverse');
 
@@ -14,41 +13,78 @@ const traverse = require('../traverse');
  * Transform result.
  */
 class TransformResult {
-  //
+  constructor(ast) {
+    this._ast = ast;
+    this._string = null;
+    this._regexp = null;
+  }
+
+  getAST() {
+    return this._ast;
+  }
+
+  toRegExp() {
+    if (!this._regexp) {
+      const body = generator.generate(this._ast.body);
+      this._regexp = new RegExp(body, this._ast.flags);
+    }
+    return this._regexp;
+  }
+
+  toString() {
+    if (!this._string) {
+      this._string = generator.generate(this._ast);
+    }
+    return this._string;
+  }
 }
 
 module.exports = {
   /**
+   * Expose `TransformResult`.
+   */
+  TransformResult,
+
+  /**
    * Transforms a regular expression applying a set of
    * transformation handlers.
    *
-   * @param mixed regexp:
+   * @param string | AST | RegExp:
    *
    *   a regular expression in different representations: a string,
    *   a RegExp object, or an AST.
    *
-   * @param Object|Array<Object>:
+   * @param Object | Array<Object>:
    *
-   *   a handler (or a list of handlers). Can be a simple plain handler object,
-   *   or a "plugin" to which different API methods are accessible. A "plugin"
-   *   is a function which receives as a parameter `TransformApi` object, and
-   *   which should return a plain handler.
+   *   a handler (or a list of handlers) from `traverse` API.
    *
    * @return TransformResult instance.
    *
    * Example:
    *
-   *   transform(/[a-z]/i, [
-   *     api => {
-   *       onChar(node) {
-   *         if (...) {
-   *           api.removeNode(node);
-   *         }
+   *   transform(/[a-z]/i, {
+   *     onChar(path) {
+   *       const {node} = path;
+   *
+   *       if (...) {
+   *         path.remove();
    *       }
-   *     },
-   *   ]);
+   *     }
+   *   });
    */
   transform(regexp, handlers) {
-    //
+    let ast = regexp;
+
+    if (regexp instanceof RegExp) {
+      regexp = `${regexp}`;
+    }
+
+    if (typeof regexp === 'string') {
+      ast = parser.parse(regexp);
+    }
+
+    traverse.traverse(ast, handlers);
+
+    return new TransformResult(ast);
   },
 };
