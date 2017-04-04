@@ -101,12 +101,11 @@ module.exports = {
           }
 
           // Per-node handler.
-          const handlerName = `on${node.type}`;
-          if (typeof handler[handlerName] === 'function') {
+          if (typeof handler[node.type] === 'function') {
             if (options.asNodes) {
-              handler[handlerName](node, parent, prop, index);
+              handler[node.type](node, parent, prop, index);
             } else {
-              handler[handlerName](nodePath);
+              handler[node.type](nodePath);
             }
           }
         }

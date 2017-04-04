@@ -15,14 +15,14 @@ describe('traverse-basic', () => {
 
     traverse.traverse(defaultAst, {
 
-      onRegExp({node, parent}) {
+      RegExp({node, parent}) {
         visited.push(node.type);
 
         expect(node.type).toBe('RegExp');
         expect(parent).toBe(null);
       },
 
-      onAlternative({node, parent}) {
+      Alternative({node, parent}) {
         visited.push(node.type);
 
         expect(node.type).toBe('Alternative');
@@ -33,7 +33,7 @@ describe('traverse-basic', () => {
         expect(node.expressions[1].type).toBe('Char');
       },
 
-      onRepetition({node, parent}) {
+      Repetition({node, parent}) {
         visited.push(node.type);
 
         expect(node.type).toBe('Repetition');
@@ -44,7 +44,7 @@ describe('traverse-basic', () => {
         expect(node.quantifier.kind).toBe('+');
       },
 
-      onCharacterClass({node, parent}) {
+      CharacterClass({node, parent}) {
         visited.push(node.type);
 
         expect(node.type).toBe('CharacterClass');
@@ -54,7 +54,7 @@ describe('traverse-basic', () => {
         expect(node.expressions[0].type).toBe('ClassRange');
       },
 
-      onClassRange({node, parent, property, index}) {
+      ClassRange({node, parent, property, index}) {
         visited.push(node.type);
 
         expect(node.type).toBe('ClassRange');
@@ -67,13 +67,13 @@ describe('traverse-basic', () => {
         expect(index).toBe(0);
       },
 
-      onQuantifier({node}) {
+      Quantifier({node}) {
         visited.push(node.type);
         expect(node.type).toBe('Quantifier');
         expect(node.kind).toBe('+');
       },
 
-      onChar({node, parent}) {
+      Char({node, parent}) {
         visited.push(node.type);
 
         expect(node.type).toBe('Char');
@@ -108,14 +108,14 @@ describe('traverse-basic', () => {
 
     traverse.traverse(defaultAst, {
 
-      onRegExp(node, parent) {
+      RegExp(node, parent) {
         visited.push(node.type);
 
         expect(node.type).toBe('RegExp');
         expect(parent).toBe(null);
       },
 
-      onAlternative(node, parent) {
+      Alternative(node, parent) {
         visited.push(node.type);
 
         expect(node.type).toBe('Alternative');
@@ -126,7 +126,7 @@ describe('traverse-basic', () => {
         expect(node.expressions[1].type).toBe('Char');
       },
 
-      onRepetition(node, parent) {
+      Repetition(node, parent) {
         visited.push(node.type);
 
         expect(node.type).toBe('Repetition');
@@ -137,7 +137,7 @@ describe('traverse-basic', () => {
         expect(node.quantifier.kind).toBe('+');
       },
 
-      onCharacterClass(node, parent) {
+      CharacterClass(node, parent) {
         visited.push(node.type);
 
         expect(node.type).toBe('CharacterClass');
@@ -147,7 +147,7 @@ describe('traverse-basic', () => {
         expect(node.expressions[0].type).toBe('ClassRange');
       },
 
-      onClassRange(node, parent, property, index) {
+      ClassRange(node, parent, property, index) {
         visited.push(node.type);
 
         expect(node.type).toBe('ClassRange');
@@ -160,13 +160,13 @@ describe('traverse-basic', () => {
         expect(index).toBe(0);
       },
 
-      onQuantifier(node) {
+      Quantifier(node) {
         visited.push(node.type);
         expect(node.type).toBe('Quantifier');
         expect(node.kind).toBe('+');
       },
 
-      onChar(node, parent) {
+      Char(node, parent) {
         visited.push(node.type);
 
         expect(node.type).toBe('Char');
@@ -197,7 +197,7 @@ describe('traverse-basic', () => {
     const ast = parser.parse('/a{1,}/');
 
     traverse.traverse(ast, {
-      onQuantifier({node}) {
+      Quantifier({node}) {
         if (node.kind === 'Range' && node.from == 1 && !node.to) {
           node.kind = '+';
           delete node.from;
@@ -216,7 +216,7 @@ describe('traverse-basic', () => {
     const ast = parser.parse('/a{1,}?/');
 
     traverse.traverse(ast, {
-      onQuantifier({node, parent, property}) {
+      Quantifier({node, parent, property}) {
         if (node.kind === 'Range' && node.from == 1 && !node.to) {
           parent[property] = {
             type: 'Quantifier',
@@ -242,12 +242,12 @@ describe('traverse-basic', () => {
     // Two handlers.
     const handlers = [
       {
-        onChar({node}) {
+        Char({node}) {
           node.value = 'b';
         },
       },
       {
-        onChar({node}) {
+        Char({node}) {
           node.value += 'c';
         },
       }
@@ -264,11 +264,11 @@ describe('traverse-basic', () => {
         return ast.flags.includes('s');
       },
 
-      onRegExp({node}) {
+      RegExp({node}) {
         node.flags = node.flags.replace('s', '');
       },
 
-      onChar(path) {
+      Char(path) {
         const {node} = path;
         if (node.kind === 'meta' && node.value === '.') {
           path.replace({
@@ -309,7 +309,7 @@ describe('traverse-basic', () => {
     // Should run (not `shouldRun` hook present).
     ast = parser.parse('/./');
     traverse.traverse(ast, {
-      onChar({node, parent, property}) {
+      Char({node, parent, property}) {
         if (node.kind === 'meta' && node.value === '.') {
           parent[property] = {
             type: 'CharacterClass',
