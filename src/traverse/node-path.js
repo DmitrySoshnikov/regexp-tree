@@ -44,7 +44,7 @@ module.exports = class NodePath {
     }
 
     // A node is in a collection.
-    if (this.index != null) {
+    if (this.index !== null) {
       this.parent[this.property].splice(this.index, 1);
       return;
     }
@@ -64,12 +64,39 @@ module.exports = class NodePath {
     }
 
     // A node is in a collection.
-    if (this.index != null) {
+    if (this.index !== null) {
       this.parent[this.property][this.index] = newNode;
       return;
     }
 
     // A simple node.
     this.parent[this.property] = newNode;
+  }
+
+  /**
+   * Updates a node inline.
+   */
+  update(nodeProps) {
+    Object.assign(this.node, nodeProps);
+  }
+
+  /**
+   * Returns previous sibling (only for nodes which are part of a collection).
+   */
+  getPreviousSiblingNode() {
+    if (!this.parent || this.index == null) {
+      return null;
+    }
+    return this.parent[this.property][this.index - 1] || null;
+  }
+
+  /**
+   * Returns previous sibling (only for nodes which are part of a collection).
+   */
+  getNextSiblingNode() {
+    if (!this.parent || this.index == null) {
+      return null;
+    }
+    return this.parent[this.property][this.index + 1] || null;
   }
 }

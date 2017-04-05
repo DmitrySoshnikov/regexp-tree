@@ -15,11 +15,17 @@ describe('regexp-tree', () => {
     // Traverse.
     expect(typeof regexpTree.traverse).toBe('function');
 
+    // Transform.
+    expect(typeof regexpTree.transform).toBe('function');
+
     // Generator.
     expect(typeof regexpTree.generate).toBe('function');
 
     // Create RegExp objects.
     expect(typeof regexpTree.toRegExp).toBe('function');
+
+    // Optimizer.
+    expect(typeof regexpTree.optimize).toBe('function');
   });
 
   it('operations', () => {
@@ -78,6 +84,10 @@ describe('regexp-tree', () => {
     const reStr = '/m/m';
     const ast = regexpTree.parse({toString: () => reStr});
     expect(regexpTree.generate(ast)).toBe(reStr);
+  });
+
+  it('optimizer', () => {
+    expect(regexpTree.optimize('/aa*/').toString()).toBe('/a+/');
   });
 
 });

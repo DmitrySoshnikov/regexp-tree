@@ -97,4 +97,34 @@ describe('NodePath', () => {
     });
   });
 
+  it('getPreviousSiblingNode', () => {
+    const ast = parser.parse('/ab/');
+
+    const aCharNode = ast.body.expressions[0];
+
+    const bCharPath = new NodePath(
+      ast.body.expressions[1],
+      new NodePath(ast.body),
+      'expressions',
+      1,
+    );
+
+    expect(bCharPath.getPreviousSiblingNode()).toBe(aCharNode);
+  });
+
+  it('getNextSiblingNode', () => {
+    const ast = parser.parse('/ab/');
+
+    const bCharNode = ast.body.expressions[1];
+
+    const aCharPath = new NodePath(
+      ast.body.expressions[0],
+      new NodePath(ast.body),
+      'expressions',
+      0,
+    );
+
+    expect(aCharPath.getNextSiblingNode()).toBe(bCharNode);
+  });
+
 });

@@ -5,4 +5,27 @@
 
 'use strict';
 
-// TODO (https://github.com/DmitrySoshnikov/regexp-tree/issues/21)
+const transform = require('../transform');
+const optimizationTransforms = require('./transforms');
+
+module.exports = {
+  /**
+   * Optimizer transforms a regular expression into an optimized version,
+   * replacing some sub-expressions with their idiomatic patterns.
+   *
+   * @param string | RegExp | AST - a regexp to optimize.
+   *
+   * @return TransformResult - an optimized regexp.
+   *
+   * Example:
+   *
+   *   /[a-zA-Z_0-9][a-zA-Z_0-9]*\e{1,}/
+   *
+   * Optimized to:
+   *
+   *   /\w+e+/
+   */
+  optimize(regexp) {
+    return transform.transform(regexp, optimizationTransforms);
+  },
+};

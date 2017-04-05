@@ -5,10 +5,11 @@
 
 'use strict';
 
+const generator = require('./src/generator');
+const optimizer = require('./src/optimizer');
 const parser = require('./src/parser');
 const transform = require('./src/transform');
 const traverse = require('./src/traverse');
-const generator = require('./src/generator');
 
 /**
  * An API object for RegExp processing (parsing/transform/generation).
@@ -98,10 +99,11 @@ const regexpTree = {
    * sub-expressions with their idiomatic patterns.
    *
    * @param string regexp
+   *
+   * @return TransformResult object
    */
   optimize(regexp) {
-    // TODO (https://github.com/DmitrySoshnikov/regexp-tree/issues/21)
-    throw new Error('`regexpTree.optimize` is not implemented yet.');
+    return optimizer.optimize(regexp);
   },
 };
 
