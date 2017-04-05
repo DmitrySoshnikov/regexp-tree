@@ -20,6 +20,10 @@ const generator = {
     return `/${gen(node.body)}/${node.flags}`;
   },
 
+  None(node) {
+    return '';
+  },
+
   Alternative(node) {
     return (node.expressions || [])
       .map(gen)
