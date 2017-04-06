@@ -4,6 +4,7 @@
  */
 
 const NodePath = require('../node-path');
+const generator = require('../../generator');
 const parser = require('../../parser');
 const traverse = require('..');
 
@@ -63,10 +64,10 @@ describe('NodePath', () => {
   });
 
   it('checks correct indices after removal', () => {
-    const ast = parser.parse('/abcd/');
+    const ast = parser.parse('/abcde/');
 
     traverse.traverse(ast, [
-      // First handler.
+      // First handler, removes current 'b', and further 'c'.
       {
         Char(path) {
           const {node, parent, property, index} = path;
@@ -76,9 +77,13 @@ describe('NodePath', () => {
             const aPath = path.getPreviousSibling();
             const cPath = path.getNextSibling();
             const dPath = cPath.getNextSibling();
+            const ePath = dPath.getNextSibling();
 
             // Remove 'b' itself.
             path.remove();
+
+            // Remove 'c' as well.
+            cPath.remove();
 
             // Check the index is rebuilt:
 
@@ -89,30 +94,34 @@ describe('NodePath', () => {
             // No b (was 1 before removal)
             expect(path.isRemoved()).toBe(true);
 
-            // c is now 1
-            expect(cPath.node.value).toBe('c');
-            expect(cPath.index).toBe(1);
+            // No c (was 2 before removal)
+            expect(cPath.isRemoved()).toBe(true);
 
-            // d, 2
+            // d is now 1
             expect(dPath.node.value).toBe('d');
-            expect(dPath.index).toBe(2);
+            expect(dPath.index).toBe(1);
+
+            // e is now 2
+            expect(ePath.node.value).toBe('e');
+            expect(ePath.index).toBe(2);
           }
         },
       },
 
-      // Second handler.
+      // Second handler, backward-removes 'a' being on last 'e'.
       {
-        // This handler is not called for 'b', since it was removed
-        // in the previous handler.
+        // This handler is not called for 'b', and 'c' since
+        // they were removed in the previous handler.
         Char(path) {
           const {node, parent, property, index} = path;
 
-          // Never can be 'b', since it was removed.
+          // Never can be 'b' or 'c', since they were removed.
           expect(path.value).not.toBe('b');
+          expect(path.value).not.toBe('c');
 
-          if (node.value === 'd') {
+          if (node.value === 'e') {
 
-            // Initially index of `d` is 2.
+            // Initially index of `e` is 2.
             expect(path.index).toBe(2);
 
             // Being on 'd', we remove one of the previous siblings, 'a':
@@ -120,8 +129,8 @@ describe('NodePath', () => {
             const aPath = path.getPreviousSibling().getPreviousSibling();
             expect(aPath.node.value).toBe('a');
 
-            const cPath = path.getPreviousSibling();
-            expect(cPath.node.value).toBe('c');
+            const dPath = path.getPreviousSibling();
+            expect(dPath.node.value).toBe('d');
 
             // Remove 'a'
             aPath.remove();
@@ -129,10 +138,10 @@ describe('NodePath', () => {
 
             // Check the index is rebuilt:
 
-            // c, 0
-            expect(cPath.index).toBe(0);
+            // d, 0
+            expect(dPath.index).toBe(0);
 
-            // d, 1 (index of `d` is changed from 2 to 1)
+            // e, 1 (index of `e` is changed from 2 to 1)
             expect(path.index).toBe(1);
 
             expect(path.getNextSibling()).toBe(null);
@@ -141,6 +150,8 @@ describe('NodePath', () => {
       }
     ]);
 
+    // '/abcde/' -> '/ae/', after 3 removals in 2 handlers.
+    expect(generator.generate(ast)).toBe('/de/');
   });
 
   it('replaces a node', () => {
