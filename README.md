@@ -25,6 +25,8 @@ npm install -g regexp-tree
 regexp-tree --help
 ```
 
+You can also [try it online](https://astexplorer.net/#/gist/4ea2b52f0e546af6fb14f9b2f5671c1c/39b55944da3e5782396ffa1fea3ba68d126cd394) using _AST Explorer_.
+
 ### Development
 
 1. Fork https://github.com/DmitrySoshnikov/regexp-tree repo
