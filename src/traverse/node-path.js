@@ -11,7 +11,7 @@
  * an index (in case if a node is part of a collection).
  * It also provides set of methods for AST manipulation.
  */
-module.exports = class NodePath {
+class NodePath {
   /**
    * NodePath constructor.
    *
@@ -39,6 +39,7 @@ module.exports = class NodePath {
   remove() {
     this.node = null;
 
+
     if (!this.parent) {
       return;
     }
@@ -46,11 +47,38 @@ module.exports = class NodePath {
     // A node is in a collection.
     if (this.index !== null) {
       this.parent[this.property].splice(this.index, 1);
+
+      // We should rebuild index of further node paths.
+      // Note: because of this, `remove` might be an expensive operation
+      // on long sequences.
+      const parentPath = NodePath.getForNode(this.parent);
+
+      for (let i = 0; i < this.parent[this.property].length; i++) {
+        const path = NodePath.getForNode(
+          this.parent[this.property][i],
+          parentPath,
+          this.property,
+          i
+        );
+        path.index = i;
+      }
+
+      this.index = null;
+      this.property = null;
+
       return;
     }
 
     // A simple node.
     delete this.parent[this.property];
+    this.property = null;
+  }
+
+  /**
+   * Whether the path was removed.
+   */
+  isRemoved() {
+    return this.node === null;
   }
 
   /**
@@ -81,22 +109,65 @@ module.exports = class NodePath {
   }
 
   /**
-   * Returns previous sibling (only for nodes which are part of a collection).
+   * Returns previous sibling.
    */
-  getPreviousSiblingNode() {
+  getPreviousSibling() {
     if (!this.parent || this.index == null) {
       return null;
     }
-    return this.parent[this.property][this.index - 1] || null;
+    return NodePath.getForNode(
+      this.parent[this.property][this.index - 1],
+      NodePath.getForNode(this.parent),
+      this.property,
+      this.index - 1
+    );
   }
 
   /**
-   * Returns previous sibling (only for nodes which are part of a collection).
+   * Returns next sibling.
    */
-  getNextSiblingNode() {
+  getNextSibling() {
     if (!this.parent || this.index == null) {
       return null;
     }
-    return this.parent[this.property][this.index + 1] || null;
+    return NodePath.getForNode(
+      this.parent[this.property][this.index + 1],
+      NodePath.getForNode(this.parent),
+      this.property,
+      this.index + 1
+    );
+  }
+
+  /**
+   * Returns a NodePath instance for a node.
+   *
+   * The same NodePath can be reused in several places, e.g.
+   * a parent node passed for all its children.
+   */
+  static getForNode(node, parentPath = null, prop = null, index = null) {
+    if (!node) {
+      return null;
+    }
+
+    if (!NodePath.registry.has(node)) {
+      NodePath.registry.set(
+        node,
+        new NodePath(node, parentPath, prop, index)
+      );
+    }
+
+    return NodePath.registry.get(node);
+  }
+
+  /**
+   * Initializes the NodePath registry. The registry is a map from
+   * a node to its NodePath instance.
+   */
+  static initRegistry() {
+    NodePath.registry = new Map();
   }
 }
+
+NodePath.initRegistry();
+
+module.exports = NodePath;

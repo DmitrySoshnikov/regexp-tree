@@ -8,18 +8,6 @@
 const astTraverse = require('ast-traverse');
 const NodePath = require('./node-path');
 
-// Helper function returning a node path
-// for a node, or creates one.
-function getNodePath(map, node, parentPath, prop, index) {
-  if (!node) {
-    return null;
-  }
-  if (!map.has(node)) {
-    map.set(node, new NodePath(node, parentPath, prop, index));
-  }
-  return map.get(node);
-}
-
 module.exports = {
   /**
    * Traverses an AST.
@@ -65,8 +53,7 @@ module.exports = {
       return handler.shouldRun(ast);
     });
 
-    // A map from a node to its `NodePath` instance.
-    const nodePathMap = new Map();
+    NodePath.initRegistry();
 
     // Handle actual nodes.
     astTraverse(ast, {
@@ -79,10 +66,9 @@ module.exports = {
         let nodePath;
 
         if (!options.asNodes) {
-          parentPath = getNodePath(nodePathMap, parent);
+          parentPath = NodePath.getForNode(parent);
 
-          nodePath = getNodePath(
-            nodePathMap,
+          nodePath = NodePath.getForNode(
             node,
             parentPath,
             prop,
@@ -96,7 +82,10 @@ module.exports = {
             if (options.asNodes) {
               handler['*'](node, parent, prop, index);
             } else {
-              handler['*'](nodePath);
+              // A path/node can be removed by some previous handler.
+              if (!nodePath.isRemoved()) {
+                handler['*'](nodePath);
+              }
             }
           }
 
@@ -105,7 +94,10 @@ module.exports = {
             if (options.asNodes) {
               handler[node.type](node, parent, prop, index);
             } else {
-              handler[node.type](nodePath);
+              // A path/node can be removed by some previous handler.
+              if (!nodePath.isRemoved()) {
+                handler[node.type](nodePath);
+              }
             }
           }
         }

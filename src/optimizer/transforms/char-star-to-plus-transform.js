@@ -21,11 +21,13 @@ module.exports = {
       return;
     }
 
-    const previousNode = path.getPreviousSiblingNode();
+    const previousSibling = path.getPreviousSibling();
 
-    if (!previousNode) {
+    if (!previousSibling) {
       return;
     }
+
+    const previousNode = previousSibling.node;
 
     // TODO: expose source text of nodes instead of ugly `JSON.stringify` here
     // https://github.com/DmitrySoshnikov/regexp-tree/issues/36
@@ -37,7 +39,7 @@ module.exports = {
     }
 
     // Remove previous symbol. TODO, operate on NodePath for previous siblings.
-    parent[path.property].splice(path.index - 1, 1);
+    previousSibling.remove();
 
     // Change quantifier.
     node.quantifier.kind = '+';

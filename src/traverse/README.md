@@ -50,5 +50,5 @@ Methods of the `NodePath`:
 * `remove()` - removes a node;
 * `replace(node: Object)` - replaces a node with the passed one;
 * `update(nodeProps: Object)` - updates a node inline;
-* `getPreviousSiblingNode()` - returns previous sibling node;
-* `getNextSiblingNode()` - returns next sibling node;
+* `getPreviousSibling()` - returns previous sibling path;
+* `getNextSibling()` - returns next sibling path;
