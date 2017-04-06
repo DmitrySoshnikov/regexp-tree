@@ -30,9 +30,10 @@ You can also [try it online](https://astexplorer.net/#/gist/4ea2b52f0e546af6fb14
 ### Development
 
 1. Fork https://github.com/DmitrySoshnikov/regexp-tree repo
-2. Make your changes
-3. Make sure `npm test` still passes (add new tests if needed)
-4. Submit a PR
+2. If there is an actual issue from the [issues](https://github.com/DmitrySoshnikov/regexp-tree/issues) list you'd like to work on, feel free to assing it yourself, or comment on it to avoid collisions (open a new issue if needed)
+3. Make your changes
+4. Make sure `npm test` still passes (add new tests if needed)
+5. Submit a PR
 
 The _regexp-tree_ parser is implemented as an automatic LR parser using [Syntax](https://www.npmjs.com/package/syntax-cli) tool. The parser module is generated from the [regexp grammar](https://github.com/DmitrySoshnikov/regexp-tree/blob/master/src/parser/regexp.bnf), which is based on the regular expressions grammar used in ECMAScript.
 
