@@ -23,6 +23,9 @@
     "ECMAScript"
   ],
   "author": "Dmitry Soshnikov",
+  "engines": {
+    "node": ">=6"
+  },
   "dependencies": {
     "ast-traverse": "^0.1.1",
     "nomnom": "^1.8.1"
