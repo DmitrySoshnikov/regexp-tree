@@ -36,7 +36,7 @@ describe('NodePath', () => {
       ast.body.expressions[1],
       new NodePath(ast.body),
       'expressions',
-      1,
+      1
     );
 
     bCharPath.remove();
@@ -67,7 +67,7 @@ describe('NodePath', () => {
       ast.body.expressions[1],
       new NodePath(ast.body),
       'expressions',
-      1,
+      1
     );
 
     const cNode = {
@@ -106,7 +106,7 @@ describe('NodePath', () => {
       ast.body.expressions[1],
       new NodePath(ast.body),
       'expressions',
-      1,
+      1
     );
 
     expect(bCharPath.getPreviousSiblingNode()).toBe(aCharNode);
@@ -121,7 +121,7 @@ describe('NodePath', () => {
       ast.body.expressions[0],
       new NodePath(ast.body),
       'expressions',
-      0,
+      0
     );
 
     expect(aCharPath.getNextSiblingNode()).toBe(bCharNode);
