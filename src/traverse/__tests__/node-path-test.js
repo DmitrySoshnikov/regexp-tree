@@ -150,7 +150,7 @@ describe('NodePath', () => {
       ast.body.expressions[1],
       new NodePath(ast.body),
       'expressions',
-      1,
+      1
     );
 
     const cNode = {

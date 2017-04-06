@@ -164,7 +164,10 @@ class NodePath {
    * a node to its NodePath instance.
    */
   static initRegistry() {
-    NodePath.registry = new Map();
+    if (!NodePath.registry) {
+      NodePath.registry = new Map();
+    }
+    NodePath.registry.clear();
   }
 }
 
