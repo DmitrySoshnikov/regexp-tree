@@ -170,6 +170,42 @@ describe('NodePath', () => {
     expect(generator.generate(ast)).toBe('/ad/');
   });
 
+  it('several backward/forward removes', () => {
+    const ast = parser.parse('/abcdefghi/');
+
+    // '/abcdefghi/' -> '/bfi/'
+    traverse.traverse(ast, {
+      Char(path) {
+        const {node, parent, property, index} = path;
+
+        // From 'd' remove previous 'a', 'c', 'd' (itself), and 'e'.
+        // After this it is: bfghi
+        if (node.value === 'd') {
+          const cPath = path.getPreviousSibling();
+          const aPath = cPath.getPreviousSibling().getPreviousSibling();
+          const ePath = path.getNextSibling();
+
+          aPath.remove();
+          cPath.remove();
+          path.remove();
+          ePath.remove();
+        }
+
+        // From 'f' remove two next 'g', and 'h'
+        // After this it is: bfi
+        if (node.value === 'f') {
+          const gPath = path.getNextSibling();
+          const hPath = gPath.getNextSibling();
+
+          gPath.remove();
+          hPath.remove();
+        }
+      }
+    });
+
+    expect(generator.generate(ast)).toBe('/bfi/');
+  });
+
   it('replaces a node', () => {
     const ast = parser.parse('/[ab]/');
 
