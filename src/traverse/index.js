@@ -5,8 +5,93 @@
 
 'use strict';
 
-const astTraverse = require('ast-traverse');
 const NodePath = require('./node-path');
+
+/**
+ * Does an actual AST traversal, using visitor pattern,
+ * and calling set of callbacks.
+ *
+ * Based on https://github.com/olov/ast-traverse
+ *
+ * Expects AST in Mozilla Parser API: nodes which are supposed to be
+ * handled should have `type` property.
+ *
+ * @param Object root - a root node to start traversal from.
+ *
+ * @param Object options - an object with set of callbacks:
+ *
+ *   - `pre(node, parent, prop, index)` - a hook called on node enter
+ *   - `post`(node, parent, prop, index) - a hook called on node exit
+ *   - `skipProperty(prop)` - a predicated whether a property should be skipped
+ */
+function astTraverse(root, options = {}) {
+  const pre = options.pre;
+  const post = options.post;
+  const skipProperty = options.skipProperty;
+
+  function visit(node, parent, prop, idx) {
+    if (!node || typeof node.type !== 'string') {
+      return;
+    }
+
+    let res = undefined;
+    if (pre) {
+      res = pre(node, parent, prop, idx);
+    }
+
+    if (res !== false) {
+      for (let prop in node) if (node.hasOwnProperty(prop)) {
+        if (skipProperty ? skipProperty(prop, node) : prop[0] === '$') {
+          continue;
+        }
+
+        const child = node[prop];
+
+        // Collection node.
+        //
+        // NOTE: a node (or several nodes) can be removed during traversal.
+        //
+        // `NodePath` tracks `NodePath.removedIndices`, which we handle here.
+        // If a removed index is less or equal to the current one, we
+        // should decrease the current index. If a removed index is greater
+        // then the current one, no action should be taken, since the collection
+        // is already live-updated.
+        //
+        if (Array.isArray(child)) {
+          let i = 0;
+
+          while (i < child.length && i < 10) {
+            visit(child[i], node, prop, i);
+
+            // After running the handler, check the
+            // `NodePath.removedIndices`, and adjust the `i`.
+            if (NodePath.removedIndices.length > 0) {
+              NodePath.removedIndices.forEach(index => {
+                if (index <= i) {
+                  i--;
+                }
+              });
+              NodePath.resetRemovedIndices();
+            }
+
+            i++;
+          }
+        }
+
+        // Simple node.
+        else {
+          visit(child, node, prop);
+        }
+      }
+    }
+
+    if (post) {
+      post(node, parent, prop, idx);
+    }
+  }
+
+  visit(root, null);
+}
 
 module.exports = {
   /**

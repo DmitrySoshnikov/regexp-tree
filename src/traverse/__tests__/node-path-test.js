@@ -154,6 +154,22 @@ describe('NodePath', () => {
     expect(generator.generate(ast)).toBe('/de/');
   });
 
+  it('conditional remove', () => {
+    const ast = parser.parse('/abcd/');
+
+    // '/abcd/' -> '/ad/'
+    traverse.traverse(ast, {
+      Char(path) {
+        const {node, parent, property, index} = path;
+        if (node.value === 'b' || node.value === 'c') {
+          path.remove();
+        }
+      }
+    });
+
+    expect(generator.generate(ast)).toBe('/ad/');
+  });
+
   it('replaces a node', () => {
     const ast = parser.parse('/[ab]/');
 

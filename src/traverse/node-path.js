@@ -48,6 +48,10 @@ class NodePath {
     if (this.index !== null) {
       this.parent[this.property].splice(this.index, 1);
 
+      // Record the removed index, so the traversal can
+      // adjust current index.
+      NodePath.removedIndices.push(this.index);
+
       // We should rebuild index of further node paths.
       // Note: because of this, `remove` might be an expensive operation
       // on long sequences.
@@ -169,8 +173,29 @@ class NodePath {
     }
     NodePath.registry.clear();
   }
+
+  /**
+   * Resets removed indices collection. Traversal uses it to track,
+   * and adjust current index.
+   */
+  static resetRemovedIndices() {
+    NodePath.removedIndices.length = 0;
+  }
 }
 
 NodePath.initRegistry();
+
+/**
+ * Stores removed indices during a handler run. This collection is
+ * reset before each handler call.
+ */
+NodePath.removedIndices = [];
+
+/**
+ * Stores inserted indices during a handler run. This collection is
+ * reset before each handler call.
+ * TODO: implement insertion API.
+ */
+NodePath.insertedIndices = [];
 
 module.exports = NodePath;
