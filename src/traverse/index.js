@@ -60,7 +60,7 @@ function astTraverse(root, options = {}) {
         if (Array.isArray(child)) {
           let i = 0;
 
-          while (i < child.length && i < 10) {
+          while (i < child.length) {
             visit(child[i], node, prop, i);
 
             // After running the handler, check the
