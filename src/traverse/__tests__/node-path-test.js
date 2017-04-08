@@ -281,6 +281,44 @@ describe('NodePath', () => {
     );
 
     expect(aCharPath.getNextSibling()).toBe(bCharPath);
+
+  });
+
+  it('getParent/getChild', () => {
+    const ast = parser.parse('/a(bc)d/');
+
+    //console.log(JSON.stringify(ast, null, '  '));
+
+    bodyPath = NodePath.getForNode(ast.body);
+    groupPath = bodyPath.getChild(1);
+
+    expect(groupPath.node.type).toBe("Group");
+    expect(groupPath.getParent()).toBe(bodyPath);
+
+    alterPath = groupPath.getChild();
+
+    expect(alterPath.node.type).toBe("Alternative");
+    expect(alterPath.getParent()).toBe(groupPath);
+
+    bCharPath = alterPath.getChild(0);
+    cCharPath = alterPath.getChild(1);
+
+    expect(bCharPath.getParent()).toBe(alterPath);
+    expect(cCharPath.getParent()).toBe(alterPath);
+
+    expect(bCharPath.getParent().getParent()).toBe(groupPath);
+    expect(cCharPath.getParent().getParent()).toBe(groupPath);
+
+    expect(groupPath.getChild()).toBe(alterPath);
+    expect(groupPath.getChild(0)).toBe(alterPath);
+    expect(groupPath.getChild(1)).toBe(null);
+
+    expect(groupPath.getChild().getChild(0)).toBe(bCharPath);
+    expect(groupPath.getChild().getChild(1)).toBe(cCharPath);
+
+    expect(groupPath.getChild()).toBe(alterPath);
+    expect(groupPath.getChild(0)).toBe(alterPath);
+    expect(groupPath.getChild(1)).toBe(null);
   });
 
 });
