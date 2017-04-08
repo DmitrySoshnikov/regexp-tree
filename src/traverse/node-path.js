@@ -113,6 +113,16 @@ class NodePath {
   }
 
   /**
+   * Returns parent.
+   */
+  getParent() {
+    if (!this.parent) {
+      return null;
+    }
+    return NodePath.getForNode(this.parent);
+  }
+
+  /**
    * Returns previous sibling.
    */
   getPreviousSibling() {
