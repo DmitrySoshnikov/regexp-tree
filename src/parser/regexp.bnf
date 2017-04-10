@@ -302,11 +302,9 @@ function NamedGroupRefOrChars(text, textLoc) {
 
 /**
  * Creates an AST node with a location.
- *
- * NOTE: The `shouldCaptureLocations` meta variable is defined by Syntax tool.
  */
 function Node(node, loc) {
-  if (shouldCaptureLocations) {
+  if (yy.options.captureLocations) {
     node.loc = {
       start: loc.startOffset,
       end: loc.endOffset,
@@ -319,7 +317,7 @@ function Node(node, loc) {
  * Creates location node.
  */
 function loc(start, end) {
-  if (!shouldCaptureLocations) {
+  if (!yy.options.captureLocations) {
     return null;
   }
 
