@@ -29,10 +29,20 @@ const regexpTree = {
    * Parses a regexp string, producing an AST.
    *
    * @param string regexp
+   *
+   *   a regular expression in different formats: string, AST, RegExp.
+   *
+   * @param Object options
+   *
+   *   parsing options for this parse call. Default are:
+   *
+   *     - captureLocations: boolean
+   *     - any other custom options
+   *
    * @return Object AST
    */
-  parse(regexp) {
-    return parser.parse(`${regexp}`);
+  parse(regexp, options) {
+    return parser.parse(`${regexp}`, options);
   },
 
   /**
