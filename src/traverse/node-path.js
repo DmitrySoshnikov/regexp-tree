@@ -34,9 +34,62 @@ class NodePath {
   }
 
   /**
-   * Inserts a node into a collection. By default child nodes
-   * are supposed to by under `expressions` property. An explicit
-   * property can be passed.
+   * sets a node into a children collection or the single child.
+   * By default child nodes are supposed to be under `expressions` property.
+   * An explicit property can be passed.
+   *
+   * @param Object node - a node to set into a collection or as single child
+   * @param number index - index at which to set
+   * @param string property - name of the collection or single property
+   */
+  setChild(node, index = null, property = null) {
+
+    if (index != null) {
+      if (!property) property = "expressions";
+      if (!this.node.hasOwnProperty(property)) {
+        throw new Error(
+          `Node of type ${this.node.type} doesn't have "${property}" collection.`
+        );
+      }
+      this.node[property][index] = node;
+      return NodePath.getForNode(node, this, property, index);
+    } else {
+      if (!property) property = "expression";
+      if (!this.node.hasOwnProperty(property)) {
+        throw new Error(
+          `Node of type ${this.node.type} doesn't have "${property}" collection.`
+        );
+      }
+      this.node[property] = node;
+      return NodePath.getForNode(node, this, property);
+    }
+  }
+
+  /**
+   * sets a node into a children collection or the single child.
+   * By default child nodes are supposed to be under `expressions` property.
+   * An explicit property can be passed.
+   *
+   * @param Object node - a node to set into a collection or as single child
+   * @param number index - index at which to set
+   * @param string property - name of the collection or single property
+   */
+  appendChild(node, property = null) {
+
+    if (!property) property = "expressions";
+    if (!this.node.hasOwnProperty(property)) {
+      throw new Error(
+        `Node of type ${this.node.type} doesn't have "${property}" collection.`
+      );
+    }
+    const end = this.node[property].length;
+    return this.setChild(node, end, property);
+  }
+
+  /**
+   * Inserts a node into a collection.
+   * By default child nodes are supposed to be under `expressions` property.
+   * An explicit property can be passed.
    *
    * @param Object node - a node to insert into a collection
    * @param number index - index at which to insert
@@ -247,7 +300,11 @@ class NodePath {
       );
     }
 
-    return NodePath.registry.get(node);
+    let path = NodePath.registry.get(node);
+    if (parentPath != null) path.parentPath = parentPath;
+    if (prop       != null) path.property   = prop;
+    if (index      != null) path.index      = index;
+    return path;
   }
 
   /**

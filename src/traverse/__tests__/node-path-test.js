@@ -309,12 +309,66 @@ describe('NodePath', () => {
             value: 'a',
             kind: 'simple',
           },
-          // 'a' replaced with 'c'
+          // 'b' replaced with 'c'
           cNode
         ]
       },
       flags: '',
     });
+  });
+
+  it('sets a child node to two new nested nodes', () => {
+    const ast = parser.parse('/ab/');
+
+    const bodyPath = new NodePath(ast.body);
+    const bCharPath = bodyPath.getChild(1);
+
+    const cNode = {
+      type: 'Char',
+      value: 'c',
+      kind: 'simple',
+    };
+
+    const groupNode = {
+      type: "Group",
+      capturing: true,
+      expression: null
+    };
+
+    const alterNode = {
+      type: "Alternative",
+      expressions: []
+    };
+
+    bCharPath.replace(groupNode);
+    expect(bCharPath.node).toEqual(groupNode);
+
+    const groupPath = bodyPath.getChild(1);
+
+    groupPath.setChild(cNode);
+
+    const cPath = NodePath.getForNode(cNode);
+    expect(cPath.parentPath).toBe(groupPath);
+    const cPath2 = groupPath.getChild();
+    expect(cPath2).toBe(cPath);
+    expect(cPath2.parentPath).toBe(groupPath);
+
+    const alterPath = groupPath.setChild(alterNode);
+    alterPath.appendChild(cNode);
+
+    const dNode = {
+      type: 'Char',
+      value: 'd',
+      kind: 'simple',
+    };
+    alterPath.appendChild(dNode);
+
+    const dPath = NodePath.getForNode(dNode);
+    expect(cPath.parentPath).toBe(alterPath);
+    expect(dPath.parentPath).toBe(alterPath);
+    expect(alterPath.parentPath).toBe(groupPath);
+
+    expect(generator.generate(ast)).toBe('/a(cd)/');
   });
 
   it('getPreviousSibling', () => {
