@@ -49,33 +49,29 @@ function astTraverse(root, options = {}) {
 
         // Collection node.
         //
-        // NOTE: a node (or several nodes) can be removed during traversal.
+        // NOTE: a node (or several nodes) can be removed or inserted
+        // during traversal.
         //
-        // `NodePath` tracks `NodePath.removedIndices`, which we handle here.
-        // If a removed index is less or equal to the current one, we
-        // should decrease the current index. If a removed index is greater
-        // then the current one, no action should be taken, since the collection
-        // is already live-updated.
+        // Current traversing index is stored on top of the
+        // `NodePath.traversingIndexStack`. The stack is used to support
+        // recursive nature of the traversal.
+        //
+        // In this case `NodePath.traversingIndex` (which we use here) is
+        // updated in the NodePath remove/insert methods.
         //
         if (Array.isArray(child)) {
-          let i = 0;
-
-          while (i < child.length) {
-            visit(child[i], node, prop, i);
-
-            // After running the handler, check the
-            // `NodePath.removedIndices`, and adjust the `i`.
-            if (NodePath.removedIndices.length > 0) {
-              NodePath.removedIndices.forEach(index => {
-                if (index <= i) {
-                  i--;
-                }
-              });
-              NodePath.resetRemovedIndices();
-            }
-
-            i++;
+          let index = 0;
+          NodePath.traversingIndexStack.push(index);
+          while (index < child.length) {
+            visit(
+              child[index],
+              node,
+              prop,
+              index
+            );
+            index = NodePath.updateTraversingIndex(+1);
           }
+          NodePath.traversingIndexStack.pop();
         }
 
         // Simple node.

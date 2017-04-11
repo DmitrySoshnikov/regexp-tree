@@ -206,6 +206,80 @@ describe('NodePath', () => {
     expect(generator.generate(ast)).toBe('/bfi/');
   });
 
+  it('several backward/forward removes/inserts', () => {
+    const ast = parser.parse('/abcdefghi/');
+
+    // '/abcdefghi/' -> '/bxyfzi/'
+    traverse.traverse(ast, {
+      Char(path) {
+        const {node, parent, property, index} = path;
+
+        // From 'd' remove previous 'a', 'c', inserts 'x' before 'd',
+        // removes 'd' (itself), insert 'y' after 'e', remove 'e'.
+        // After this it is: bxyfghi
+        if (node.value === 'd') {
+          const cPath = path.getPreviousSibling();
+          const aPath = cPath.getPreviousSibling().getPreviousSibling();
+          const ePath = path.getNextSibling();
+
+          // Remove 'a', and 'c'.
+          aPath.remove();
+          cPath.remove();
+
+          // Insert 'x' before 'd'. After we removed 'a', and 'c'
+          // insert index is 1.
+          const xNode = {
+            type: 'Char',
+            value: 'x',
+            kind: 'simple',
+          };
+
+          const parentPath = path.parentPath;
+
+          parentPath.insertChildAt(xNode, 1);
+
+          // Remove 'd'.
+          path.remove();
+
+          // Insert 'y' after 'e'.
+          const yNode = {
+            type: 'Char',
+            value: 'y',
+            kind: 'simple',
+          };
+
+          parentPath.insertChildAt(yNode, 3);
+
+          // Remove 'e'.
+          ePath.remove();
+        }
+
+        // From 'f' remove two next 'g', and 'h', insert 'z' after 'f'.
+        // After this it is: bfi
+        if (node.value === 'f') {
+          const gPath = path.getNextSibling();
+          const hPath = gPath.getNextSibling();
+
+          // Remove 'g'.
+          gPath.remove();
+
+          // Insert 'z'.
+          const zNode = {
+            type: 'Char',
+            value: 'z',
+            kind: 'simple',
+          };
+          path.parentPath.insertChildAt(zNode, 4);
+
+          // Remove 'h'.
+          hPath.remove();
+        }
+      }
+    });
+
+    expect(generator.generate(ast)).toBe('/bxyfzi/');
+  });
+
   it('replaces a node', () => {
     const ast = parser.parse('/[ab]/');
 

@@ -34,9 +34,40 @@ class NodePath {
   }
 
   /**
+   * Inserts a node into a collection. By default child nodes
+   * are supposed to by under `expressions` property. An explicit
+   * property can be passed.
+   *
+   * @param Object node - a node to insert into a collection
+   * @param number index - index at which to insert
+   * @param string property - name of the collection property
+   */
+  insertChildAt(node, index, property = 'expressions') {
+    if (!this.node.hasOwnProperty(property)) {
+      throw new Error(
+        `Node of type ${this.node.type} doesn't have "${property}" collection.`
+      );
+    }
+
+    this.node[property].splice(index, 0, node);
+
+    // If we inserted a node before the traversing index,
+    // we should increase the later.
+    if (index <= NodePath.getTraversingIndex()) {
+      NodePath.updateTraversingIndex(+1);
+    }
+
+    this._rebuildIndex(this.node, property);
+  }
+
+  /**
    * Removes a node.
    */
   remove() {
+    if (this.isRemoved()) {
+      return;
+    }
+
     this.node = null;
 
 
@@ -48,24 +79,14 @@ class NodePath {
     if (this.index !== null) {
       this.parent[this.property].splice(this.index, 1);
 
-      // Record the removed index, so the traversal can
-      // adjust current index.
-      NodePath.removedIndices.push(this.index);
-
-      // We should rebuild index of further node paths.
-      // Note: because of this, `remove` might be an expensive operation
-      // on long sequences.
-      const parentPath = NodePath.getForNode(this.parent);
-
-      for (let i = 0; i < this.parent[this.property].length; i++) {
-        const path = NodePath.getForNode(
-          this.parent[this.property][i],
-          parentPath,
-          this.property,
-          i
-        );
-        path.index = i;
+      // If we remove a node before the traversing index,
+      // we should increase the later.
+      if (this.index <= NodePath.getTraversingIndex()) {
+        NodePath.updateTraversingIndex(-1);
       }
+
+      // Rebuild index.
+      this._rebuildIndex(this.parent, this.property);
 
       this.index = null;
       this.property = null;
@@ -76,6 +97,23 @@ class NodePath {
     // A simple node.
     delete this.parent[this.property];
     this.property = null;
+  }
+
+  /**
+   * Rebuilds child nodes index (used on remove/insert).
+   */
+  _rebuildIndex(parent, property) {
+    const parentPath = NodePath.getForNode(parent);
+
+    for (let i = 0; i < parent[property].length; i++) {
+      const path = NodePath.getForNode(
+        parent[property][i],
+        parentPath,
+        property,
+        i
+      );
+      path.index = i;
+    }
   }
 
   /**
@@ -175,27 +213,33 @@ class NodePath {
   }
 
   /**
-   * Resets removed indices collection. Traversal uses it to track,
-   * and adjust current index.
+   * Updates index of a currently traversing collection.
    */
-  static resetRemovedIndices() {
-    NodePath.removedIndices.length = 0;
+  static updateTraversingIndex(dx) {
+    return (
+      NodePath.traversingIndexStack[
+        NodePath.traversingIndexStack.length - 1
+      ] += dx
+    );
+  }
+
+  /**
+   * Returns current traversing index.
+   */
+  static getTraversingIndex() {
+    return NodePath.traversingIndexStack[
+      NodePath.traversingIndexStack.length - 1
+    ];
   }
 }
 
 NodePath.initRegistry();
 
 /**
- * Stores removed indices during a handler run. This collection is
- * reset before each handler call.
+ * Index of a currently traversing collection is stored on top of the
+ * `NodePath.traversingIndexStack`. Remove/insert methods can adjust
+ * this index.
  */
-NodePath.removedIndices = [];
-
-/**
- * Stores inserted indices during a handler run. This collection is
- * reset before each handler call.
- * TODO: implement insertion API.
- */
-NodePath.insertedIndices = [];
+NodePath.traversingIndexStack = [];
 
 module.exports = NodePath;
