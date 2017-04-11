@@ -116,10 +116,7 @@ class NodePath {
    * Returns parent.
    */
   getParent() {
-    if (!this.parent) {
-      return null;
-    }
-    return NodePath.getForNode(this.parent);
+    return this.parentPath;
   }
 
   /**
