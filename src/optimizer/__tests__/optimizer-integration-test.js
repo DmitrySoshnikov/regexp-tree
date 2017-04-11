@@ -10,8 +10,8 @@ const optimizer = require('..');
 describe('optimizer-integration-test', () => {
 
   it('optimizes a regexp', () => {
-    const original = /[0-9$][0-9$]*/;
-    const optimized = /[\d$]+/;
+    const original = /[0-90-9a-zA-Z_$][0-9a-zA-Za-z_$]*/;
+    const optimized = /[\w$]+/;
 
     expect(optimizer.optimize(original).toString())
       .toBe(optimized.toString());

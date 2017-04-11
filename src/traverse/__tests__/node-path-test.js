@@ -427,4 +427,30 @@ describe('NodePath', () => {
     expect(bPath.hasEqualSource(a2Path)).toBe(false);
   });
 
+  it('jsonEncode', () => {
+    const node =  {
+      type: 'Char',
+      value: 'a',
+      kind: 'simple',
+    };
+
+    const path = NodePath.getForNode(
+      Object.assign({}, node, {
+        loc: {
+          source: 'a',
+          start: 1,
+          end: 2,
+        }
+      })
+    );
+
+    expect(path.jsonEncode())
+      .toBe(JSON.stringify(node, null, (prop, value) => {
+        if (prop === 'loc') {
+          return undefined;
+        }
+        return value;
+      }));
+  });
+
 });

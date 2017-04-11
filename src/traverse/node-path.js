@@ -186,16 +186,20 @@ class NodePath {
    * @return boolean
    */
   hasEqualSource(path) {
-    const skipLoc = (prop, value) => {
-      if (prop === 'loc') {
-        return undefined;
-      }
-      return value;
-    };
-
     return (
-      JSON.stringify(this.node, skipLoc) ===
-      JSON.stringify(path.node, skipLoc)
+      JSON.stringify(this.node, jsonSkipLoc) ===
+      JSON.stringify(path.node, jsonSkipLoc)
+    );
+  }
+
+  /**
+   * JSON-encodes a node skipping location.
+   */
+  jsonEncode({format, useLoc} = {}) {
+    return JSON.stringify(
+      this.node,
+      useLoc ? null : jsonSkipLoc,
+      format
     );
   }
 
@@ -290,5 +294,13 @@ NodePath.initRegistry();
  * this index.
  */
 NodePath.traversingIndexStack = [];
+
+// Helper function used to skip `loc` in JSON operations.
+function jsonSkipLoc(prop, value) {
+  if (prop === 'loc') {
+    return undefined;
+  }
+  return value;
+}
 
 module.exports = NodePath;

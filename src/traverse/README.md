@@ -54,3 +54,5 @@ Methods of the `NodePath`:
 * `getNextSibling()` - returns next sibling path;
 * `getChild(n: Number = 0)` - return `n`th child path;
 * `getParent()` - return parent path, for consistency, returns parentPath;
+* `hasEqualSource(path)` - checks whether the path is equal in its source to the passed one
+* `jsonEncode({format, useLoc})` - returns JSON-encoded string for this path. The `format` can pass number for indentation, the `useLoc` controls whether to include `loc` info.

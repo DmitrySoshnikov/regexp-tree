@@ -6,6 +6,9 @@
 'use strict';
 
 module.exports = [
+  // [\d\d] -> [\d]
+  require('./char-class-remove-duplicates-transform'),
+
   // aa* -> a+
   require('./char-star-to-plus-transform'),
 
