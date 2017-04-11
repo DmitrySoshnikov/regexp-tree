@@ -151,6 +151,30 @@ class NodePath {
   }
 
   /**
+   * Returns parent.
+   */
+  getParent() {
+    return this.parentPath;
+  }
+
+  /**
+   * Returns nth child.
+   */
+  getChild(n = 0) {
+    if (this.node.expressions) {
+      return NodePath.getForNode(
+        this.node.expressions[n],
+        this,
+        "expressions",
+        n
+      );
+    } else if (this.node.expression && n == 0) {
+      return NodePath.getForNode(this.node.expression, this, "expression");
+    }
+    return null;
+  }
+
+  /**
    * Returns previous sibling.
    */
   getPreviousSibling() {
