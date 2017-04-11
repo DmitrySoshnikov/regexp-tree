@@ -26,14 +26,13 @@ module.exports = {
 function rewriteNumberRanges(path) {
   const {node} = path;
 
-  node.expressions.forEach(expression => {
-    console.log({expression});
+  node.expressions.forEach((expression, i) => {
     if (
       expression.type === 'ClassRange' &&
       expression.from.value === '0' &&
       expression.to.value === '9'
     ) {
-      path.replace({
+      path.getChild(i).replace({
         type: 'Char',
         value: '\\d',
         kind: 'meta',

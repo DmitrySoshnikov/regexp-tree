@@ -175,6 +175,31 @@ class NodePath {
   }
 
   /**
+   * Whether a path node is syntactically equal to the passed one.
+   *
+   * NOTE: we don't rely on `source` property from the `loc` data
+   * (which would be the fastest comparison), since it might be unsync
+   * after several modifications. We use here simple `JSON.stringify`
+   * excluding the `loc` data.
+   *
+   * @param NodePath other - path to compare to.
+   * @return boolean
+   */
+  hasEqualSource(path) {
+    const skipLoc = (prop, value) => {
+      if (prop === 'loc') {
+        return undefined;
+      }
+      return value;
+    };
+
+    return (
+      JSON.stringify(this.node, skipLoc) ===
+      JSON.stringify(path.node, skipLoc)
+    );
+  }
+
+  /**
    * Returns previous sibling.
    */
   getPreviousSibling() {

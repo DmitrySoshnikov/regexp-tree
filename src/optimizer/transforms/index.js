@@ -8,4 +8,7 @@
 module.exports = [
   // aa* -> a+
   require('./char-star-to-plus-transform'),
+
+  // [0-9] -> [\d]
+  require('./char-class-to-meta-transform'),
 ];

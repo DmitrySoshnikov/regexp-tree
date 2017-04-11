@@ -9,7 +9,9 @@ const {TransformResult, transform} = require('..');
 
 const defaultRe = /a{1,}/i;
 const defaultReString = `${defaultRe}`;
-const defaultAst = parser.parse(defaultReString);
+const defaultAst = parser.parse(defaultReString, {
+  captureLocations: true,
+});
 
 describe('transform-basic', () => {
 
@@ -38,8 +40,6 @@ describe('transform-basic', () => {
     expect(result.toString()).toBe('/a+/i');
     expect(result.toRegExp()).toEqual(/a+/i);
 
-    console.log(JSON.stringify(result.getAST(), null, 2));
-
     expect(result.getAST()).toEqual({
       type: 'RegExp',
       body: {
@@ -65,7 +65,7 @@ describe('transform-basic', () => {
           }
         },
         loc: {
-          source: 'a{1,}',
+          source: 'a{1,}', // NOTE: original source might not be updated
           start: 1,
           end: 6,
         },

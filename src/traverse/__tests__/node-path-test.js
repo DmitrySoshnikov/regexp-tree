@@ -393,4 +393,38 @@ describe('NodePath', () => {
     expect(groupPath.getChild(1)).toBe(null);
   });
 
+  it('hasEqualSource', () => {
+    const ast = parser.parse('/aba/', {
+      captureLocations: true,
+    });
+
+    const parentPath = NodePath.getForNode(ast.body);
+
+    const a1Path = NodePath.getForNode(
+      ast.body.expressions[0],
+      parentPath,
+      'expressions',
+      0
+    );
+
+    const bPath = NodePath.getForNode(
+      ast.body.expressions[1],
+      parentPath,
+      'expressions',
+      1
+    );
+
+    const a2Path = NodePath.getForNode(
+      ast.body.expressions[2],
+      parentPath,
+      'expressions',
+      2
+    );
+
+    expect(a1Path.hasEqualSource(a2Path)).toBe(true);
+
+    expect(bPath.hasEqualSource(a1Path)).toBe(false);
+    expect(bPath.hasEqualSource(a2Path)).toBe(false);
+  });
+
 });

@@ -14,8 +14,7 @@ describe('char-class-to-meta', () => {
     const re = transform(/[0-9$]/, [
       charClassToMeta,
     ]);
-    console.log(JSON.stringify(re.getAST(), null, 2));
-    expect(re.toString()).toBe('/[\\d]+/');
+    expect(re.toString()).toBe('/[\\d$]/');
   });
 
 });

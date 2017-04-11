@@ -23,18 +23,10 @@ module.exports = {
 
     const previousSibling = path.getPreviousSibling();
 
-    if (!previousSibling) {
-      return;
-    }
-
-    const previousNode = previousSibling.node;
-
-    // TODO: expose source text of nodes instead of ugly `JSON.stringify` here
-    // https://github.com/DmitrySoshnikov/regexp-tree/issues/36
-    const previousNodeString = JSON.stringify(previousNode);
-    const expressionString = JSON.stringify(node.expression);
-
-    if (previousNodeString !== expressionString) {
+    if (
+      !previousSibling ||
+      !previousSibling.hasEqualSource(path.getChild())
+    ) {
       return;
     }
 
