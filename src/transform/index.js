@@ -80,7 +80,9 @@ module.exports = {
     }
 
     if (typeof regexp === 'string') {
-      ast = parser.parse(regexp);
+      ast = parser.parse(regexp, {
+        captureLocations: true,
+      });
     }
 
     traverse.traverse(ast, handlers);
