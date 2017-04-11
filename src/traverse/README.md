@@ -52,3 +52,5 @@ Methods of the `NodePath`:
 * `update(nodeProps: Object)` - updates a node inline;
 * `getPreviousSibling()` - returns previous sibling path;
 * `getNextSibling()` - returns next sibling path;
+* `getChild(n: Number = 0)` - return `n`th child path;
+* `getParent()` - return parent path, for consistency, returns parentPath;
