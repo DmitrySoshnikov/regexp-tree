@@ -6,11 +6,11 @@
 // Below are the RegExp tests defined by `test262` suite:
 // https://github.com/tc39/test262/tree/master/test/built-ins/RegExp/
 
-const regexpTree = require('..');
+const parser = require('..');
 
 function invalid(regexp, message) {
   try {
-    regexpTree.parse(regexp);
+    parser.parse(regexp);
     throw new Error('expected `parse` to throw');
   } catch (e) {
     expect(e).toBeInstanceOf(SyntaxError);
@@ -22,7 +22,7 @@ function invalid(regexp, message) {
 }
 
 function valid(regexp) {
-  expect(() => regexpTree.parse(regexp)).not.toThrow(SyntaxError);
+  expect(() => parser.parse(regexp)).not.toThrow(SyntaxError);
 }
 
 function ut(message) {

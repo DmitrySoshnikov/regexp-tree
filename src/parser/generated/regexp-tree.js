@@ -797,7 +797,13 @@ let capturingGroupsCount = 0;
  */
 let namedGroups = {};
 
-yyparse.onParseBegin = () => {
+/**
+ * Parsing string.
+ */
+let parsingString = '';
+
+yyparse.onParseBegin = (string) => {
+  parsingString = string;
   capturingGroupsCount = 0;
   namedGroups = {};
 };
@@ -973,9 +979,12 @@ function NamedGroupRefOrChars(text, textLoc) {
  */
 function Node(node, loc) {
   if (yy.options.captureLocations) {
+    const start = loc.startOffset;
+    const end = loc.endOffset;
     node.loc = {
-      start: loc.startOffset,
-      end: loc.endOffset,
+      source: parsingString.slice(start, end),
+      start,
+      end,
     };
   }
   return node;

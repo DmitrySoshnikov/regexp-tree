@@ -3,10 +3,10 @@
  * Copyright (c) 2017-present Dmitry Soshnikov <dmitry.soshnikov@gmail.com>
  */
 
-const regexpTree = require('..');
+const parser = require('..');
 
 function re(regexp) {
-  return regexpTree.parse(regexp.toString());
+  return parser.parse(regexp.toString());
 }
 
 describe('basic', () => {
@@ -107,7 +107,7 @@ describe('basic', () => {
     });
 
     // Not using `re` helper here because named groups are not yet implemented.
-    expect(regexpTree.parse('/(?<foo>)/')).toEqual({
+    expect(parser.parse('/(?<foo>)/')).toEqual({
       type: 'RegExp',
       body: {
         type: 'Group',
@@ -145,7 +145,7 @@ describe('basic', () => {
     });
 
     // Not using `re` helper here because named groups are not yet implemented.
-    expect(regexpTree.parse('/(?<foo>a)/')).toEqual({
+    expect(parser.parse('/(?<foo>a)/')).toEqual({
       type: 'RegExp',
       body: {
         type: 'Group',
@@ -232,7 +232,7 @@ describe('basic', () => {
   it('empty LB assertion', () => {
     // Not using `re` helper here because lookbehind
     // assertions are not yet implemented in JS.
-    expect(regexpTree.parse('/(?<=)/')).toEqual({
+    expect(parser.parse('/(?<=)/')).toEqual({
       type: 'RegExp',
       body: {
         type: 'Assertion',
@@ -242,7 +242,7 @@ describe('basic', () => {
       flags: '',
     });
 
-    expect(regexpTree.parse('/(?<!)/')).toEqual({
+    expect(parser.parse('/(?<!)/')).toEqual({
       type: 'RegExp',
       body: {
         type: 'Assertion',
@@ -271,7 +271,7 @@ describe('basic', () => {
       flags: '',
     });
 
-    expect(regexpTree.parse('/(?<!a)/')).toEqual({
+    expect(parser.parse('/(?<!a)/')).toEqual({
       type: 'RegExp',
       body: {
         type: 'Assertion',
@@ -322,7 +322,7 @@ describe('basic', () => {
 
   it('named backreference', () => {
     // Not using `re` helper here because named groups are not yet implemented
-    expect(regexpTree.parse('/(?<x>y)\\k<x>\\k<z>/')).toEqual({
+    expect(parser.parse('/(?<x>y)\\k<x>\\k<z>/')).toEqual({
       type: 'RegExp',
       body: {
         type: 'Alternative',
@@ -500,7 +500,7 @@ describe('basic', () => {
     const azAZRange = LettersRange('a', 'z').concat(LettersRange('A', 'Z'));
 
     for (const letter of azAZRange) {
-      const parsedChar = regexpTree.parse(`/\\${letter}/`).body;
+      const parsedChar = parser.parse(`/\\${letter}/`).body;
       if (metaChars.has(letter)) {
         expect(parsedChar.kind).toBe('meta');
       } else {
@@ -509,7 +509,7 @@ describe('basic', () => {
     }
 
     // Special case for [\b] - Backspace
-    const backspace = regexpTree.parse('/[\\b]/').body.expressions[0];
+    const backspace = parser.parse('/[\\b]/').body.expressions[0];
     expect(backspace.kind).toBe('meta');
   });
 
@@ -581,7 +581,7 @@ describe('basic', () => {
 
   it('valid not sorted flags', () => {
     // Not using `re` helper here because `RegExp.prototype.toString` sorts flags
-    expect(regexpTree.parse('/a/mgyiu')).toEqual({
+    expect(parser.parse('/a/mgyiu')).toEqual({
       type: 'RegExp',
       body: {
         type: 'Char',
@@ -620,7 +620,7 @@ describe('basic', () => {
 
   it('dotAll (/s) flag', () => {
     // Not using `re` helper here because /s flag is not yet implemented
-    expect(regexpTree.parse('/a/s')).toEqual({
+    expect(parser.parse('/a/s')).toEqual({
       type: 'RegExp',
       body: {
         type: 'Char',
