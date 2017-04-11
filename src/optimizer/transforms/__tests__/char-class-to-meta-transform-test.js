@@ -17,4 +17,11 @@ describe('char-class-to-meta', () => {
     expect(re.toString()).toBe('/[\\d$]/');
   });
 
+  it('replaces word ranges', () => {
+    const re = transform(/[0-9a-zA-Z_$]/, [
+      charClassToMeta,
+    ]);
+    expect(re.toString()).toBe('/[\\w$]/');
+  });
+
 });
