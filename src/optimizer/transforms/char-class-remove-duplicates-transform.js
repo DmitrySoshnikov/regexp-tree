@@ -6,8 +6,7 @@
 'use strict';
 
 /**
- * A regexp-tree plugin to replace standard character classes with
- * their meta symbols equivalents.
+ * A regexp-tree plugin to remove duplicates from character classes.
  */
 module.exports = {
   CharacterClass(path) {

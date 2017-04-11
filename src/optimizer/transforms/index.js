@@ -14,4 +14,7 @@ module.exports = [
 
   // [0-9] -> [\d]
   require('./char-class-to-meta-transform'),
+
+  // [\d] -> \d, [^\w] -> \W
+  require('./char-class-to-single-char-transform'),
 ];
