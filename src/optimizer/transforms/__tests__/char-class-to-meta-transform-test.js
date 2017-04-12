@@ -24,4 +24,11 @@ describe('char-class-to-meta', () => {
     expect(re.toString()).toBe('/[\\w$]/');
   });
 
+  it('whitespace ranges', () => {
+    const re = transform(/[ \t\r\n\f]/, [
+      charClassToMeta,
+    ]);
+    expect(re.toString()).toBe('/[\\s]/');
+  });
+
 });
