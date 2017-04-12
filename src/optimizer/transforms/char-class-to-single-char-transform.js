@@ -49,7 +49,7 @@ module.exports = {
 };
 
 function isMeta(value) {
-  return /[dwsDWS$]/.test(value);
+  return /^\\[dwsDWS$]/.test(value);
 }
 
 function getInverseMeta(value) {
