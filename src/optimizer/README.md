@@ -5,7 +5,7 @@ Optimizer transforms your regexp into an _optimized_ version, replacing some sub
 Example:
 
 ```js
-/[a-zA-Z_0-9][a-zA-Z_0-9]*\e{1,}/
+/[a-zA-Z_0-9][A-Z_\da-z]*\e{1,}/
 ```
 
 Is transformed into:

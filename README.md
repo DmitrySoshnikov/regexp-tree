@@ -287,7 +287,7 @@ Example:
 ```js
 const regexpTree = require('regexp-tree');
 
-const originalRe = /[a-zA-Z_0-9][a-zA-Z_0-9]*\e{1,}/;
+const originalRe = /[a-zA-Z_0-9][A-Z_\da-z]*\e{1,}/;
 
 const optimizedRe = regexpTree
   .optimize(originalRe)
