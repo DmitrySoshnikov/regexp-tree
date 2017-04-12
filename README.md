@@ -185,7 +185,17 @@ const regexpTree = require('regexp-tree');
 const parsed = regexpTree
   .parser
   .setOptions({captureLocations: true})
-  .parse('/a|b/');
+  .parse(/a|b/);
+```
+
+The `setOptions` method sets global options, which are preserved between calls. It is also possible to provide options per a single `parse` call, which might be more preferred:
+
+```js
+const regexpTree = require('regexp-tree');
+
+const parsed = regexpTree.parse(/a|b/, {
+  captureLocations: true,
+});
 ```
 
 ### Using traversal API
