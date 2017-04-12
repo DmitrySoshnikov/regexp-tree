@@ -23,6 +23,30 @@ describe('basic', () => {
     });
   });
 
+  it('parens char', () => {
+    expect(re(/\(\)/)).toEqual({
+      type: 'RegExp',
+      body: {
+        type: 'Alternative',
+        expressions: [
+          {
+            type: 'Char',
+            value: '(',
+            kind: 'simple',
+            escaped: true,
+          },
+          {
+            type: 'Char',
+            value: ')',
+            kind: 'simple',
+            escaped: true,
+          },
+        ]
+      },
+      flags: '',
+    });
+  });
+
   it('disjunction', () => {
     expect(re(/a|b/)).toEqual({
       type: 'RegExp',

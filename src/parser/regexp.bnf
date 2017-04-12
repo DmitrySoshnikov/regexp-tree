@@ -16,7 +16,7 @@
 
 %lex
 
-CHAR                    [^*?+\[\(\)]
+CHAR                    [^*?+\[()]
 ESC                     \\
 U                       [0-9a-fA-F]
 
@@ -71,7 +71,7 @@ GROUP_NAME              ([\w$]|\\'u'[0-9a-fA-F]{4}|\\'u{'[0-9a-fA-F]{1,}'}')+
 {ESC}'/'                 return 'ESC_CHAR'
 
 {ESC}{CHAR}              return 'ESC_CHAR'
-{ESC}[*?+\[]             return 'ESC_CHAR'
+{ESC}[*?+\[()]           return 'ESC_CHAR'
 
 <class>'('               return 'CHAR'
 <class>')'               return 'CHAR'
