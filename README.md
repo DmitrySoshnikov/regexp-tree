@@ -4,6 +4,8 @@ Regular expressions processor in JavaScript
 
 TL;DR: **RegExp Tree** is a _regular expressions processor_, which includes _parser_, _traversal_, _transformer_, and _optimizer_ APIs.
 
+You can get an overview of the tool in [this article](https://medium.com/@DmitrySoshnikov/regexp-tree-a-regular-expressions-parser-with-a-simple-ast-format-bcd4d5580df6).
+
 ### Table of Contents
 
 - [Installation](#installation)
