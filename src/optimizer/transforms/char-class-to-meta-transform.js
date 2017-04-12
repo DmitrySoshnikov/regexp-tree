@@ -54,7 +54,7 @@ function rewriteWordRanges(path) {
   const {node} = path;
 
   let numberPath = null;
-  let lowerCacePath = null;
+  let lowerCasePath = null;
   let upperCasePath = null;
   let underscorePath = null;
 
@@ -67,7 +67,7 @@ function rewriteWordRanges(path) {
 
     // a-z
     else if (isLowerCaseRange(expression)) {
-      lowerCacePath = path.getChild(i);
+      lowerCasePath = path.getChild(i);
     }
 
     // A-Z
@@ -84,7 +84,7 @@ function rewriteWordRanges(path) {
   // If we found the whole pattern, replace it.
   if (
     numberPath &&
-    lowerCacePath &&
+    lowerCasePath &&
     upperCasePath &&
     underscorePath
   ) {
@@ -102,7 +102,7 @@ function rewriteWordRanges(path) {
     });
 
     // Other paths are removed.
-    lowerCacePath.remove();
+    lowerCasePath.remove();
     upperCasePath.remove();
     underscorePath.remove();
   }
