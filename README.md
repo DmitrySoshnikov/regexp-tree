@@ -1,6 +1,8 @@
 # regexp-tree [![Build Status](https://travis-ci.org/DmitrySoshnikov/regexp-tree.svg?branch=master)](https://travis-ci.org/DmitrySoshnikov/regexp-tree) [![npm version](https://badge.fury.io/js/regexp-tree.svg)](https://badge.fury.io/js/regexp-tree)
 
-Regular expressions processor (parser/traversal/generator) in JavaScript
+Regular expressions processor in JavaScript
+
+TL;DR: **RegExp Tree** is a _regular expressions processor_, which includes _parser_, _traversal_, _transformer_, and _optimizer_ APIs.
 
 ### Table of Contents
 
