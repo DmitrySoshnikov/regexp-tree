@@ -12,6 +12,9 @@ module.exports = [
   // aa* -> a+
   require('./char-star-to-plus-transform'),
 
+  // a{1,} -> a+, a{3,3} -> a{3}, a{1} -> a
+  require('./quantifier-range-to-symbol-transform'),
+
   // [0-9] -> [\d]
   require('./char-class-to-meta-transform'),
 

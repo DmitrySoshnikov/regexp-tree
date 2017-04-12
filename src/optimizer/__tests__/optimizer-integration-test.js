@@ -25,4 +25,36 @@ describe('optimizer-integration-test', () => {
       .toBe(optimized.toString());
   });
 
+  it('quantifier {1,}', () => {
+    const original = /[a-z0-9A-Za-z_]{1,}/;
+    const optimized = /\w+/;
+
+    expect(optimizer.optimize(original).toString())
+      .toBe(optimized.toString());
+  });
+
+  it('quantifier {1}', () => {
+    const original = /[a-z0-9A-Za-z_]{1}/;
+    const optimized = /\w/;
+
+    expect(optimizer.optimize(original).toString())
+      .toBe(optimized.toString());
+  });
+
+  it('quantifier {3,3}', () => {
+    const original = /[a-z0-9A-Za-z_]{3,3}/;
+    const optimized = /\w{3}/;
+
+    expect(optimizer.optimize(original).toString())
+      .toBe(optimized.toString());
+  });
+
+  it('quantifier other', () => {
+    const original = /[a-z0-9A-Za-z_]{1,3}/;
+    const optimized = /\w{1,3}/;
+
+    expect(optimizer.optimize(original).toString())
+      .toBe(optimized.toString());
+  });
+
 });
