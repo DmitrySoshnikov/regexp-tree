@@ -12,6 +12,7 @@ Regular expressions processor (parser/traversal/generator) in JavaScript
 - [Using traversal API](#using-traversal-api)
 - [Using transform API](#using-transform-api)
 - [Using generator API](#using-generator-api)
+- [Using optimizer API](#using-optimizer-api)
 - [Creating RegExp objects](#creating-regexp-objects)
 - [AST nodes specification](#ast-nodes-specification)
 
@@ -273,6 +274,24 @@ const re = regexpTree.generate({
 });
 
 console.log(re); // '/a/i'
+```
+
+### Using optimizer API
+
+[Optimizer](https://github.com/DmitrySoshnikov/regexp-tree/tree/master/src/optimizer) transforms your regexp into an _optimized_ version, replacing some sub-expressions with their idiomatic patterns. This might be good for different kinds of minifiers, as well as for regexp machines.
+
+Example:
+
+```js
+const regexpTree = require('regexp-tree');
+
+const originalRe = /[a-zA-Z_0-9][a-zA-Z_0-9]*\e{1,}/;
+
+const optimizedRe = regexpTree
+  .optimize(originalRe)
+  .toRegExp();
+
+console.log(optimizedRe); // /\w+e+/
 ```
 
 ### Creating RegExp objects
