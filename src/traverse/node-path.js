@@ -5,6 +5,9 @@
 
 'use strict';
 
+const DEFAULT_COLLECTION_PROP = 'expressions';
+const DEFAULT_SINGLE_PROP     = 'expression';
+
 /**
  * NodePath class encapsulates a traversing node,
  * its parent node, property name in the parent node, and
@@ -33,8 +36,16 @@ class NodePath {
     this.index = index;
   }
 
+  _enforceProp(property) {
+    if (!this.node.hasOwnProperty(property)) {
+      throw new Error(
+        `Node of type ${this.node.type} doesn't have "${property}" collection.`
+      );
+    }
+  }
+
   /**
-   * sets a node into a children collection or the single child.
+   * Sets a node into a children collection or the single child.
    * By default child nodes are supposed to be under `expressions` property.
    * An explicit property can be passed.
    *
@@ -45,43 +56,36 @@ class NodePath {
   setChild(node, index = null, property = null) {
 
     if (index != null) {
-      if (!property) property = "expressions";
-      if (!this.node.hasOwnProperty(property)) {
-        throw new Error(
-          `Node of type ${this.node.type} doesn't have "${property}" collection.`
-        );
+      if (!property) {
+        property = DEFAULT_COLLECTION_PROP;
       }
+      this._enforceProp(property);
       this.node[property][index] = node;
       return NodePath.getForNode(node, this, property, index);
     } else {
-      if (!property) property = "expression";
-      if (!this.node.hasOwnProperty(property)) {
-        throw new Error(
-          `Node of type ${this.node.type} doesn't have "${property}" collection.`
-        );
+      if (!property) {
+        property = DEFAULT_SINGLE_PROP;
       }
+      this._enforceProp(property);
       this.node[property] = node;
       return NodePath.getForNode(node, this, property);
     }
   }
 
   /**
-   * sets a node into a children collection or the single child.
+   * Appends a node to a children collection.
    * By default child nodes are supposed to be under `expressions` property.
    * An explicit property can be passed.
    *
    * @param Object node - a node to set into a collection or as single child
-   * @param number index - index at which to set
    * @param string property - name of the collection or single property
    */
   appendChild(node, property = null) {
 
-    if (!property) property = "expressions";
-    if (!this.node.hasOwnProperty(property)) {
-      throw new Error(
-        `Node of type ${this.node.type} doesn't have "${property}" collection.`
-      );
+    if (!property) {
+      property = DEFAULT_COLLECTION_PROP;
     }
+    this._enforceProp(property);
     const end = this.node[property].length;
     return this.setChild(node, end, property);
   }
@@ -95,12 +99,8 @@ class NodePath {
    * @param number index - index at which to insert
    * @param string property - name of the collection property
    */
-  insertChildAt(node, index, property = 'expressions') {
-    if (!this.node.hasOwnProperty(property)) {
-      throw new Error(
-        `Node of type ${this.node.type} doesn't have "${property}" collection.`
-      );
-    }
+  insertChildAt(node, index, property = DEFAULT_COLLECTION_PROP) {
+    this._enforceProp(property);
 
     this.node[property].splice(index, 0, node);
 
@@ -218,11 +218,11 @@ class NodePath {
       return NodePath.getForNode(
         this.node.expressions[n],
         this,
-        "expressions",
+        DEFAULT_COLLECTION_PROP,
         n
       );
     } else if (this.node.expression && n == 0) {
-      return NodePath.getForNode(this.node.expression, this, "expression");
+      return NodePath.getForNode(this.node.expression, this, DEFAULT_SINGLE_PROP);
     }
     return null;
   }
@@ -301,9 +301,16 @@ class NodePath {
     }
 
     let path = NodePath.registry.get(node);
-    if (parentPath != null) path.parentPath = parentPath;
-    if (prop       != null) path.property   = prop;
-    if (index      != null) path.index      = index;
+
+    if (parentPath !== null) {
+      path.parentPath = parentPath;
+    }
+    if (prop !== null) {
+      path.property = prop;
+    }
+    if (index !== null) {
+      path.index = index;
+    }
     return path;
   }
 
