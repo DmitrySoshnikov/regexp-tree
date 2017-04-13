@@ -17,11 +17,18 @@ describe('\e -> e', () => {
     expect(re.toString()).toBe(/e\*/.toString());
   });
 
-  it('char class', () => {
-    const re = transform(/[\e\*\(\]\ ]\(\n/, [
+  it('preserve escape', () => {
+    const re = transform(/\*\^\$\(\)\[/, [
       charUnescape,
     ]);
-    expect(re.toString()).toBe(/[e*(\] ]\(\n/.toString());
+    expect(re.toString()).toBe(/\*\^\$\(\)\[/.toString());
+  });
+
+  it('char class', () => {
+    const re = transform(/[\e\*\(\]\ \^\$]\(\n/, [
+      charUnescape,
+    ]);
+    expect(re.toString()).toBe(/[e*(\] ^$]\(\n/.toString());
   });
 
 });

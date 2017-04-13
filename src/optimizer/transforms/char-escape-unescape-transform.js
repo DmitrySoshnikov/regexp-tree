@@ -39,5 +39,5 @@ function shouldUnescape(path) {
 }
 
 function preservesEscape(value) {
-  return /[*\[()+?]/.test(value);
+  return /[*\[()+?^$]/.test(value);
 }

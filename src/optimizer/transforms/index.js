@@ -20,4 +20,7 @@ module.exports = [
 
   // aa* -> a+
   require('./char-star-to-plus-transform'),
+
+  // \e -> e
+  require('./char-escape-unescape-transform'),
 ];

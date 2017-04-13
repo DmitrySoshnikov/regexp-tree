@@ -25,6 +25,14 @@ describe('optimizer-integration-test', () => {
       .toBe(optimized.toString());
   });
 
+  it('preserve escape', () => {
+    const original = /^[\^\*\$\(\)]\^\*\$\(\)$/;
+    const optimized = /^[^*$()]\^\*\$\(\)$/;
+
+    expect(optimizer.optimize(original).toString())
+      .toBe(optimized.toString());
+  });
+
   it('whitespace', () => {
     const original = /[ \n\r\t\f]+/;
     const optimized = /\s+/;
