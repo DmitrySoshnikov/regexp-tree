@@ -15,6 +15,7 @@ const traverse = require('../traverse');
 class TransformResult {
   constructor(ast) {
     this._ast = ast;
+    this._bodyString = null;
     this._string = null;
     this._regexp = null;
   }
@@ -25,10 +26,20 @@ class TransformResult {
 
   toRegExp() {
     if (!this._regexp) {
-      const body = generator.generate(this._ast.body);
-      this._regexp = new RegExp(body, this._ast.flags);
+      this._regexp = new RegExp(this.getBodyString(), this._ast.flags);
     }
     return this._regexp;
+  }
+
+  getBodyString() {
+    if (!this._bodyString) {
+      this._bodyString = generator.generate(this._ast.body);
+    }
+    return this._bodyString;
+  }
+
+  getFlags() {
+    return this._ast.flags;
   }
 
   toString() {

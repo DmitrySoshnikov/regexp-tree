@@ -56,5 +56,8 @@ transform(regexp: RegExpIn, handlers: Handlers): TransformResult;
 
 An object of `TransformResult` has the following methods:
 
-* `toString` - returns a regular expression as a string;
+* `getAST` - returns the (transformed) AST component;
+* `getBodyString` - returns body of a regexp as a string (can be passed to `RegExp` constructor);
+* `getFlags` - returns flags of a regexp as a string (can be passed to `RegExp` constructor);
 * `toRegExp` - returns a regular expression as a RegExp instance;
+* `toString` - returns a regular expression as a string;
