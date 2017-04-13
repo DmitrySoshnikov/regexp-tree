@@ -4,6 +4,7 @@
  */
 
 'use strict';
+
 const regexpTreeParser = require('./generated/regexp-tree');
 
 // By default do not capture locations; callers may override.

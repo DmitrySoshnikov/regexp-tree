@@ -17,6 +17,7 @@ You can get an overview of the tool in [this article](https://medium.com/@Dmitry
 - [Using transform API](#using-transform-api)
 - [Using generator API](#using-generator-api)
 - [Using optimizer API](#using-optimizer-api)
+- [Using compat-transpiler API](#using-compat-transpiler-api)
 - [Creating RegExp objects](#creating-regexp-objects)
 - [AST nodes specification](#ast-nodes-specification)
 
@@ -307,6 +308,37 @@ const optimizedRe = regexpTree
 
 console.log(optimizedRe); // /\w+e+/
 ```
+
+### Using compat-transpiler API
+
+The [compat-transpiler](https://github.com/DmitrySoshnikov/regexp-tree/tree/master/src/compat-transpiler) module translates your regexp in new format or in new syntax, into an equivalent regexp in a legacy representation, so it can be used in engines which don't yet implement the new syntax.
+
+Example, "dotAll" `s` flag:
+
+
+```js
+/./s
+```
+
+Is translated into:
+
+```js
+/[\0-\uFFFF]/
+```
+
+Or [named capturing groups](#named-capturing-group):
+
+```js
+/(?<value>a)\k<value>\1/
+```
+
+Becomes:
+
+```js
+/(a)\1\1/
+```
+
+Thus, the information about processed group names is stored on the transform result, and can be further analyzed in other modules.
 
 ### Creating RegExp objects
 

@@ -5,6 +5,7 @@
 
 'use strict';
 
+const compatTranspiler = require('./src/compat-transpiler');
 const generator = require('./src/generator');
 const optimizer = require('./src/optimizer');
 const parser = require('./src/parser');
@@ -114,6 +115,18 @@ const regexpTree = {
    */
   optimize(regexp) {
     return optimizer.optimize(regexp);
+  },
+
+  /**
+   * Translates a regular expression in new syntax or in new format
+   * into equivalent expressions in old syntax.
+   *
+   * @param string regexp
+   *
+   * @return TransformResult object
+   */
+  compatTranspile(regexp, whitelist) {
+    return compatTranspiler.transform(regexp, whitelist);
   },
 };
 

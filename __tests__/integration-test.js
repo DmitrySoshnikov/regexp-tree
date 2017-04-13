@@ -26,6 +26,9 @@ describe('regexp-tree', () => {
 
     // Optimizer.
     expect(typeof regexpTree.optimize).toBe('function');
+
+    // Compatibility transpiler.
+    expect(typeof regexpTree.compatTranspile).toBe('function');
   });
 
   it('operations', () => {
@@ -88,6 +91,11 @@ describe('regexp-tree', () => {
 
   it('optimizer', () => {
     expect(regexpTree.optimize('/aa*/').toString()).toBe('/a+/');
+  });
+
+  it('compat-transpiler', () => {
+    expect(regexpTree.compatTranspile('/./s').toString())
+      .toBe('/[\\0-\\uFFFF]/');
   });
 
 });
