@@ -783,6 +783,7 @@ A node:
     {
       type: 'Group',
       capturing: true,
+      number: 1,
       expression: {
         type: 'Alternative',
         expressions: [
@@ -807,6 +808,8 @@ A node:
   ]
 }
 ```
+
+As we can see, it also tracks the number of the group.
 
 Another example:
 
@@ -840,6 +843,7 @@ We have the following node (the `name` property with value `foo` is added):
   type: 'Group',
   capturing: true,
   name: 'foo',
+  number: 1,
   expression: {
     type: 'Char',
     value: 'x',
@@ -911,6 +915,7 @@ A node:
     {
       type: 'Group',
       capturing: true,
+      number: 1,
       expression: {
         type: 'Alternative',
         expressions: [
@@ -955,6 +960,7 @@ A node:
       type: 'Group',
       capturing: true,
       name: 'foo',
+      number: 1,
       expression: {
         type: 'Char',
         value: 'w',

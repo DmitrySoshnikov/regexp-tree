@@ -605,6 +605,7 @@ CapturingGroup
         type: 'Group',
         capturing: true,
         name: $1,
+        number: capturingGroupsCount,
         expression: $2,
       }, @$)
     }
@@ -615,6 +616,7 @@ CapturingGroup
       $$ = Node({
         type: 'Group',
         capturing: true,
+        number: capturingGroupsCount,
         expression: $2,
       }, @$)
     }

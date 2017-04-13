@@ -236,6 +236,7 @@ const productions = [[-1,1,(_1,_1loc) => { __loc = yyloc(_1loc, _1loc);__ = _1 }
         type: 'Group',
         capturing: true,
         name: _1,
+        number: capturingGroupsCount,
         expression: _2,
       }, __loc)
      }],
@@ -244,6 +245,7 @@ const productions = [[-1,1,(_1,_1loc) => { __loc = yyloc(_1loc, _1loc);__ = _1 }
       __ = Node({
         type: 'Group',
         capturing: true,
+        number: capturingGroupsCount,
         expression: _2,
       }, __loc)
      }],
