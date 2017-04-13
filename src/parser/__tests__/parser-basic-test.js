@@ -119,6 +119,27 @@ describe('basic', () => {
     });
   });
 
+  it('empty class', () => {
+    expect(re(/[]/)).toEqual({
+      type: 'RegExp',
+      body: {
+        type: 'CharacterClass',
+        expressions: [],
+      },
+      flags: '',
+    });
+
+    expect(re(/[^]/)).toEqual({
+      type: 'RegExp',
+      body: {
+        type: 'CharacterClass',
+        negative: true,
+        expressions: [],
+      },
+      flags: '',
+    });
+  });
+
   it('empty group', () => {
     expect(re(/()/)).toEqual({
       type: 'RegExp',

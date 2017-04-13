@@ -370,11 +370,21 @@ Disjunction
 
   | Disjunction BAR Alternative
     {
+      // Location for empty disjunction: /|/
+      let loc = null;
+
+      if (@2) {
+        loc = {
+          startOffset: @1 ? @1.startOffset : @2.startOffset,
+          endOffset: @3 ? @3.endOffset : @2.endOffset,
+        };
+      };
+
       $$ = Node({
         type: 'Disjunction',
         left: $1,
         right: $3,
-      }, @$)
+      }, loc)
     }
   ;
 
@@ -641,6 +651,8 @@ CharacterClass
 
 ClassRanges
   : /* empty */
+    { $$ = [] }
+
   | NonemptyClassRanges
   ;
 

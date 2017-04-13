@@ -80,4 +80,28 @@ describe('locations', () => {
     ]);
   });
 
+  it('empty disjunction', () => {
+    const ast = parser.parse('/|/');
+
+    expect(ast).toEqual({
+      type: 'RegExp',
+      body: {
+        type: 'Disjunction',
+        left: null,
+        right: null,
+        loc: {
+          source: '|',
+          start: 1,
+          end: 2,
+        }
+      },
+      flags: '',
+      loc: {
+        source: '/|/',
+        start: 0,
+        end: 3,
+      }
+    });
+  });
+
 });

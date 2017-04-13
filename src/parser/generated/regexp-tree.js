@@ -82,11 +82,21 @@ const productions = [[-1,1,(_1,_1loc) => { __loc = yyloc(_1loc, _1loc);__ = _1 }
 [3,1,(_1,_1loc) => { __loc = yyloc(_1loc, _1loc);__ = _1 }],
 [4,1,(_1,_1loc) => { __loc = yyloc(_1loc, _1loc);__ = _1 }],
 [4,3,(_1,_2,_3,_1loc,_2loc,_3loc) => { __loc = yyloc(_1loc, _3loc);
+      // Location for empty disjunction: /|/
+      let loc = null;
+
+      if (_2loc) {
+        loc = {
+          startOffset: _1loc ? _1loc.startOffset : _2loc.startOffset,
+          endOffset: _3loc ? _3loc.endOffset : _2loc.endOffset,
+        };
+      };
+
       __ = Node({
         type: 'Disjunction',
         left: _1,
         right: _3,
-      }, __loc)
+      }, loc)
      }],
 [5,1,(_1,_1loc) => { __loc = yyloc(_1loc, _1loc);
       if (_1.length === 0) {
@@ -257,7 +267,7 @@ const productions = [[-1,1,(_1,_1loc) => { __loc = yyloc(_1loc, _1loc);__ = _1 }
         expressions: _2,
       }, __loc)
      }],
-[18,0],
+[18,0,() => { __loc = null; __ = []  }],
 [18,1,(_1,_1loc) => { __loc = yyloc(_1loc, _1loc);__ = _1 }],
 [19,1,(_1,_1loc) => { __loc = yyloc(_1loc, _1loc); __ = [_1]  }],
 [19,2,(_1,_2,_1loc,_2loc) => { __loc = yyloc(_1loc, _2loc); __ = [_1].concat(_2)  }],

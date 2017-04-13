@@ -91,7 +91,7 @@ const generator = {
   },
 
   CharacterClass(node) {
-    const expressions = (node.expressions || [])
+    const expressions = node.expressions
       .map(gen)
       .join('');
 
