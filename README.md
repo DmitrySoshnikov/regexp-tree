@@ -338,7 +338,21 @@ Becomes:
 /(a)\1\1/
 ```
 
-Thus, the information about processed group names is stored on the transform result, and can be further analyzed in other modules.
+To use the API from Node:
+
+```js
+const regexpTree = require('regexp-tree');
+
+// Using new syntax.
+const originalRe = '/(?<all>.)\\k<all>/s';
+
+// For legacy engines.
+const compatTranspiledRe = regexpTree
+  .compatTranspile(originalRe)
+  .toRegExp();
+
+console.log(compatTranspiledRe); // /([\0-\uFFFF])\1/
+```
 
 ### Creating RegExp objects
 
