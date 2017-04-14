@@ -4,6 +4,18 @@ TODO
 
 Applies [regexp-tree](https://www.npmjs.com/package/regexp-tree) optimizations on JavaScript regular expressions.
 
+## Examples
+
+```js
+/[a-zA-Z_0-9][A-Z_\da-z]*\e{1,}/
+```
+
+Is transformed into:
+
+```js
+/\w+e+/
+```
+
 ## Usage
 
 ### Via `.babelrc`
