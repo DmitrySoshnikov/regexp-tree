@@ -22,6 +22,9 @@ module.exports = {
 
     let result;
 
+    // Collect extra data per transform.
+    const extra = {};
+
     transformToApply.forEach(transformName => {
 
       if (!compatTransforms.hasOwnProperty(transformName)) {
@@ -32,9 +35,19 @@ module.exports = {
         );
       }
 
-      result = transform.transform(regexp, compatTransforms[transformName]);
+      const handler = compatTransforms[transformName];
+
+      result = transform.transform(regexp, handler);
       regexp = result.getAST();
+
+      // Collect `extra` transform result.
+      if (typeof handler.getExtra === 'function') {
+        extra[transformName] = handler.getExtra();
+      }
     });
+
+    // Set the final extras for all transforms.
+    result.setExtra(extra);
 
     return result;
   },

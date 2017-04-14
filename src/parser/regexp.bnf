@@ -239,7 +239,7 @@ function NamedGroupRefOrChars(text, textLoc) {
     return Node({
       type: 'Backreference',
       kind: 'name',
-      number: capturingGroupsCount,
+      number: namedGroups[groupName],
       reference: groupName,
     }, textLoc);
   }
@@ -599,7 +599,7 @@ CapturingGroup
   : NAMED_CAPTURE_GROUP Disjunction R_PAREN
     {
       capturingGroupsCount++;
-      namedGroups[$1] = true;
+      namedGroups[$1] = capturingGroupsCount;
 
       $$ = Node({
         type: 'Group',

@@ -28,3 +28,18 @@ Becomes:
 ```
 
 Thus, the information about processed group names is stored on the transform result, and can be further analyzed in other modules.
+
+## API
+
+* `compatTranspiler.transform(regexp [, whitelist])` - transforms a regular expressions applying compatibility transforms (can be passed as `whitelist` parameter).
+
+```js
+compatTranspiler.transform('/./s', ['dotAll']);
+```
+
+If whitelist is not passed, all transforms are applied.
+
+Available transforms are:
+
+* `dotAll` - translates `/./s` into `/[\0-\uFFFF]/`
+* `namedCapturingGroups` - transforms `/(?<name>a)\k<name>/` into `/(a)\1/`

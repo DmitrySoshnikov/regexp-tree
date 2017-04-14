@@ -16,6 +16,20 @@ module.exports = {
   // A map from name to number: {foo: 2, bar: 4}
   _groupNames: {},
 
+  /**
+   * Initialises the trasnform.
+   */
+  init() {
+    this._groupNames = {};
+  },
+
+  /**
+   * Returns extra state, which eventually is returned to
+   */
+  getExtra() {
+    return this._groupNames;
+  },
+
   Group(path) {
     const {node} = path;
 
@@ -23,12 +37,20 @@ module.exports = {
       return;
     }
 
-    // TODO (get number from group: https://github.com/DmitrySoshnikov/regexp-tree/issues/57)
+    // Record group name.
+    this._groupNames[node.name] = node.number;
 
     delete node.name;
   },
 
   Backreference(path) {
-    // TODO
-  }
+    const {node} = path;
+
+    if (node.kind !== 'name') {
+      return;
+    }
+
+    node.kind = 'number';
+    node.reference = node.number;
+  },
 };

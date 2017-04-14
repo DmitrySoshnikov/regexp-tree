@@ -94,8 +94,8 @@ describe('regexp-tree', () => {
   });
 
   it('compat-transpiler', () => {
-    expect(regexpTree.compatTranspile('/./s').toString())
-      .toBe('/[\\0-\\uFFFF]/');
+    expect(regexpTree.compatTranspile('/.(?<name>x)/s').toString())
+      .toBe('/[\\0-\\uFFFF](x)/');
   });
 
 });

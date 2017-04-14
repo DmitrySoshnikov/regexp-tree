@@ -8,4 +8,7 @@
 module.exports = {
   // "dotAll" `s` flag
   dotAll: require('./compat-dotall-s-transform'),
+
+  // Named capturing groups.
+  namedCapturingGroups: require('./compat-named-capturing-groups-transform'),
 };

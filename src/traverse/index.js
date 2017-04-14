@@ -136,6 +136,13 @@ module.exports = {
 
     NodePath.initRegistry();
 
+    // Allow handlers to initializer themselves.
+    handlers.forEach(handler => {
+      if (typeof handler.init === 'function') {
+        handler.init();
+      }
+    });
+
     // Handle actual nodes.
     astTraverse(ast, {
 

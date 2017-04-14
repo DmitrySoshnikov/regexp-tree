@@ -13,15 +13,30 @@ const traverse = require('../traverse');
  * Transform result.
  */
 class TransformResult {
-  constructor(ast) {
+  /**
+   * Initializes a transform result for an AST.
+   *
+   * @param Object ast - an AST node
+   * @param mixed extra - any extra data a transform may return
+   */
+  constructor(ast, extra = null) {
     this._ast = ast;
     this._bodyString = null;
     this._string = null;
     this._regexp = null;
+    this._extra = extra;
   }
 
   getAST() {
     return this._ast;
+  }
+
+  setExtra(extra) {
+    this._extra = extra;
+  }
+
+  getExtra() {
+    return this._extra;
   }
 
   toRegExp() {
