@@ -40,7 +40,7 @@ describe('transform-basic', () => {
     expect(result.toString()).toBe('/a+/i');
     expect(result.toRegExp()).toEqual(/a+/i);
 
-    expect(result.getBodyString()).toBe('a+');
+    expect(result.getSource()).toBe('a+');
     expect(result.getFlags()).toBe('i');
 
     expect(result.getAST()).toEqual({

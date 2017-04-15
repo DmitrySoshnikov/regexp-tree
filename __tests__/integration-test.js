@@ -29,6 +29,9 @@ describe('regexp-tree', () => {
 
     // Compatibility transpiler.
     expect(typeof regexpTree.compatTranspile).toBe('function');
+
+    // Exec.
+    expect(typeof regexpTree.exec).toBe('function');
   });
 
   it('operations', () => {
@@ -96,6 +99,19 @@ describe('regexp-tree', () => {
   it('compat-transpiler', () => {
     expect(regexpTree.compatTranspile('/.(?<name>x)/s').toString())
       .toBe('/[\\0-\\uFFFF](x)/');
+  });
+
+  it('exec', () => {
+    const re = '/(?<year>\\d{4})-(?<month>\\d{2})-(?<day>\\d{2})/';
+    const string = '2017-04-14';
+
+    const result = regexpTree.exec(re, string);
+
+    expect(result.groups).toEqual({
+      year: '2017',
+      month: '04',
+      day: '14',
+    });
   });
 
 });

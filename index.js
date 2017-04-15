@@ -12,6 +12,8 @@ const parser = require('./src/parser');
 const transform = require('./src/transform');
 const traverse = require('./src/traverse');
 
+const {RegExpTree} = require('./src/compat-transpiler/runtime');
+
 /**
  * An API object for RegExp processing (parsing/transform/generation).
  */
@@ -127,6 +129,31 @@ const regexpTree = {
    */
   compatTranspile(regexp, whitelist) {
     return compatTranspiler.transform(regexp, whitelist);
+  },
+
+  /**
+   * Executes a regular expression on a string.
+   *
+   * @param RegExp|string re - a regular expression.
+   * @param string string - a testing string.
+   */
+  exec(re, string) {
+    if (typeof re === 'string') {
+      const compat = this.compatTranspile(re);
+      const extra = compat.getExtra();
+
+      if (extra.namedCapturingGroups) {
+        re = new RegExpTree(compat.toRegExp(), {
+          flags: compat.getFlags(),
+          source: compat.getSource(),
+          groups: extra.namedCapturingGroups,
+        });
+      } else {
+        re = compat.toRegExp();
+      }
+    }
+
+    return re.exec(string);
   },
 };
 

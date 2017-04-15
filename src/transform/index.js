@@ -21,7 +21,7 @@ class TransformResult {
    */
   constructor(ast, extra = null) {
     this._ast = ast;
-    this._bodyString = null;
+    this._source = null;
     this._string = null;
     this._regexp = null;
     this._extra = extra;
@@ -41,16 +41,16 @@ class TransformResult {
 
   toRegExp() {
     if (!this._regexp) {
-      this._regexp = new RegExp(this.getBodyString(), this._ast.flags);
+      this._regexp = new RegExp(this.getSource(), this._ast.flags);
     }
     return this._regexp;
   }
 
-  getBodyString() {
-    if (!this._bodyString) {
-      this._bodyString = generator.generate(this._ast.body);
+  getSource() {
+    if (!this._source) {
+      this._source = generator.generate(this._ast.body);
     }
-    return this._bodyString;
+    return this._source;
   }
 
   getFlags() {
