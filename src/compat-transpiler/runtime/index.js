@@ -68,7 +68,10 @@ class RegExpTree {
    * Facade wrapper for RegExp `toString` method.
    */
   toString(string) {
-    return `/${this.source}/${this.flags}`;
+    if (!this._toStringResult) {
+      this._toStringResult = `/${this.source}/${this.flags}`;
+    }
+    return this._toStringResult;
   }
 
   /**
