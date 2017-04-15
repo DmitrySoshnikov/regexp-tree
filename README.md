@@ -17,8 +17,10 @@ You can get an overview of the tool in [this article](https://medium.com/@Dmitry
 - [Using transform API](#using-transform-api)
 - [Using generator API](#using-generator-api)
 - [Using optimizer API](#using-optimizer-api)
+  - [Optimizer ESLint plugin](#optimizer-eslint-plugin)
 - [Using compat-transpiler API](#using-compat-transpiler-api)
 - [Creating RegExp objects](#creating-regexp-objects)
+- [Executing regexes](#executing-regexes)
 - [AST nodes specification](#ast-nodes-specification)
 
 ### Installation
@@ -309,6 +311,10 @@ const optimizedRe = regexpTree
 console.log(optimizedRe); // /\w+e+/
 ```
 
+#### Optimizer ESLint plugin
+
+The [optimizer](https://github.com/DmitrySoshnikov/regexp-tree/tree/master/src/optimizer) module is also available as an _ESLint plugin_, available at: [eslint-plugin-optimize-regex](https://www.npmjs.com/package/eslint-plugin-optimize-regex).
+
 ### Using compat-transpiler API
 
 The [compat-transpiler](https://github.com/DmitrySoshnikov/regexp-tree/tree/master/src/compat-transpiler) module translates your regexp in new format or in new syntax, into an equivalent regexp in a legacy representation, so it can be used in engines which don't yet implement the new syntax.
@@ -367,6 +373,21 @@ console.log(
   re.test('a'), // true
   re.test('Z'), // true
 );
+```
+
+### Executing regexes
+
+It is also possible to execute regular expressions using `exec` API method, which has support for new syntax, and features, such as [named capturing group](#named-capturing-group), etc:
+
+```js
+const regexpTree = require('regexp-tree');
+
+const re = '/(?<year>\\d{4})-(?<month>\\d{2})-(?<day>\\d{2})/';
+const string = '2017-04-14';
+
+const result = regexpTree.exec(re, string);
+
+console.log(result.groups); // {year: '2017', month: '04', day: '14'}
 ```
 
 ### AST nodes specification
