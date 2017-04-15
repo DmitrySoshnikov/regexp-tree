@@ -68,7 +68,7 @@ class RegExpTree {
    * Facade wrapper for RegExp `toString` method.
    */
   toString(string) {
-    return this._source;
+    return `/${this.source}/${this.flags}`;
   }
 
   /**

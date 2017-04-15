@@ -31,6 +31,8 @@ describe('compat-transpiler-runtime', () => {
     expect(re.flags).toBe(originalFlags);
     expect(re.source).toBe(originalSource);
 
+    expect(re.toString()).toBe(originalRe);
+
     // Flag properties.
     expect(re.dotAll).toBe(true);
     expect(re.global).toBe(true);
