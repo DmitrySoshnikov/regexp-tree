@@ -55,21 +55,23 @@ class NodePath {
    */
   setChild(node, index = null, property = null) {
 
+    let childPath;
     if (index != null) {
       if (!property) {
         property = DEFAULT_COLLECTION_PROP;
       }
       this._enforceProp(property);
       this.node[property][index] = node;
-      return NodePath.getForNode(node, this, property, index);
+      childPath = NodePath.getForNode(node, this, property, index);
     } else {
       if (!property) {
         property = DEFAULT_SINGLE_PROP;
       }
       this._enforceProp(property);
       this.node[property] = node;
-      return NodePath.getForNode(node, this, property);
+      childPath = NodePath.getForNode(node, this, property, null);
     }
+    return childPath;
   }
 
   /**
@@ -180,10 +182,11 @@ class NodePath {
    * Replaces a node with the passed one.
    */
   replace(newNode) {
+
     this.node = newNode;
 
     if (!this.parent) {
-      return;
+      return null;
     }
 
     // A node is in a collection.
@@ -305,7 +308,7 @@ class NodePath {
    * The same NodePath can be reused in several places, e.g.
    * a parent node passed for all its children.
    */
-  static getForNode(node, parentPath = null, prop = null, index = null) {
+  static getForNode(node, parentPath = null, prop = null, index = -1) {
     if (!node) {
       return null;
     }
@@ -313,7 +316,7 @@ class NodePath {
     if (!NodePath.registry.has(node)) {
       NodePath.registry.set(
         node,
-        new NodePath(node, parentPath, prop, index)
+        new NodePath(node, parentPath, prop, index == -1 ? null : index)
       );
     }
 
@@ -321,13 +324,14 @@ class NodePath {
 
     if (parentPath !== null) {
       path.parentPath = parentPath;
+      path.parent = path.parentPath.node;
     }
 
     if (prop !== null) {
       path.property = prop;
     }
 
-    if (index !== null) {
+    if (index >= 0) {
       path.index = index;
     }
 

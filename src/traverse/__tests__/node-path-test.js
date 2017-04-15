@@ -317,6 +317,67 @@ describe('NodePath', () => {
     });
   });
 
+  it('replaces with already used node with another parent', () => {
+    const ast = parser.parse('/a(b)/');
+
+    const bodyPath = new NodePath(ast.body);
+    const aCharPath = bodyPath.getChild(0);
+    const groupPath = bodyPath.getChild(1);
+    const bCharPath = groupPath.getChild();
+    const aNode = aCharPath.node;
+    const bNode = bCharPath.node;
+
+    bodyPath.node.mark = "body";
+    groupPath.node.mark = "group";
+
+    // swap a and b
+    groupPath.setChild(aNode);
+    bodyPath.setChild(bNode, 0);
+
+    // 'a' and 'b' should be swapped now
+    expect(generator.generate(ast)).toBe('/b(a)/');
+
+    // body and group still ok
+    expect(bodyPath.node.mark).toBe('body')
+    expect(groupPath.node.mark).toBe('group')
+    expect(bodyPath.getChild(1).node.mark).toBe('group')
+
+    // first is now Char 'b' in body
+    expect(bodyPath.getChild(0).node.type).toBe('Char')
+    expect(bodyPath.getChild(0).node.value).toBe('b')
+    // parentPath should point to the same node as parent
+    expect(bodyPath.getChild(0).parentPath.node).toBe(bodyPath.getChild(0).parent)
+    // now the parent of 'b' is the body
+    expect(bodyPath.getChild(0).parent.mark).toBe('body')
+    expect(bodyPath.getChild(0).parent.type).toBe('Alternative')
+    // Group has children property 'expressions'
+    expect(bodyPath.getChild(0).property).toBe('expressions')
+    // and an index of 0
+    expect(bodyPath.getChild(0).index).toBe(0)
+
+    // second is Char 'a' in the Group
+    expect(bodyPath.getChild(1).getChild().node.type).toBe('Char')
+    expect(bodyPath.getChild(1).getChild().node.value).toBe('a')
+    // parentPath should point to the same node as parent
+    expect(bodyPath.getChild(1).getChild().parentPath.node).toBe(bodyPath.getChild(1).getChild().parent)
+    // now the parent of 'a' is the Group
+    expect(bodyPath.getChild(1).getChild().parent.mark).toBe('group')
+    expect(bodyPath.getChild(1).getChild().parent.type).toBe('Group')
+    // Group has child property 'expression'
+    expect(bodyPath.getChild(1).getChild().property).toBe('expression')
+    // and no index!
+    expect(bodyPath.getChild(1).getChild().index).toBe(null)
+
+    // the locally stored NodePaths should have new parents
+    expect(bCharPath.parentPath).toBe(bodyPath);
+    expect(aCharPath.parentPath).toBe(groupPath);
+    // paths from the registry should be the same
+    const bCharPath2 = NodePath.getForNode(bNode);
+    expect(bCharPath2).toBe(bCharPath);
+    const aCharPath2 = NodePath.getForNode(aNode);
+    expect(aCharPath2).toBe(aCharPath);
+  });
+
   it('sets a child node to two new nested nodes', () => {
     const ast = parser.parse('/ab/');
 
@@ -368,7 +429,7 @@ describe('NodePath', () => {
     expect(dPath.parentPath).toBe(alterPath);
     expect(alterPath.parentPath).toBe(groupPath);
 
-    expect(generator.generate(ast)).toBe('/a(cd)/');
+    expect(generator.generate(ast)).toEqual('/a(cd)/');
   });
 
   it('getPreviousSibling', () => {
