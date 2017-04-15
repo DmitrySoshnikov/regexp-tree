@@ -313,7 +313,7 @@ console.log(optimizedRe); // /\w+e+/
 
 #### Optimizer ESLint plugin
 
-The [optimizer](https://github.com/DmitrySoshnikov/regexp-tree/tree/master/src/optimizer) module is also available as an _ESLint plugin_, available at: [eslint-plugin-optimize-regex](https://www.npmjs.com/package/eslint-plugin-optimize-regex).
+The [optimizer](https://github.com/DmitrySoshnikov/regexp-tree/tree/master/src/optimizer) module is also available as an _ESLint plugin_, which can be installed at: [eslint-plugin-optimize-regex](https://www.npmjs.com/package/eslint-plugin-optimize-regex).
 
 ### Using compat-transpiler API
 
