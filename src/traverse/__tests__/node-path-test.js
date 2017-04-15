@@ -335,47 +335,47 @@ describe('NodePath', () => {
     bodyPath.setChild(bNode, 0);
 
     // 'a' and 'b' should be swapped now
-    expect(generator.generate(ast)).toEqual('/b(a)/');
+    expect(generator.generate(ast)).toBe('/b(a)/');
 
     // body and group still ok
-    expect(bodyPath.node.mark).toEqual('body')
-    expect(groupPath.node.mark).toEqual('group')
-    expect(bodyPath.getChild(1).node.mark).toEqual('group')
+    expect(bodyPath.node.mark).toBe('body')
+    expect(groupPath.node.mark).toBe('group')
+    expect(bodyPath.getChild(1).node.mark).toBe('group')
 
     // first is now Char 'b' in body
-    expect(bodyPath.getChild(0).node.type).toEqual('Char')
-    expect(bodyPath.getChild(0).node.value).toEqual('b')
+    expect(bodyPath.getChild(0).node.type).toBe('Char')
+    expect(bodyPath.getChild(0).node.value).toBe('b')
     // parentPath should point to the same node as parent
     expect(bodyPath.getChild(0).parentPath.node).toBe(bodyPath.getChild(0).parent)
     // now the parent of 'b' is the body
-    expect(bodyPath.getChild(0).parent.mark).toEqual('body')
-    expect(bodyPath.getChild(0).parent.type).toEqual('Alternative')
+    expect(bodyPath.getChild(0).parent.mark).toBe('body')
+    expect(bodyPath.getChild(0).parent.type).toBe('Alternative')
     // Group has children property 'expressions'
-    expect(bodyPath.getChild(0).property).toEqual('expressions')
+    expect(bodyPath.getChild(0).property).toBe('expressions')
     // and an index of 0
-    expect(bodyPath.getChild(0).index).toEqual(0)
+    expect(bodyPath.getChild(0).index).toBe(0)
 
     // second is Char 'a' in the Group
-    expect(bodyPath.getChild(1).getChild().node.type).toEqual('Char')
-    expect(bodyPath.getChild(1).getChild().node.value).toEqual('a')
+    expect(bodyPath.getChild(1).getChild().node.type).toBe('Char')
+    expect(bodyPath.getChild(1).getChild().node.value).toBe('a')
     // parentPath should point to the same node as parent
     expect(bodyPath.getChild(1).getChild().parentPath.node).toBe(bodyPath.getChild(1).getChild().parent)
     // now the parent of 'a' is the Group
-    expect(bodyPath.getChild(1).getChild().parent.mark).toEqual('group')
-    expect(bodyPath.getChild(1).getChild().parent.type).toEqual('Group')
+    expect(bodyPath.getChild(1).getChild().parent.mark).toBe('group')
+    expect(bodyPath.getChild(1).getChild().parent.type).toBe('Group')
     // Group has child property 'expression'
-    expect(bodyPath.getChild(1).getChild().property).toEqual('expression')
+    expect(bodyPath.getChild(1).getChild().property).toBe('expression')
     // and no index!
     expect(bodyPath.getChild(1).getChild().index).toBe(null)
 
     // the locally stored NodePaths should have new parents
-    expect(bCharPath.parentPath).toEqual(bodyPath);
-    expect(aCharPath.parentPath).toEqual(groupPath);
+    expect(bCharPath.parentPath).toBe(bodyPath);
+    expect(aCharPath.parentPath).toBe(groupPath);
     // paths from the registry should be the same
     const bCharPath2 = NodePath.getForNode(bNode);
-    expect(bCharPath2).toEqual(bCharPath);
+    expect(bCharPath2).toBe(bCharPath);
     const aCharPath2 = NodePath.getForNode(aNode);
-    expect(aCharPath2).toEqual(aCharPath);
+    expect(aCharPath2).toBe(aCharPath);
   });
 
   it('sets a child node to two new nested nodes', () => {
