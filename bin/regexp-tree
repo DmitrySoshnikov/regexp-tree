@@ -21,7 +21,12 @@ const options = require('nomnom')
     },
     optimize: {
       abbr: 'o',
-      help: 'Apply optimizer on the passed regexp',
+      help: 'Apply optimizer on the passed expression',
+      flag: true,
+    },
+    compat: {
+      abbr: 'c',
+      help: 'Apply compat-transpiler on the passed expression',
       flag: true,
     },
   })
@@ -29,6 +34,7 @@ const options = require('nomnom')
 
 function main() {
   const {
+    compat,
     expression,
     loc,
     optimize,
@@ -40,6 +46,14 @@ function main() {
   if (optimize) {
     const optimized = regexpTree.optimize(expression);
     console.info('\n', bold('Optimized:'), optimized.toString(), '\n');
+    return;
+  }
+
+  // ------------------------------------------------------
+  // Compat-transpiler.
+  if (compat) {
+    const compatTranspiled = regexpTree.compatTranspile(expression);
+    console.info('\n', bold('Compat:'), compatTranspiled.toString(), '\n');
     return;
   }
 

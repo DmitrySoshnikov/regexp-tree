@@ -72,6 +72,8 @@ Usage: regexp-tree [options]
 Options:
    -e, --expression   A regular expression to be parsed
    -l, --loc          Whether to capture AST node locations
+   -o, --optimize     Applies optimizer on the passed expression
+   -c, --compat       Applies compat-transpiler on the passed expression
 ```
 
 To parse a regular expression, pass `-e` option:
@@ -311,6 +313,18 @@ const optimizedRe = regexpTree
 console.log(optimizedRe); // /\w+e+/
 ```
 
+From CLI the optimizer is available via `--optimize` (`-o`) option:
+
+```
+regexp-tree -e '/[a-zA-Z_0-9][A-Z_\da-z]*\e{1,}/' -o
+```
+
+Result:
+
+```
+Optimized: /\w+e+/
+```
+
 #### Optimizer ESLint plugin
 
 The [optimizer](https://github.com/DmitrySoshnikov/regexp-tree/tree/master/src/optimizer) module is also available as an _ESLint plugin_, which can be installed at: [eslint-plugin-optimize-regex](https://www.npmjs.com/package/eslint-plugin-optimize-regex).
@@ -358,6 +372,18 @@ const compatTranspiledRe = regexpTree
   .toRegExp();
 
 console.log(compatTranspiledRe); // /([\0-\uFFFF])\1/
+```
+
+From CLI the compat-transpiler is available via `--compat` (`-c`) option:
+
+```
+regexp-tree -e '/(?<all>.)\k<all>/s' -c
+```
+
+Result:
+
+```
+Compat: /([\0-\uFFFF])\1/
 ```
 
 ### Creating RegExp objects
