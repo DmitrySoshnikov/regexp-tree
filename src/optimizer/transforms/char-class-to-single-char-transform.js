@@ -17,7 +17,7 @@ module.exports = {
 
     if (
       node.expressions.length !== 1 ||
-      node.expressions[0].type !== 'Char'
+      !isAppropriateChar(node.expressions[0])
     ) {
       return;
     }
@@ -47,6 +47,15 @@ module.exports = {
     })
   }
 };
+
+function isAppropriateChar(node) {
+  return (
+    node.type === 'Char' &&
+    // We don't extract [\b] (backspace) since \b has different
+    // semantics (word boundary).
+    node.value !== '\\b'
+  );
+}
 
 function isMeta(value) {
   return /^\\[dwsDWS$]/.test(value);

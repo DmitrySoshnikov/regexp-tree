@@ -50,6 +50,15 @@ describe('char-class-to-single-char', () => {
     expect(re.toString()).toBe('/\\d/');
   });
 
+  it('backspace', () => {
+    const re = transform('/[\\b]/', [
+      charClassToSingleChar,
+    ]);
+
+    // Stays the same, since \b would have different semantics.
+    expect(re.toString()).toBe('/[\\b]/');
+  });
+
   it('inverse meta', () => {
     let re = transform('/[^\\d]/', [
       charClassToSingleChar,
