@@ -101,7 +101,56 @@ describe('extended', () => {
       },
       flags: 'x'
     });
+  });
 
+  it('escaped space and # with x flag', () => {
+    const re = '/\\ \\#/x';
+
+    expect(parser.parse(re)).toEqual({
+      type: 'RegExp',
+      body: {
+        type: 'Alternative',
+        expressions: [
+          {
+            type: 'Char',
+            value: ' ',
+            kind: 'simple',
+            escaped: true,
+          },
+          {
+            type: 'Char',
+            value: '#',
+            kind: 'simple',
+            escaped: true,
+          },
+        ],
+      },
+      flags: 'x'
+    });
+  });
+
+  it('non-escaped space and # in class with x flag', () => {
+    const re = '/[ #]/x';
+
+    expect(parser.parse(re)).toEqual({
+      type: 'RegExp',
+      body: {
+        type: 'CharacterClass',
+        expressions: [
+          {
+            type: 'Char',
+            value: ' ',
+            kind: 'simple',
+          },
+          {
+            type: 'Char',
+            value: '#',
+            kind: 'simple',
+          },
+        ],
+      },
+      flags: 'x'
+    });
   });
 
 });
