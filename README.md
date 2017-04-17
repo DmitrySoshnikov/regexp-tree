@@ -21,6 +21,7 @@ You can get an overview of the tool in [this article](https://medium.com/@Dmitry
 - [Using compat-transpiler API](#using-compat-transpiler-api)
 - [Creating RegExp objects](#creating-regexp-objects)
 - [Executing regexes](#executing-regexes)
+- [RegExp extensions](#regexp-extensions)
 - [AST nodes specification](#ast-nodes-specification)
 
 ### Installation
@@ -414,6 +415,33 @@ const string = '2017-04-14';
 const result = regexpTree.exec(re, string);
 
 console.log(result.groups); // {year: '2017', month: '04', day: '14'}
+```
+
+### RegExp extensions
+
+Besides future proposals, like [named capturing group](#named-capturing-group), and other which are being currently standardized, _regexp-tree_ also supports _non-standard_ features.
+
+> NOTE: _"non-standard"_ means specifically ECMAScript standard, since in other regexp egnines, e.g. PCRE, Python, etc. these features are standard.
+
+One of such featurs is `x` flag, which enables _extended_ mode of regular expressions. In this mode most of whitespaces are ignored, and expressions can use #-comments.
+
+Example:
+
+```regex
+/
+  # A regular expression for date.
+
+  (?<year>\d{4})-    # year part of a date
+  (?<month>\d{2})-   # month part of a date
+  (?<day>\d{2})      # day part of a date
+
+/x
+```
+
+This is normally parsed by the _regexp-tree_ parser, and [compat-transpiler](#using-compat-transpiler-api) has full support for it; it's translated into:
+
+```regex
+/(\d{4})-(\d{2})-(\d{2})/
 ```
 
 ### AST nodes specification
