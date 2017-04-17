@@ -1,4 +1,6 @@
-# regexp-tree [![Build Status](https://travis-ci.org/DmitrySoshnikov/regexp-tree.svg?branch=master)](https://travis-ci.org/DmitrySoshnikov/regexp-tree) [![npm version](https://badge.fury.io/js/regexp-tree.svg)](https://badge.fury.io/js/regexp-tree) [![npm downloads](https://img.shields.io/npm/dt/regexp-tree.svg)](https://www.npmjs.com/package/regexp-tree)
+# regexp-tree
+
+[![Build Status](https://travis-ci.org/DmitrySoshnikov/regexp-tree.svg?branch=master)](https://travis-ci.org/DmitrySoshnikov/regexp-tree) [![npm version](https://badge.fury.io/js/regexp-tree.svg)](https://badge.fury.io/js/regexp-tree) [![npm downloads](https://img.shields.io/npm/dt/regexp-tree.svg)](https://www.npmjs.com/package/regexp-tree)
 
 Regular expressions processor in JavaScript
 
