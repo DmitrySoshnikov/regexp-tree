@@ -333,9 +333,12 @@ let tokenizer;
  * See `--custom-tokinzer` to skip this generation, and use a custom one.
  */
 
-const lexRules = [[/^\\-/, function() { return 'ESC_CHAR' }, ["class"]],
+const lexRules = [[/^#[^\n]+/, function() { /* skip comments */ }, ["x"]],
+[/^\s+/, function() { /* skip whitespace */ }, ["x"]],
+[/^\\-/, function() { return 'ESC_CHAR' }, ["class"]],
 [/^-/, function() { return 'DASH' }, ["class"]],
 [/^\//, function() { return 'CHAR' }, ["class"]],
+[/^#/, function() { return 'CHAR' }, ["class"]],
 [/^\{/, function() { return 'CHAR' }, ["class"]],
 [/^\{\d+\}/, function() { return 'RANGE_EXACT' }, ],
 [/^\{\d+,\}/, function() { return 'RANGE_OPEN' }, ],
@@ -378,7 +381,7 @@ const lexRules = [[/^\\-/, function() { return 'ESC_CHAR' }, ["class"]],
 [/^[^*?+\[()]/, function() { return 'CHAR' }, ],
 [/^\[\^/, function() {  this.pushState('class'); return 'NEG_CLASS'  }, ],
 [/^\[/, function() {  this.pushState('class'); return 'L_BRACKET'  }, ]];
-const lexRulesByConditions = {"INITIAL":[4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,23,24,25,26,27,28,29,30,34,35,36,37,38,39,40,41,42,43,44],"class":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44]};
+const lexRulesByConditions = {"INITIAL":[7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,26,27,28,29,30,31,32,33,37,38,39,40,41,42,43,44,45,46,47],"x":[0,1,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,26,27,28,29,30,31,32,33,37,38,39,40,41,42,43,44,45,46,47],"class":[2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47]};
 
 const EOF_TOKEN = {
   type: EOF,
@@ -814,10 +817,17 @@ let namedGroups = {};
  */
 let parsingString = '';
 
-yyparse.onParseBegin = (string) => {
+yyparse.onParseBegin = (string, lexer) => {
   parsingString = string;
   capturingGroupsCount = 0;
   namedGroups = {};
+
+  const lastSlash = string.lastIndexOf('/');
+  const flags = string.slice(lastSlash);
+
+  if (flags.includes('x')) {
+    lexer.pushState('x');
+  }
 };
 
 /**
@@ -869,7 +879,7 @@ function Char(value, kind, loc) {
  * Valid flags per current ECMAScript spec and
  * stage 3+ proposals.
  */
-const validFlags = 'gimsuy';
+const validFlags = 'gimsuxy';
 
 /**
  * Checks the flags are valid, and that

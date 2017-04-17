@@ -38,11 +38,23 @@ GROUP_NAME              ([\w$]|\\'u'[0-9a-fA-F]{4}|\\'u{'[0-9a-fA-F]{1,}'}')+
  */
 %s class
 
+/**
+ * State for "extended" regexp, enabled by `x` flag.
+ *
+ * In this state whitespace are ignored, and expressions can
+ * use #-comments.
+ */
+%s x
+
 %%
+
+<x>'#'[^\n]+             /* skip comments */
+<x>\s+                   /* skip whitespace */
 
 <class>{ESC}'-'          return 'ESC_CHAR'
 <class>'-'               return 'DASH'
 <class>'/'               return 'CHAR'
+<class>'#'               return 'CHAR'
 
 <class>'{'               return 'CHAR'
 
@@ -134,10 +146,17 @@ let namedGroups = {};
  */
 let parsingString = '';
 
-yyparse.onParseBegin = (string) => {
+yyparse.onParseBegin = (string, lexer) => {
   parsingString = string;
   capturingGroupsCount = 0;
   namedGroups = {};
+
+  const lastSlash = string.lastIndexOf('/');
+  const flags = string.slice(lastSlash);
+
+  if (flags.includes('x')) {
+    lexer.pushState('x');
+  }
 };
 
 /**
@@ -189,7 +208,7 @@ function Char(value, kind, loc) {
  * Valid flags per current ECMAScript spec and
  * stage 3+ proposals.
  */
-const validFlags = 'gimsuy';
+const validFlags = 'gimsuxy';
 
 /**
  * Checks the flags are valid, and that
