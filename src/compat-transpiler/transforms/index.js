@@ -11,4 +11,7 @@ module.exports = {
 
   // Named capturing groups.
   namedCapturingGroups: require('./compat-named-capturing-groups-transform'),
+
+  // `x` flag
+  xFlag: require('./compat-x-flag-transform'),
 };

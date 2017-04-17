@@ -10,7 +10,7 @@ const compatTranspiler = require('..');
 describe('compat-transpiler-integration-test', () => {
 
   it('applies all transforms', () => {
-    const original = '/a.b(?<name>x)/s';
+    const original = '/a.b(?<name>x)/sx';
     const compat = /a[\0-\uFFFF]b(x)/;
 
     const result = compatTranspiler.transform(original);
