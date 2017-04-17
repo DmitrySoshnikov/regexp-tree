@@ -22,10 +22,10 @@ You can get an overview of the tool in [this article](https://medium.com/@Dmitry
   - [Optimizer ESLint plugin](#optimizer-eslint-plugin)
 - [Using compat-transpiler API](#using-compat-transpiler-api)
   - [Compat-transpiler Babel plugin](#compat-transpiler-babel-plugin)
-- [Creating RegExp objects](#creating-regexp-objects)
-- [Executing regexes](#executing-regexes)
 - [RegExp extensions](#regexp-extensions)
   - [RegExp extensions Babel plugin](#regexp-extensions-babel-plugin)
+- [Creating RegExp objects](#creating-regexp-objects)
+- [Executing regexes](#executing-regexes)
 - [AST nodes specification](#ast-nodes-specification)
 
 ### Installation
@@ -397,36 +397,6 @@ The [compat-transpiler](https://github.com/DmitrySoshnikov/regexp-tree/tree/mast
 
 Note, the plugin also includes [extended regexp](#regexp-extensions) features.
 
-### Creating RegExp objects
-
-To create an actual `RegExp` JavaScript object, we can use `regexpTree.toRegExp` method:
-
-```js
-const regexpTree = require('regexp-tree');
-
-const re = regexpTree.toRegExp('/[a-z]/i');
-
-console.log(
-  re.test('a'), // true
-  re.test('Z'), // true
-);
-```
-
-### Executing regexes
-
-It is also possible to execute regular expressions using `exec` API method, which has support for new syntax, and features, such as [named capturing group](#named-capturing-group), etc:
-
-```js
-const regexpTree = require('regexp-tree');
-
-const re = '/(?<year>\\d{4})-(?<month>\\d{2})-(?<day>\\d{2})/';
-const string = '2017-04-14';
-
-const result = regexpTree.exec(re, string);
-
-console.log(result.groups); // {year: '2017', month: '04', day: '14'}
-```
-
 ### RegExp extensions
 
 Besides future proposals, like [named capturing group](#named-capturing-group), and other which are being currently standardized, _regexp-tree_ also supports _non-standard_ features.
@@ -459,6 +429,45 @@ This is normally parsed by the _regexp-tree_ parser, and [compat-transpiler](#us
 The regexp extensions are also available as a _Babel plugin_, which can be installed at: [babel-plugin-transform-modern-regexp](https://www.npmjs.com/package/babel-plugin-transform-modern-regexp).
 
 Note, the plugin also includes [compat-transpiler](#using-compat-transpiler-api) features.
+
+### Creating RegExp objects
+
+To create an actual `RegExp` JavaScript object, we can use `regexpTree.toRegExp` method:
+
+```js
+const regexpTree = require('regexp-tree');
+
+const re = regexpTree.toRegExp('/[a-z]/i');
+
+console.log(
+  re.test('a'), // true
+  re.test('Z'), // true
+);
+```
+
+### Executing regexes
+
+It is also possible to execute regular expressions using `exec` API method, which has support for new syntax, and features, such as [named capturing group](#named-capturing-group), etc:
+
+```js
+const regexpTree = require('regexp-tree');
+
+const re = `/
+
+  # A regular expression for date.
+
+  (?<year>\\d{4})-    # year part of a date
+  (?<month>\\d{2})-   # month part of a date
+  (?<day>\\d{2})      # day part of a date
+
+/x`;
+
+const string = '2017-04-14';
+
+const result = regexpTree.exec(re, string);
+
+console.log(result.groups); // {year: '2017', month: '04', day: '14'}
+```
 
 ### AST nodes specification
 

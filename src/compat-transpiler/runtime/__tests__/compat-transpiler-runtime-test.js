@@ -43,7 +43,7 @@ describe('compat-transpiler-runtime', () => {
 
     // Testing runtime.
     const string = '2017-04-14';
-    const result = re.exec(string);
+    let result = re.exec(string);
 
     expect(result).not.toBe(null);
     expect(result[0]).toBe(string);
@@ -58,6 +58,10 @@ describe('compat-transpiler-runtime', () => {
     expect(result.groups.year).toBe(result[1]);
     expect(result.groups.month).toBe(result[2]);
     expect(result.groups.day).toBe(result[3]);
+
+    // null result
+    result = re.exec('foo-bar');
+    expect(result).toBe(null);
   });
 
 });

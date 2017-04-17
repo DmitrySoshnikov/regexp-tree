@@ -80,7 +80,7 @@ class RegExpTree {
   exec(string) {
     const result = this._re.exec(string);
 
-    if (!this._groups) {
+    if (!this._groups || !result) {
       return result;
     }
 
