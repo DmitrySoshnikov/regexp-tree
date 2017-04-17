@@ -43,7 +43,7 @@ You can also [try it online](https://astexplorer.net/#/gist/4ea2b52f0e546af6fb14
 ### Development
 
 1. Fork https://github.com/DmitrySoshnikov/regexp-tree repo
-2. If there is an actual issue from the [issues](https://github.com/DmitrySoshnikov/regexp-tree/issues) list you'd like to work on, feel free to assing it yourself, or comment on it to avoid collisions (open a new issue if needed)
+2. If there is an actual issue from the [issues](https://github.com/DmitrySoshnikov/regexp-tree/issues) list you'd like to work on, feel free to assign it yourself, or comment on it to avoid collisions (open a new issue if needed)
 3. Make your changes
 4. Make sure `npm test` still passes (add new tests if needed)
 5. Submit a PR
