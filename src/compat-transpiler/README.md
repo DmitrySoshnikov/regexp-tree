@@ -43,3 +43,9 @@ Available transforms are:
 
 * `dotAll` - translates `/./s` into `/[\0-\uFFFF]/`
 * `namedCapturingGroups` - transforms `/(?<name>a)\k<name>/` into `/(a)\1/`
+
+## Babel plugin
+
+The _compat-transpiler_ module is also available as a _Babel plugin_, which can be installed at: [babel-plugin-transform-modern-regexp](https://www.npmjs.com/package/babel-plugin-transform-modern-regexp).
+
+Note, the plugin also includes [extended regexp](https://github.com/dmitrysoshnikov/regexp-tree#regexp-extensions) features.

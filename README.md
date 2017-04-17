@@ -19,9 +19,11 @@ You can get an overview of the tool in [this article](https://medium.com/@Dmitry
 - [Using optimizer API](#using-optimizer-api)
   - [Optimizer ESLint plugin](#optimizer-eslint-plugin)
 - [Using compat-transpiler API](#using-compat-transpiler-api)
+  - [Compat-transpiler Babel plugin](#compat-transpiler-babel-plugin)
 - [Creating RegExp objects](#creating-regexp-objects)
 - [Executing regexes](#executing-regexes)
 - [RegExp extensions](#regexp-extensions)
+  - [RegExp extensions Babel plugin](#regexp-extensions-babel-plugin)
 - [AST nodes specification](#ast-nodes-specification)
 
 ### Installation
@@ -387,6 +389,12 @@ Result:
 Compat: /([\0-\uFFFF])\1/
 ```
 
+#### Compat-transpiler Babel plugin
+
+The [compat-transpiler](https://github.com/DmitrySoshnikov/regexp-tree/tree/master/src/compat-transpiler) module is also available as a _Babel plugin_, which can be installed at: [babel-plugin-transform-modern-regexp](https://www.npmjs.com/package/babel-plugin-transform-modern-regexp).
+
+Note, the plugin also includes [extended regexp](#regexp-extensions) features.
+
 ### Creating RegExp objects
 
 To create an actual `RegExp` JavaScript object, we can use `regexpTree.toRegExp` method:
@@ -443,6 +451,12 @@ This is normally parsed by the _regexp-tree_ parser, and [compat-transpiler](#us
 ```regex
 /(\d{4})-(\d{2})-(\d{2})/
 ```
+
+#### RegExp extensions Babel plugin
+
+The regexp extensions are also available as a _Babel plugin_, which can be installed at: [babel-plugin-transform-modern-regexp](https://www.npmjs.com/package/babel-plugin-transform-modern-regexp).
+
+Note, the plugin also includes [compat-transpiler](#using-compat-transpiler-api) features.
 
 ### AST nodes specification
 
