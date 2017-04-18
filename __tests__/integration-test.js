@@ -86,6 +86,24 @@ describe('regexp-tree', () => {
     expect(re.test('Z')).toBe(true);
   });
 
+  it('creates complex RegExp', () => {
+    const reStr = `/
+
+      # A regular expression for date.
+
+      (?<year>\\d{4})-    # year part of a date
+      (?<month>\\d{2})-   # month part of a date
+      (?<day>\\d{2})      # day part of a date
+
+    /x`;
+
+    const re = regexpTree.toRegExp(reStr);
+
+    expect(re).toBeInstanceOf(RegExp);
+
+    expect(re.test('2017-04-14')).toBe(true);
+  });
+
   it('calls `ToString` in `parse`', () => {
     const reStr = '/m/m';
     const ast = regexpTree.parse({toString: () => reStr});

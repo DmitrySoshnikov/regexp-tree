@@ -102,9 +102,8 @@ const regexpTree = {
    * @param string regexp
    */
   toRegExp(regexp) {
-    const ast = this.parse(regexp);
-    const body = this.generate(ast.body);
-    return new RegExp(body, ast.flags);
+    const compat = this.compatTranspile(regexp);
+    return new RegExp(compat.getSource(), compat.getFlags());
   },
 
   /**
