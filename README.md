@@ -307,9 +307,9 @@ Once we have this plugin ready, we can require it, and pass to the `transform` f
 const regexpTree = require('regexp-tree');
 const plugin = require('./regexp-tree-a-to-b-transform');
 
-const re = regexpTree.transform(/[a|c]a+[a-z]/, plugin);
+const re = regexpTree.transform(/(a|c)a+[a-z]/, plugin);
 
-console.log(re.toRegExp()); // /[b|c]b+[b-z]/
+console.log(re.toRegExp()); // /(b|c)b+[b-z]/
 ```
 
 > NOTE: we can also pass a _list of plugins_ to the `regexpTree.transform`. In this case the plugins are applied in one pass in order. Another approach is to run several sequential calls to `transform`, setting up a pipeline, when a transformed AST is passed further to another plugin, etc.
@@ -341,6 +341,8 @@ console.log(re); // '/a/i'
 ### Using optimizer API
 
 [Optimizer](https://github.com/DmitrySoshnikov/regexp-tree/tree/master/src/optimizer) transforms your regexp into an _optimized_ version, replacing some sub-expressions with their idiomatic patterns. This might be good for different kinds of minifiers, as well as for regexp machines.
+
+> NOTE: the Optimizer is implemented as a set of _regexp-tree_ [plugins](#transform-plugins).
 
 Example:
 
@@ -375,6 +377,8 @@ The [optimizer](https://github.com/DmitrySoshnikov/regexp-tree/tree/master/src/o
 ### Using compat-transpiler API
 
 The [compat-transpiler](https://github.com/DmitrySoshnikov/regexp-tree/tree/master/src/compat-transpiler) module translates your regexp in new format or in new syntax, into an equivalent regexp in a legacy representation, so it can be used in engines which don't yet implement the new syntax.
+
+> > NOTE: the compat-transpiler is implemented as a set of _regexp-tree_ [plugins](#transform-plugins).
 
 Example, "dotAll" `s` flag:
 
