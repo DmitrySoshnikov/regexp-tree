@@ -378,7 +378,7 @@ The [optimizer](https://github.com/DmitrySoshnikov/regexp-tree/tree/master/src/o
 
 The [compat-transpiler](https://github.com/DmitrySoshnikov/regexp-tree/tree/master/src/compat-transpiler) module translates your regexp in new format or in new syntax, into an equivalent regexp in a legacy representation, so it can be used in engines which don't yet implement the new syntax.
 
-> > NOTE: the compat-transpiler is implemented as a set of _regexp-tree_ [plugins](#transform-plugins).
+> NOTE: the compat-transpiler is implemented as a set of _regexp-tree_ [plugins](#transform-plugins).
 
 Example, "dotAll" `s` flag:
 
