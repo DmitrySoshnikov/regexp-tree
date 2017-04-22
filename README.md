@@ -17,6 +17,7 @@ You can get an overview of the tool in [this article](https://medium.com/@Dmitry
 - [Capturing locations](#capturing-locations)
 - [Using traversal API](#using-traversal-api)
 - [Using transform API](#using-transform-api)
+  - [Transform plugins](#transform-plugins)
 - [Using generator API](#using-generator-api)
 - [Using optimizer API](#using-optimizer-api)
   - [Optimizer ESLint plugin](#optimizer-eslint-plugin)
@@ -277,6 +278,43 @@ console.log(re.toString()); // '/[a-z]+/i'
 console.log(re.toRegExp()); // /[a-z]+/i
 console.log(re.getAST()); // AST for /[a-z]+/i
 ```
+
+#### Transform plugins
+
+A _transformation plugin_ is a module which exports a _transformation handler_. We have seen [above](#using-transform-api) how we can pass a handler object directly to the `regexpTree.transform` method, here we extract it into a separate module, so it can be implemented and shared independently:
+
+Example of a plugin:
+
+```js
+// file: ./regexp-tree-a-to-b-transform.js
+
+
+/**
+ * This plugin replaces chars 'a' with chars 'b'.
+ */
+module.exports = {
+  Char({node}) {
+    if (node.kind === 'simple' && node.value === 'a') {
+      node.value = 'b';
+    }
+  },
+};
+```
+
+Once we have this plugin ready, we can require it, and pass to the `transform` function:
+
+```js
+const regexpTree = require('regexp-tree');
+const plugin = require('./regexp-tree-a-to-b-transform');
+
+const re = regexpTree.transform(/[a|c]a+[a-z]/, plugin);
+
+console.log(re.toRegExp()); // /[b|c]b+[b-z]/
+```
+
+> NOTE: we can also pass a _list of plugins_ to the `regexpTree.transform`. In this case the plugins are applied in one pass in order. Another approach is to run several sequential calls to `transform`, setting up a pipeline, when a transformed AST is passed further to another plugin, etc.
+
+You can see other examples of transform plugins in the [optimizer/transforms](https://github.com/DmitrySoshnikov/regexp-tree/tree/master/src/optimizer/transforms) or in the [compat-transpiler/transforms](https://github.com/DmitrySoshnikov/regexp-tree/tree/master/src/compat-transpiler/transforms) directories.
 
 ### Using generator API
 
