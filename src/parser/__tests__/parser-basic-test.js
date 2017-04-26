@@ -140,6 +140,163 @@ describe('basic', () => {
     });
   });
 
+  it('character class with punctuation symbols', () => {
+    expect(re('/[!"#$%&\'()*+,./:;<=>?@\^_`{|}~-]/')).toEqual({
+      type: 'RegExp',
+      body: {
+        type: 'CharacterClass',
+        expressions: [
+          {
+            type: 'Char',
+            kind: 'simple',
+            value: '!'
+          },
+          {
+            type: 'Char',
+            kind: 'simple',
+            value: '"'
+          },
+          {
+            type: 'Char',
+            kind: 'simple',
+            value: '#'
+          },
+          {
+            type: 'Char',
+            kind: 'simple',
+            value: '$'
+          },
+          {
+            type: 'Char',
+            kind: 'simple',
+            value: '%'
+          },
+          {
+            type: 'Char',
+            kind: 'simple',
+            value: '&'
+          },
+          {
+            type: 'Char',
+            kind: 'simple',
+            value: '\''
+          },
+          {
+            type: 'Char',
+            kind: 'simple',
+            value: '('
+          },
+          {
+            type: 'Char',
+            kind: 'simple',
+            value: ')'
+          },
+          {
+            type: 'Char',
+            kind: 'simple',
+            value: '*'
+          },
+          {
+            type: 'Char',
+            kind: 'simple',
+            value: '+'
+          },
+          {
+            type: 'Char',
+            kind: 'simple',
+            value: ','
+          },
+          {
+            type: 'Char',
+            kind: 'simple',
+            value: '.'
+          },
+          {
+            type: 'Char',
+            kind: 'simple',
+            value: '/'
+          },
+          {
+            type: 'Char',
+            kind: 'simple',
+            value: ':'
+          },
+          {
+            type: 'Char',
+            kind: 'simple',
+            value: ';'
+          },
+          {
+            type: 'Char',
+            kind: 'simple',
+            value: '<'
+          },
+          {
+            type: 'Char',
+            kind: 'simple',
+            value: '='
+          },
+          {
+            type: 'Char',
+            kind: 'simple',
+            value: '>'
+          },
+          {
+            type: 'Char',
+            kind: 'simple',
+            value: '?'
+          },
+          {
+            type: 'Char',
+            kind: 'simple',
+            value: '@'
+          },
+          {
+            type: 'Char',
+            kind: 'simple',
+            value: '^'
+          },
+          {
+            type: 'Char',
+            kind: 'simple',
+            value: '_'
+          },
+          {
+            type: 'Char',
+            kind: 'simple',
+            value: '`'
+          },
+          {
+            type: 'Char',
+            kind: 'simple',
+            value: '{'
+          },
+          {
+            type: 'Char',
+            kind: 'simple',
+            value: '|'
+          },
+          {
+            type: 'Char',
+            kind: 'simple',
+            value: '}'
+          },
+          {
+            type: 'Char',
+            kind: 'simple',
+            value: '~'
+          },
+          {
+            type: 'Char',
+            kind: 'simple',
+            value: '-'
+          }
+        ]
+      },
+      flags: ''
+    });
+  });
+
   it('capturing group numbers', () => {
     expect(re('/(?:)(a)(?:)(?<name>b)/')).toEqual({
       type: 'RegExp',
