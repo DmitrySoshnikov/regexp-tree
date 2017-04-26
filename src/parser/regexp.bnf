@@ -55,6 +55,8 @@ GROUP_NAME              ([\w$]|\\'u'[0-9a-fA-F]{4}|\\'u{'[0-9a-fA-F]{1,}'}')+
 <class>'-'               return 'DASH'
 <class>'/'               return 'CHAR'
 <class>'#'               return 'CHAR'
+<class>'|'               return 'CHAR'
+<class>'.'               return 'CHAR'
 
 <class>'{'               return 'CHAR'
 
