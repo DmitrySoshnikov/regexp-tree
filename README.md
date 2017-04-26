@@ -240,6 +240,8 @@ console.log(re); // '/[a-z]+/'
 
 ### Using transform API
 
+> NOTE: you can play with transformation APIs, and write actual transforms for quick tests in AST Explorer. See [this example](http://astexplorer.net/#/gist/d293d22742b42cd1f7ee7b7e5dc6f697/39b0aabc42fb6fb106b9e368341d3300098f08c0).
+
 While traverse module provides basic traversal API, which can be used for any purposes of AST handling, _transform_ module focuses mainly on _transformation_ of regular expressions.
 
 It accepts a regular expressions in different formats (string, an actual `RegExp` object, or an AST), applies a set of transformations, and retuns an instance of [TransformResult](https://github.com/DmitrySoshnikov/regexp-tree/blob/master/src/transform/README.md#transformresult). Handles receive as a parameter the same [NodePath](https://github.com/DmitrySoshnikov/regexp-tree/blob/master/src/traverse/README.md#nodepath-class) object used in traverse.
