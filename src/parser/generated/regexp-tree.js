@@ -836,7 +836,13 @@ yyparse.onParseBegin = (string, lexer) => {
  * Extracts ranges from the range string.
  */
 function getRange(text) {
-  return text.match(/\d+/g).map(Number);
+  const range = text.match(/\d+/g).map(Number);
+
+  if (Number.isFinite(range[1]) && range[1] < range[0]) {
+    throw new SyntaxError(`Numbers out of order in ${text} quantifier`);
+  }
+
+  return range;
 }
 
 /**
