@@ -38,7 +38,7 @@ describe('test262', () => {
 
   it('invalid quantifier range', () => {
     // 15.10.2.5-3-1
-    // TODO: /0{2,1}/ - should throw, 1 is less than 2
+    invalid('/0{2,1}/', 'Numbers out of order');
   });
 
   it('invalid flags', () => {
