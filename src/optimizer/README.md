@@ -30,4 +30,5 @@ Is transformed into:
 - `[ \t\r\n\f]` -> `\s`
 - `[^ \t\r\n\f]` -> `\S`
 - `\e` -> `e` (remove unnecessary escape)
+- `(?:a|b|c)` -> `[abc]`
 - ...
