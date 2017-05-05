@@ -8,17 +8,23 @@
 /**
  * A regexp-tree plugin to replace single char group disjunction to char group
  *
+ * a|b|c -> [abc]
+ * [12]|3|4 -> [1234]
  * (a|b|c) -> ([abc])
  * (?:a|b|c) -> [abc]
  */
 module.exports = {
-  Group(path) {
-    const {node} = path;
+  Disjunction(path) {
+    const {node, parent} = path;
+
+    if (!handlers[parent.type]) {
+      return;
+    }
 
     const charset = new Map();
 
     if (
-      !shouldProcessExpressionCharset(node.expression, charset) ||
+      !shouldProcess(node, charset) ||
       !charset.size
     ) {
       return;
@@ -26,31 +32,50 @@ module.exports = {
 
     const characterClass = {
       type: 'CharacterClass',
-      expressions: Array.from(charset.values())
+      expressions: Array.from(charset.keys())
+        .sort()
+        .map(key => charset.get(key))
     };
+
+    handlers[parent.type](path.getParent(), characterClass);
+  }
+};
+
+const handlers = {
+  RegExp(path, characterClass) {
+    const {node} = path;
+
+    node.body = characterClass;
+  },
+
+  Group(path, characterClass) {
+    const {node} = path;
 
     if (node.capturing) {
       node.expression = characterClass;
     } else {
       path.replace(characterClass);
     }
-  }
-}
+  },
+};
 
-function shouldProcessExpressionCharset(expression, charset) {
+function shouldProcess(expression, charset) {
   const {type} = expression;
 
   if (type === 'Disjunction') {
     const {left, right} = expression;
 
-    return shouldProcessExpressionCharset(left, charset)
-      && shouldProcessExpressionCharset(right, charset);
+    return shouldProcess(left, charset)
+      && shouldProcess(right, charset);
   } else if (type === 'Char') {
     const {value} = expression;
 
     charset.set(value, expression);
 
     return true;
+  } else if (type === 'CharacterClass') {
+    return expression.expressions
+      .every(expression => shouldProcess(expression, charset));
   }
 
   return false;
