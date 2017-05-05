@@ -23,4 +23,7 @@ module.exports = [
 
   // \e -> e
   require('./char-escape-unescape-transform'),
+
+  // (a|b|c) -> [abc]
+  require('./group-single-chars-to-char-class')
 ];
