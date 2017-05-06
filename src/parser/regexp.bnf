@@ -175,6 +175,15 @@ function getRange(text) {
 }
 
 /**
+ * Checks class range
+ */
+function checkClassRange(from, to) {
+  if (from > to) {
+    throw new SyntaxError(`Range ${from}-${to} out of order in character class`);
+  }
+}
+
+/**
  * Creates a character node.
  */
 function Char(value, kind, loc) {
@@ -694,6 +703,8 @@ NonemptyClassRanges
 
   | ClassAtom DASH ClassAtom ClassRanges
     {
+      checkClassRange($1.value, $3.value);
+
       $$ = [
         Node({
           type: 'ClassRange',
@@ -715,6 +726,8 @@ NonemptyClassRangesNoDash
 
   | ClassAtomNoDash DASH ClassAtom ClassRanges
     {
+      checkClassRange($1.value, $3.value);
+
       $$ = [
         Node({
           type: 'ClassRange',

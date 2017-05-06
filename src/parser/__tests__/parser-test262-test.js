@@ -33,7 +33,8 @@ describe('test262', () => {
 
   it('invalid char range', () => {
     // 15.10.2.15-6-1
-    // TODO: /^[z-a]$/ - should throw, 'a' is less than 'z'
+    invalid('/^[z-a]$/', 'out of order');
+    invalid('/^[-z-a]$/', 'out of order');
   });
 
   it('invalid quantifier range', () => {

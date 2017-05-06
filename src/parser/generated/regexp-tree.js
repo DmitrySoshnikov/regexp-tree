@@ -274,6 +274,8 @@ const productions = [[-1,1,(_1,_1loc) => { __loc = yyloc(_1loc, _1loc);__ = _1 }
 [19,1,(_1,_1loc) => { __loc = yyloc(_1loc, _1loc); __ = [_1]  }],
 [19,2,(_1,_2,_1loc,_2loc) => { __loc = yyloc(_1loc, _2loc); __ = [_1].concat(_2)  }],
 [19,4,(_1,_2,_3,_4,_1loc,_2loc,_3loc,_4loc) => { __loc = yyloc(_1loc, _4loc);
+      checkClassRange(_1.value, _3.value);
+
       __ = [
         Node({
           type: 'ClassRange',
@@ -289,6 +291,8 @@ const productions = [[-1,1,(_1,_1loc) => { __loc = yyloc(_1loc, _1loc);__ = _1 }
 [20,1,(_1,_1loc) => { __loc = yyloc(_1loc, _1loc);__ = _1 }],
 [20,2,(_1,_2,_1loc,_2loc) => { __loc = yyloc(_1loc, _2loc); __ = [_1].concat(_2)  }],
 [20,4,(_1,_2,_3,_4,_1loc,_2loc,_3loc,_4loc) => { __loc = yyloc(_1loc, _4loc);
+      checkClassRange(_1.value, _3.value);
+
       __ = [
         Node({
           type: 'ClassRange',
@@ -843,6 +847,15 @@ function getRange(text) {
   }
 
   return range;
+}
+
+/**
+ * Checks class range
+ */
+function checkClassRange(from, to) {
+  if (from > to) {
+    throw new SyntaxError(`Range ${from}-${to} out of order in character class`);
+  }
 }
 
 /**
