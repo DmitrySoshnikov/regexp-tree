@@ -10,6 +10,20 @@ const singleCharsGroupToCharClass = require('../group-single-chars-to-char-class
 
 describe('(a|b|c) -> ([abc])', () => {
 
+  it('replaces single chars disjunction to char class', () => {
+    const re = transform(/a|b|c/, [
+      singleCharsGroupToCharClass,
+    ]);
+    expect(re.toString()).toBe('/[abc]/');
+  });
+
+  it('merges single chars disjunction with character class', () => {
+    const re = transform(/[43]|a|b|[53]|c|[9]/, [
+      singleCharsGroupToCharClass,
+    ]);
+    expect(re.toString()).toBe('/[3459abc]/');
+  });
+
   it('replaces single chars group to char class', () => {
     const re = transform(/(a|b|c)/, [
       singleCharsGroupToCharClass,
