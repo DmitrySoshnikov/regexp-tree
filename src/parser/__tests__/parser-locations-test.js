@@ -20,15 +20,31 @@ describe('locations', () => {
     // RegExp.
     expect(ast.loc).toEqual({
       source: '/[a-z]/',
-      start: 0,
-      end: 7,
+      start: {
+        line: 1,
+        column: 0,
+        offset: 0,
+      },
+      end: {
+        line: 1,
+        column: 7,
+        offset: 7,
+      },
     });
 
     // CharacterClass.
     expect(ast.body.loc).toEqual({
       source: '[a-z]',
-      start: 1,
-      end: 6,
+      start: {
+        line: 1,
+        column: 1,
+        offset: 1,
+      },
+      end: {
+        line: 1,
+        column: 6,
+        offset: 6,
+      },
     });
 
     // ClassRange.
@@ -36,20 +52,44 @@ describe('locations', () => {
 
     expect(classRange.loc).toEqual({
       source: 'a-z',
-      start: 2,
-      end: 5,
+      start: {
+        line: 1,
+        column: 2,
+        offset: 2,
+      },
+      end: {
+        line: 1,
+        column: 5,
+        offset: 5,
+      },
     });
 
     expect(classRange.from.loc).toEqual({
       source: 'a',
-      start: 2,
-      end: 3,
+      start: {
+        line: 1,
+        column: 2,
+        offset: 2,
+      },
+      end: {
+        line: 1,
+        column: 3,
+        offset: 3,
+      },
     });
 
     expect(classRange.to.loc).toEqual({
       source: 'z',
-      start: 4,
-      end: 5,
+      start: {
+        line: 1,
+        column: 4,
+        offset: 4,
+      },
+      end: {
+        line: 1,
+        column: 5,
+        offset: 5,
+      },
     });
   });
 
@@ -91,15 +131,31 @@ describe('locations', () => {
         right: null,
         loc: {
           source: '|',
-          start: 1,
-          end: 2,
+          start: {
+            line: 1,
+            column: 1,
+            offset: 1,
+          },
+          end: {
+            line: 1,
+            column: 2,
+            offset: 2,
+          },
         }
       },
       flags: '',
       loc: {
         source: '/|/',
-        start: 0,
-        end: 3,
+        start: {
+        line: 1,
+          column: 0,
+          offset: 0,
+        },
+        end: {
+          line: 1,
+          column: 3,
+          offset: 3,
+        },
       }
     });
   });

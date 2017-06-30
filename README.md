@@ -163,8 +163,16 @@ This attaches `loc` object to each AST node:
         value: 'a',
         kind: 'simple',
         loc: {
-          start: 1,
-          end: 2
+          start: {
+            line: 1,
+            column: 1,
+            offset: 1,
+          },
+          end: {
+            line: 1,
+            column: 2,
+            offset: 2,
+          },
         }
       },
       {
@@ -172,20 +180,44 @@ This attaches `loc` object to each AST node:
         value: 'b',
         kind: 'simple',
         loc: {
-          start: 2,
-          end: 3
+          start: {
+            line: 1,
+            column: 2,
+            offset: 2,
+          },
+          end: {
+            line: 1,
+            column: 3,
+            offset: 3,
+          },
         }
       }
     ],
     loc: {
-      start: 1,
-      end: 3
+      start: {
+        line: 1,
+        column: 1,
+        offset: 1,
+      },
+      end: {
+        line: 1,
+        column: 3,
+        offset: 3,
+      },
     }
   },
   flags: '',
   loc: {
-    start: 0,
-    end: 4
+    start: {
+      line: 1,
+      column: 0,
+      offset: 0,
+    },
+    end: {
+      line: 1,
+      column: 4,
+      offset: 4,
+    },
   }
 }
 ```

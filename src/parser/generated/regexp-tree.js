@@ -83,20 +83,17 @@ const productions = [[-1,1,(_1,_1loc) => { __loc = yyloc(_1loc, _1loc);__ = _1 }
 [4,1,(_1,_1loc) => { __loc = yyloc(_1loc, _1loc);__ = _1 }],
 [4,3,(_1,_2,_3,_1loc,_2loc,_3loc) => { __loc = yyloc(_1loc, _3loc);
       // Location for empty disjunction: /|/
-      let loc = null;
+      let _loc = null;
 
       if (_2loc) {
-        loc = {
-          startOffset: _1loc ? _1loc.startOffset : _2loc.startOffset,
-          endOffset: _3loc ? _3loc.endOffset : _2loc.endOffset,
-        };
+        _loc = loc(_1loc || _2loc, _3loc || _2loc);
       };
 
       __ = Node({
         type: 'Disjunction',
         left: _1,
         right: _3,
-      }, loc)
+      }, _loc)
      }],
 [5,1,(_1,_1loc) => { __loc = yyloc(_1loc, _1loc);
       if (_1.length === 0) {
@@ -959,9 +956,15 @@ function NamedGroupRefOrChars(text, textLoc) {
   // This is really a 0.01% edge case, but we should handle it.
 
   let startOffset = null;
+  let startLine = null;
+  let endLine = null;
+  let startColumn = null;
 
   if (textLoc) {
     startOffset = textLoc.startOffset;
+    startLine = textLoc.startLine;
+    endLine = textLoc.endLine;
+    startColumn = textLoc.startColumn;
   }
 
   const charRe = /^[\w$<>]/;
@@ -975,7 +978,14 @@ function NamedGroupRefOrChars(text, textLoc) {
       text.slice(1, 2),
       'simple',
       startOffset
-        ? {startOffset, endOffset: startOffset += 2}
+        ? {
+          startLine,
+          endLine,
+          startColumn,
+          startOffset,
+          endOffset: startOffset += 2,
+          endColumn: startColumn += 2,
+        }
         : null
     ),
   ];
@@ -993,8 +1003,12 @@ function NamedGroupRefOrChars(text, textLoc) {
     if ((matched = text.match(uRe)) || (matched = text.match(ucpRe))) {
       if (startOffset) {
         loc = {
+          startLine,
+          endLine,
+          startColumn,
           startOffset,
           endOffset: (startOffset += matched[0].length),
+          endColumn: (startColumn += matched[0].length),
         };
       }
       chars.push(Char(matched[0], 'unicode', loc));
@@ -1005,8 +1019,12 @@ function NamedGroupRefOrChars(text, textLoc) {
     else if ((matched = text.match(charRe))) {
       if (startOffset) {
         loc = {
+          startLine,
+          endLine,
+          startColumn,
           startOffset,
           endOffset: ++startOffset,
+          endColumn: ++startColumn,
         };
       }
       chars.push(Char(matched[0], 'simple', loc));
@@ -1022,12 +1040,18 @@ function NamedGroupRefOrChars(text, textLoc) {
  */
 function Node(node, loc) {
   if (yy.options.captureLocations) {
-    const start = loc.startOffset;
-    const end = loc.endOffset;
     node.loc = {
-      source: parsingString.slice(start, end),
-      start,
-      end,
+      source: parsingString.slice(loc.startOffset, loc.endOffset),
+      start: {
+        line: loc.startLine,
+        column: loc.startColumn,
+        offset: loc.startOffset,
+      },
+      end: {
+        line: loc.endLine,
+        column: loc.endColumn,
+        offset: loc.endOffset,
+      },
     };
   }
   return node;
@@ -1044,6 +1068,10 @@ function loc(start, end) {
   return {
     startOffset: start.startOffset,
     endOffset: end.endOffset,
+    startLine: start.startLine,
+    endLine: end.endLine,
+    startColumn: start.startColumn,
+    endColumn: end.endColumn,
   };
 }
 
