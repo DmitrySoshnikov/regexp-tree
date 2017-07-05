@@ -36,19 +36,19 @@ declare namespace Node {
   }
 
   interface Disjunction extends Base<'Disjunction'> {
-    expressions: Expression[];
+    expressions: (Expression | null)[];
   }
 
   interface CapturingGroup extends Base<'Group'> {
     capturing: true;
     number: number;
     name?: string;
-    expression: Expression;
+    expression: Expression | null;
   }
 
   interface NoncapturingGroup extends Base<'Group'> {
     capturing: false;
-    expression: Expression;
+    expression: Expression | null;
   }
 
   type Group = CapturingGroup | NoncapturingGroup;
@@ -93,7 +93,7 @@ declare namespace Node {
   interface LookaroundAssertion extends Base<'Assertion'> {
     kind: 'Lookahead' | 'Lookbehind';
     negative?: true;
-    assertion: Expression;
+    assertion: Expression | null;
   }
 
   type Assertion = SimpleAssertion | LookaroundAssertion;
@@ -109,7 +109,7 @@ declare namespace Node {
     | Assertion;
 
   interface RegExp extends Base<'RegExp'> {
-    body: Expression;
+    body: Expression | null;
     flags: string;
   }
 }
