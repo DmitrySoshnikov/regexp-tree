@@ -34,8 +34,14 @@ function shouldUnescape(path) {
     return !preservesEscape(value);
   }
 
-  // In char class should escape \]
-  return value !== ']';
+  return !preservesInCharClass(value);
+}
+
+/**
+ * \], \\
+ */
+function preservesInCharClass(value) {
+  return /[\]\\]/.test(value);
 }
 
 function preservesEscape(value) {

@@ -11,10 +11,10 @@ const charClassRemoveDuplicates = require('../char-class-remove-duplicates-trans
 describe('char-class-remove-duplicates', () => {
 
   it('removes duplicates', () => {
-    const re = transform('/[0-90-9\\d\\daba\\w\\n\\w$]/', [
+    const re = transform('/[0-90-9\\d\\daba\\w\\n\\w$\\\]]/', [
       charClassRemoveDuplicates,
     ]);
-    expect(re.toString()).toBe('/[0-9\\dab\\w\\n$]/');
+    expect(re.toString()).toBe('/[0-9\\dab\\w\\n$\\\]]/');
   });
 
 });
