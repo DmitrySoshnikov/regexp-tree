@@ -32,13 +32,30 @@ const options = require('nomnom')
   })
   .parse();
 
+function shouldStripQuotes(expression) {
+  return os.platform() === 'win32' && (
+    (expression[0] === "'" && expression[expression.length - 1] === "'") ||
+    (expression[0] === '"' && expression[expression.length - 1] === '"')
+  );
+}
+
+function normalize(expression) {
+  if (!shouldStripQuotes(expression)) {
+    return expression;
+  }
+
+  // For Windows strip ' at the beginning and end.
+  return expression.slice(1, -1);
+}
+
 function main() {
   const {
     compat,
-    expression,
     loc,
     optimize,
   } = options;
+
+  const expression = normalize(options.expression);
 
   // ------------------------------------------------------
   // Optimizer.
@@ -51,6 +68,7 @@ function main() {
 
   // ------------------------------------------------------
   // Compat-transpiler.
+  
   if (compat) {
     const compatTranspiled = regexpTree.compatTranspile(expression);
     console.info('\n', bold('Compat:'), compatTranspiled.toString(), '\n');
