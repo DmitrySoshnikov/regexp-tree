@@ -8,6 +8,9 @@
 const NFA = require('./nfa/nfa');
 const DFA = require('./dfa/dfa');
 
+const nfaFromRegExp = require('./nfa/nfa-from-regexp');
+const builders = require('./nfa/builders');
+
 module.exports = {
 
   /**
@@ -15,6 +18,11 @@ module.exports = {
    */
   NFA,
   DFA,
+
+  /**
+   * Expose builders.
+   */
+  builders,
 
   /**
    * Builds an NFA for the passed regexp.
@@ -25,7 +33,7 @@ module.exports = {
    *   a RegExp object, or an AST.
    */
   toNFA(regexp) {
-    throw new Error('Not implemented yet.');
+    return nfaFromRegExp.build(regexp);
   },
 
   /**
@@ -37,13 +45,13 @@ module.exports = {
    *   a RegExp object, or an AST.
    */
   toDFA(regexp) {
-    throw new Error('Not implemented yet.');
+    return new DFA(this.toNFA(regexp));
   },
 
   /**
    * Returns true if regexp accepts the string.
    */
   test(regexp, string) {
-    throw new Error('Not implemented yet.');
+    return this.toDFA(regexp).matches(string);
   },
 };

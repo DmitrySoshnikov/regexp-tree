@@ -77,6 +77,19 @@ class DFA {
 
     const dfaTable = {};
 
+
+    // Determine whether the combined DFA state is accepting.
+    const updateAcceptingStates = (states) => {
+      for (const nfaAcceptingState of nfaAcceptingStates) {
+        // If any of the states from NFA is accepting, DFA's
+        // state is accepting as well.
+        if (states.includes(nfaAcceptingState)) {
+          this._acceptingStateNumbers.add(states.join(','));
+          break;
+        }
+      }
+    };
+
     while (worklist.length > 0) {
       const states = worklist.shift();
       const dfaStateLabel = states.join(',');
@@ -84,6 +97,9 @@ class DFA {
 
       for (const symbol of alphabet) {
         let onSymbol = [];
+
+        // Determine whether the combined state is accepting.
+        updateAcceptingStates(states);
 
         for (const state of states) {
           const nfaStatesOnSymbol = nfaTable[state][symbol];
@@ -104,16 +120,6 @@ class DFA {
 
         if (dfaStatesOnSymbol.length > 0) {
           const dfaOnSymbolStr = dfaStatesOnSymbol.join(',');
-
-          // Determine whether the combined state is accepting.
-          for (const nfaAcceptingState of nfaAcceptingStates) {
-            // If any of the states from NFA is accepting, DFA's
-            // state is accepting as well.
-            if (dfaStatesOnSymbolSet.has(nfaAcceptingState)) {
-              this._acceptingStateNumbers.add(dfaOnSymbolStr);
-              break;
-            }
-          }
 
           dfaTable[dfaStateLabel][symbol] = dfaOnSymbolStr;
 

@@ -38,6 +38,8 @@ describe('nfa-builders', () => {
 
     expect(a.in.getTransitionsOnSymbol('a').size).toBe(1);
     expect(a.in.getTransitionsOnSymbol('a')).toEqual(new Set([a.out]));
+
+    expect(a.matches('a')).toBe(true);
   });
 
   it('e', () => {
@@ -53,6 +55,8 @@ describe('nfa-builders', () => {
     expect(epsilon.in.getTransitionsOnSymbol(EPSILON).size).toBe(1);
     expect(epsilon.in.getTransitionsOnSymbol(EPSILON))
       .toEqual(new Set([epsilon.out]));
+
+    expect(epsilon.matches('')).toBe(true);
   });
 
   it('or', () => {
@@ -96,6 +100,10 @@ describe('nfa-builders', () => {
 
     const outFromC = setIndex(c.out.getTransitionsOnSymbol(EPSILON), 0);
     expect(outFromC).toBe(AorBorC.out);
+
+    expect(AorBorC.matches('a')).toBe(true);
+    expect(AorBorC.matches('b')).toBe(true);
+    expect(AorBorC.matches('c')).toBe(true);
   });
 
   it('alt', () => {
@@ -125,6 +133,8 @@ describe('nfa-builders', () => {
 
     expect(setIndex(b.out.getTransitionsOnSymbol(EPSILON), 0))
       .toBe(c.in);
+
+    expect(ABC.matches('abc')).toBe(true);
   });
 
   it('kleene-closure', () => {
@@ -143,6 +153,10 @@ describe('nfa-builders', () => {
 
     const backToA = setIndex(aRep.out.getTransitionsOnSymbol(EPSILON), 0);
     expect(backToA).toBe(a.in);
+
+    expect(aRep.matches('')).toBe(true);
+    expect(aRep.matches('a')).toBe(true);
+    expect(aRep.matches('aaa')).toBe(true);
   });
 
 });

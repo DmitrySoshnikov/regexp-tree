@@ -10,6 +10,11 @@ const NFA = require('../../nfa/nfa');
 const NFAState = require('../../nfa/nfa-state');
 
 const {
+  char,
+  rep,
+} = require('../../nfa/builders');
+
+const {
   EPSILON,
   EPSILON_CLOSURE,
 } = require('../../special-symbols');
@@ -57,7 +62,7 @@ describe('dfa', () => {
 
   it('accepting states', () => {
     const dfa = new DFA(getDefaultNFA());
-    expect(dfa.getAcceptingStateNumbers()).toEqual(new Set(['3,4', '6,4']));
+    expect(dfa.getAcceptingStateNumbers()).toEqual(new Set(['6,4', '3,4']));
   });
 
   it('transition table', () => {
@@ -79,6 +84,15 @@ describe('dfa', () => {
 
     expect(dfa.matches('z')).toBe(false);
     expect(dfa.matches('')).toBe(false);
+  });
+
+  it('matches rep', () => {
+    const dfa = new DFA(rep(char('a')));
+
+    expect(dfa.matches('')).toBe(true);
+    expect(dfa.matches('a')).toBe(true);
+    expect(dfa.matches('aa')).toBe(true);
+    expect(dfa.matches('aaa')).toBe(true);
   });
 
 });
