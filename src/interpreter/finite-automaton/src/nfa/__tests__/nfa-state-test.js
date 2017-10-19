@@ -8,10 +8,6 @@
 const NFAState = require('../nfa-state');
 const {EPSILON} = require('../../special-symbols');
 
-function setIndex(set, index) {
-  return [...set][index];
-}
-
 describe('nfa-state', () => {
 
   it('epsilon-closure', () => {
