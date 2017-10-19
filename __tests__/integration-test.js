@@ -32,6 +32,9 @@ describe('regexp-tree', () => {
 
     // Exec.
     expect(typeof regexpTree.exec).toBe('function');
+
+    // Finite-automaton module.
+    expect(typeof regexpTree.fa).toBe('object');
   });
 
   it('operations', () => {
@@ -130,6 +133,16 @@ describe('regexp-tree', () => {
       month: '04',
       day: '14',
     });
+  });
+
+  it('fa', () => {
+    const re = /ab|c*/;
+    const {fa} = regexpTree;
+
+    expect(fa.test(re, 'ab')).toBe(true);
+    expect(fa.test(re, '')).toBe(true);
+    expect(fa.test(re, 'c')).toBe(true);
+    expect(fa.test(re, 'ccc')).toBe(true);
   });
 
 });

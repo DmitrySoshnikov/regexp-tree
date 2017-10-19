@@ -11,6 +11,7 @@ const optimizer = require('./src/optimizer');
 const parser = require('./src/parser');
 const transform = require('./src/transform');
 const traverse = require('./src/traverse');
+const fa = require('./src/interpreter/finite-automaton');
 
 const {RegExpTree} = require('./src/compat-transpiler/runtime');
 
@@ -22,6 +23,11 @@ const regexpTree = {
    * Parser module exposed.
    */
   parser,
+
+  /**
+   * Expose finite-automaton module.
+   */
+  fa,
 
   /**
    * `TransformResult` exposed.

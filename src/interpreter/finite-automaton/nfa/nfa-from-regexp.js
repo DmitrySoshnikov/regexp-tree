@@ -7,7 +7,7 @@
 
 const NFAState = require('./nfa-state');
 
-const parser = require('../../../../parser');
+const parser = require('../../../parser');
 
 const {
   alt,

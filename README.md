@@ -4,7 +4,7 @@
 
 Regular expressions processor in JavaScript
 
-TL;DR: **RegExp Tree** is a _regular expressions processor_, which includes _parser_, _traversal_, _transformer_, and _optimizer_ APIs.
+TL;DR: **RegExp Tree** is a _regular expressions processor_, which includes _parser_, _traversal_, _transformer_, _optimizer_, and _interpreter_ APIs.
 
 You can get an overview of the tool in [this article](https://medium.com/@DmitrySoshnikov/regexp-tree-a-regular-expressions-parser-with-a-simple-ast-format-bcd4d5580df6).
 
@@ -27,6 +27,7 @@ You can get an overview of the tool in [this article](https://medium.com/@Dmitry
   - [RegExp extensions Babel plugin](#regexp-extensions-babel-plugin)
 - [Creating RegExp objects](#creating-regexp-objects)
 - [Executing regexes](#executing-regexes)
+- [Using interpreter API](#using-interpreter-api)
 - [AST nodes specification](#ast-nodes-specification)
 
 ### Installation
@@ -543,6 +544,64 @@ const string = '2017-04-14';
 const result = regexpTree.exec(re, string);
 
 console.log(result.groups); // {year: '2017', month: '04', day: '14'}
+```
+
+### Using interpreter API
+
+In addition to executing regular expressions using JavaScript built-in RegExp engine, RegExp Tree also implements own interpreter based on classic NFA/DFA finite automaton engine.
+
+Currently it aims educational purposes -- to trace the regexp matching process, transitioning in NFA/DFA states. It also allows building state transitioning table, which can be used for custom implementation. In API the module is exposed as `fa` (finite-automaton) object.
+
+Example:
+
+```
+const {fa} = require('regexp-tree');
+
+const re = /ab|c*/;
+
+console.log(fa.test(re, 'ab')); // true
+console.log(fa.test(re, '')); // true
+console.log(fa.test(re, 'c')); // true
+
+// NFA, and its transition table.
+const nfa = fa.toNFA(re);
+console.log(nfa.getTransitionTable());
+
+// NFA, and its transition table.
+const dfa = fa.toDFA(re);
+console.log(dfa.getTransitionTable());
+```
+
+For more granular work with NFA and DFA, `fa` module also exposes convenient builders, so you can build NFA fragments directly:
+
+```
+const {fa} = require('regexp-tree');
+
+const {
+  alt,
+  char,
+  or,
+  rep,
+} = fa.builders;
+
+// ab|c*
+const re = or(
+  alt(char('a'), char('b')),
+  rep(char('c'))
+);
+
+console.log(re.matches('ab')); // true
+console.log(re.matches('')); // true
+console.log(re.matches('c')); // true
+
+// Build DFA from NFA
+const {DFA} = fa;
+
+const reDFA = new DFA(re);
+
+console.log(reDFA.matches('ab')); // true
+console.log(reDFA.matches('')); // true
+console.log(reDFA.matches('c')); // true
 ```
 
 ### AST nodes specification
