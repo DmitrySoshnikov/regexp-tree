@@ -554,7 +554,7 @@ Currently it aims educational purposes -- to trace the regexp matching process, 
 
 Example:
 
-```
+```js
 const {fa} = require('regexp-tree');
 
 const re = /ab|c*/;
@@ -574,7 +574,7 @@ console.log(dfa.getTransitionTable());
 
 For more granular work with NFA and DFA, `fa` module also exposes convenient builders, so you can build NFA fragments directly:
 
-```
+```js
 const {fa} = require('regexp-tree');
 
 const {
