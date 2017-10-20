@@ -81,6 +81,7 @@ Options:
    -l, --loc          Whether to capture AST node locations
    -o, --optimize     Applies optimizer on the passed expression
    -c, --compat       Applies compat-transpiler on the passed expression
+   -t, --table        Print DFA transition table
 ```
 
 To parse a regular expression, pass `-e` option:
@@ -109,6 +110,30 @@ Which produces an AST node corresponding to this regular expression:
   },
   flags: 'i',
 }
+```
+
+The `--table` option allows displaying DFA transition table:
+
+```
+./bin/regexp-tree -e '/ab/' -t
+```
+
+Result:
+
+```
+DFA transition table:
+
+✓ - accepting
+
+┌─────┬───┬───┐
+│     │ a │ b │
+├─────┼───┼───┤
+│ 1   │ 3 │   │
+├─────┼───┼───┤
+│ 2 ✓ │   │   │
+├─────┼───┼───┤
+│ 3   │   │ 2 │
+└─────┴───┴───┘
 ```
 
 > NOTE: the format of a regexp is `/ Body / OptionalFlags`.

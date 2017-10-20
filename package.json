@@ -27,6 +27,8 @@
     "node": ">=6"
   },
   "dependencies": {
+    "cli-table2": "^0.2.0",
+    "colors": "^1.1.2",
     "nomnom": "^1.8.1"
   },
   "devDependencies": {

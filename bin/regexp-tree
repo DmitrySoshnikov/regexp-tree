@@ -30,6 +30,11 @@ const options = require('nomnom')
       help: 'Apply compat-transpiler on the passed expression',
       flag: true,
     },
+    table: {
+      abbr: 't',
+      help: 'Print DFA transition table',
+      flag: true,
+    },
   })
   .parse();
 
@@ -54,6 +59,7 @@ function main() {
     compat,
     loc,
     optimize,
+    table,
   } = options;
 
   const expression = normalize(options.expression);
@@ -77,6 +83,14 @@ function main() {
   }
 
   // ------------------------------------------------------
+  // Transition table.
+  if (table) {
+    const {fa} = regexpTree;
+    fa.toDFA(expression).printTransitionTable();
+    return;
+  }
+
+  // ------------------------------------------------------
   // Parsing.
 
   const parseOptions = {
@@ -86,6 +100,7 @@ function main() {
   const parsed = regexpTree.parse(expression, parseOptions);
 
   console.info(JSON.stringify(parsed, null, 2));
+
 }
 
 function bold(text) {

@@ -5,6 +5,9 @@
 
 'use strict';
 
+const TablePrinter = require('../table-printer');
+const colors = require('colors');
+
 const {
   EPSILON,
   EPSILON_CLOSURE,
@@ -177,6 +180,42 @@ class DFA {
       this.getTransitionTable();
     }
     return this._originalTransitionTable;
+  }
+
+  /**
+   * Prints transition table.
+   */
+  printTransitionTable() {
+    console.info(colors.bold(`\nDFA transition table:\n`));
+    console.info(`${colors.bold(colors.green('✓'))} - accepting\n`);
+
+    const alphabet = [...this.getAlphabet()];
+
+    const printer = new TablePrinter({
+      head: [''].concat(alphabet),
+    });
+
+    const table = this.getTransitionTable();
+    const acceptingStates = this.getAcceptingStateNumbers();
+
+    for (const stateNumber in table) {
+      const tableRow = table[stateNumber];
+
+      const stateLabel = acceptingStates.has(Number(stateNumber))
+        ? colors.bold(colors.green(`${stateNumber} ✓`))
+        : colors.blue(stateNumber);
+
+      const row = {[stateLabel]: []};
+
+      alphabet.forEach(symbol => {
+        row[stateLabel].push(tableRow[symbol] || '');
+      });
+
+      printer.push(row);
+    }
+
+    console.info(printer.toString());
+    console.info('');
   }
 
   /**
