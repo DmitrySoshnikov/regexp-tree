@@ -9,6 +9,9 @@ const NFAState = require('./nfa-state');
 
 const parser = require('../../../parser');
 
+const transform = require('../../../transform');
+const desugaringTransforms = require('../transforms');
+
 const {
   alt,
   char,
@@ -55,7 +58,8 @@ const generator = {
   },
 
   Repetition(node) {
-    // TODO: write a transform: a+ -> `aa*`, etc.
+    // Desugaring transforms should already convert
+    // `a+` to `aa*`, so handle only `*` here.
     if (node.quantifier.kind !== '*') {
       throw new Error(`NFA/DFA: Only * quantifier is supported yet.`);
     }
@@ -74,6 +78,15 @@ const generator = {
   },
 };
 
+function desugar(ast) {
+  let result;
+  desugaringTransforms.forEach(transformer => {
+    result = transform.transform(ast, transformer);
+    ast = result.getAST();
+  });
+  return ast;
+}
+
 module.exports = {
   /**
    * Builds an NFA from the passed regexp.
@@ -91,6 +104,6 @@ module.exports = {
       });
     }
 
-    return gen(ast);
+    return gen(desugar(ast));
   }
 };

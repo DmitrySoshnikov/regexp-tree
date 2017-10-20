@@ -56,4 +56,19 @@ describe('nfa-from-regexp', () => {
     expect(aRep.matches('b')).toBe(false);
   });
 
+  it('desugar a+', () => {
+    const aRep = nfaFromRegExp.build(/a+/);
+
+    expect(aRep).toBeInstanceOf(NFA);
+
+    expect(aRep.matches('')).toBe(false);
+
+    expect(aRep.matches('a')).toBe(true);
+    expect(aRep.matches('aa')).toBe(true);
+    expect(aRep.matches('aaa')).toBe(true);
+
+    expect(aRep.matches('ab')).toBe(false);
+    expect(aRep.matches('b')).toBe(false);
+  });
+
 });
