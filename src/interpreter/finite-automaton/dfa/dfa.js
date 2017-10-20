@@ -26,18 +26,6 @@ class DFA {
   }
 
   /**
-   * Returns starting state.
-   */
-  getStartingStateNumber() {
-    if (!this._startingStateNumber) {
-      // Starting state is determined during table construction.
-      this.getTransitionTable();
-    }
-
-    return this._startingStateNumber;
-  }
-
-  /**
    * Returns accepting states.
    */
   getAcceptingStateNumbers() {
@@ -47,6 +35,18 @@ class DFA {
     }
 
     return this._acceptingStateNumbers;
+  }
+
+  /**
+   * Returns original accepting states.
+   */
+  getOriginaAcceptingStateNumbers() {
+    if (!this._originalAcceptingStateNumbers) {
+      // Accepting states are determined during table construction.
+      this.getTransitionTable();
+    }
+
+    return this._originalAcceptingStateNumbers;
   }
 
   /**
@@ -61,13 +61,10 @@ class DFA {
     const nfaTable = this._nfa.getTransitionTable();
     const nfaStates = Object.keys(nfaTable);
 
-    this._startingStateNumber = 0;
     this._acceptingStateNumbers = new Set();
 
     // Start state of DFA is E(S[nfa])
     const startState = nfaTable[nfaStates[0]][EPSILON_CLOSURE];
-
-    this._startingStateNumber = startState.join(',');
 
     // Init the worklist (states which should be in the DFA).
     const worklist = [startState];
@@ -128,17 +125,65 @@ class DFA {
           }
         }
       }
-
     }
 
-    return (this._transitionTable = dfaTable);
+    return (this._transitionTable = this._remapStateNumbers(dfaTable));
+  }
+
+  /**
+   * Remaps state numbers in the resulting table:
+   * combined states '1,2,3' -> 1, '3,4' -> 2, etc.
+   */
+  _remapStateNumbers(calculatedDFATable) {
+    const resultDFATable = {};
+    const newStatesMap = {};
+
+    this._originalTransitionTable = calculatedDFATable;
+    const transitionTable = {};
+
+    Object.keys(calculatedDFATable).forEach((originalNumber, newNumber) => {
+      newStatesMap[originalNumber] = newNumber + 1;
+    });
+
+    for (const originalNumber in calculatedDFATable) {
+      const originalRow = calculatedDFATable[originalNumber];
+      const row = {};
+
+      for (const symbol in originalRow) {
+        row[symbol] = newStatesMap[originalRow[symbol]];
+      }
+
+      transitionTable[newStatesMap[originalNumber]] = row;
+    }
+
+    // Remap accepting states.
+    this._originalAcceptingStateNumbers = this._acceptingStateNumbers;
+    this._acceptingStateNumbers = new Set();
+
+    for (const originalNumber of this._originalAcceptingStateNumbers) {
+      this._acceptingStateNumbers.add(newStatesMap[originalNumber]);
+    }
+
+    return transitionTable;
+  }
+
+  /**
+   * Returns original DFA table, where state numbers
+   * are combined numbers from NFA.
+   */
+  getOriginalTransitionTable() {
+    if (!this._originalTransitionTable) {
+      // Original table is determined during table construction.
+      this.getTransitionTable();
+    }
+    return this._originalTransitionTable;
   }
 
   /**
    * Checks whether this DFA accepts a string.
    */
   matches(string) {
-    let state = this.getStartingStateNumber();
+    let state = 1;
     let i = 0;
     const table = this.getTransitionTable();
 
