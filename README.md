@@ -573,7 +573,7 @@ console.log(result.groups); // {year: '2017', month: '04', day: '14'}
 
 ### Using interpreter API
 
-In addition to executing regular expressions using JavaScript built-in RegExp engine, RegExp Tree also implements own interpreter based on classic NFA/DFA finite automaton engine.
+In addition to executing regular expressions using JavaScript built-in RegExp engine, RegExp Tree also implements own [interpreter](https://github.com/DmitrySoshnikov/regexp-tree/tree/master/src/interpreter/finite-automaton) based on classic NFA/DFA finite automaton engine.
 
 Currently it aims educational purposes -- to trace the regexp matching process, transitioning in NFA/DFA states. It also allows building state transitioning table, which can be used for custom implementation. In API the module is exposed as `fa` (finite-automaton) object.
 
