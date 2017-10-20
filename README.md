@@ -592,7 +592,7 @@ console.log(fa.test(re, 'c')); // true
 const nfa = fa.toNFA(re);
 console.log(nfa.getTransitionTable());
 
-// NFA, and its transition table.
+// DFA, and its transition table.
 const dfa = fa.toDFA(re);
 console.log(dfa.getTransitionTable());
 ```
