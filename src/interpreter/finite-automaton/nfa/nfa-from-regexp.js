@@ -76,6 +76,10 @@ const generator = {
 
     return char(node.value);
   },
+
+  Group(node) {
+    return gen(node.expression);
+  },
 };
 
 function desugar(ast) {
