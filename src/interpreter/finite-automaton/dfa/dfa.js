@@ -187,7 +187,6 @@ class DFA {
    */
   printTransitionTable() {
     console.info(colors.bold(`\nDFA transition table:\n`));
-    console.info(`${colors.bold(colors.green('✓'))} - accepting\n`);
 
     const alphabet = [...this.getAlphabet()];
 
@@ -201,9 +200,13 @@ class DFA {
     for (const stateNumber in table) {
       const tableRow = table[stateNumber];
 
-      const stateLabel = acceptingStates.has(Number(stateNumber))
+      let stateLabel = acceptingStates.has(Number(stateNumber))
         ? colors.bold(colors.green(`${stateNumber} ✓`))
         : colors.blue(stateNumber);
+
+      if (stateNumber == 1) {
+        stateLabel += colors.yellow(' >');
+      }
 
       const row = {[stateLabel]: []};
 

@@ -2,6 +2,7 @@
 
 'use strict';
 
+const colors = require('colors');
 const fs = require('fs');
 const os = require('os');
 const regexpTree = require('..');
@@ -32,8 +33,16 @@ const options = require('nomnom')
     },
     table: {
       abbr: 't',
-      help: 'Print DFA transition table',
-      flag: true,
+      help: 'Print NFA/DFA transition tables (nfa/dfa/all)',
+      callback(table) {
+        const ALLOWED = ['nfa', 'dfa', 'all'];
+        if (!ALLOWED.includes(table)) {
+          return colors.red(
+            `\nUnknown table option: "${table}". ` +
+            `Available options are: ${ALLOWED.join('/')}.\n`
+          );
+        }
+      }
     },
   })
   .parse();
@@ -86,7 +95,21 @@ function main() {
   // Transition table.
   if (table) {
     const {fa} = regexpTree;
-    fa.toDFA(expression).printTransitionTable();
+
+    const shouldPrintNFA = (table === 'nfa' || table === 'all');
+    const shouldPrintDFA = (table === 'dfa' || table === 'all');
+
+    console.info(`\n${colors.bold(colors.yellow('>'))} - starting`);
+    console.info(`${colors.bold(colors.green('✓'))} - accepting`);
+
+    if (shouldPrintNFA) {
+      fa.toNFA(expression).printTransitionTable();
+    }
+
+    if (shouldPrintDFA) {
+      fa.toDFA(expression).printTransitionTable();
+    }
+
     return;
   }
 

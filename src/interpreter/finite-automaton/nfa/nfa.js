@@ -7,6 +7,9 @@
 
 const NFAState = require('./nfa-state');
 
+const TablePrinter = require('../table-printer');
+const colors = require('colors');
+
 const {
   EPSILON,
   EPSILON_CLOSURE,
@@ -126,6 +129,53 @@ class NFA {
     }
 
     return this._transitionTable;
+  }
+
+  /**
+   * Prints transition table.
+   */
+  printTransitionTable() {
+    console.info(colors.bold(`\nNFA transition table:\n`));
+
+    const alphabet = [...this.getAlphabet(), EPSILON_CLOSURE];
+
+    const printer = new TablePrinter({
+      head: [''].concat(alphabet),
+    });
+
+    const table = this.getTransitionTable();
+    const acceptingStates = this.getAcceptingStateNumbers();
+
+    for (const stateNumber in table) {
+      const tableRow = table[stateNumber];
+
+      let stateLabel = acceptingStates.has(Number(stateNumber))
+        ? colors.bold(colors.green(`${stateNumber} ✓`))
+        : colors.blue(stateNumber);
+
+      if (stateNumber == 1) {
+        stateLabel += colors.yellow(' >');
+      }
+
+      const row = {[stateLabel]: []};
+
+      alphabet.forEach(symbol => {
+        let entry = '';
+
+        if (Array.isArray(tableRow[symbol])) {
+          entry = tableRow[symbol].length === 1
+            ? tableRow[symbol][0]
+            : `{${tableRow[symbol].join(',')}}`;
+        }
+
+        row[stateLabel].push(entry);
+      });
+
+      printer.push(row);
+    }
+
+    console.info(printer.toString());
+    console.info('');
   }
 }
 

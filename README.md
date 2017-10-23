@@ -81,7 +81,7 @@ Options:
    -l, --loc          Whether to capture AST node locations
    -o, --optimize     Applies optimizer on the passed expression
    -c, --compat       Applies compat-transpiler on the passed expression
-   -t, --table        Print DFA transition table
+   -t, --table        Print NFA/DFA transition tables (nfa/dfa/all)
 ```
 
 To parse a regular expression, pass `-e` option:
@@ -112,28 +112,42 @@ Which produces an AST node corresponding to this regular expression:
 }
 ```
 
-The `--table` option allows displaying DFA transition table:
+The `--table` option allows displaying NFA/DFA transition table:
 
 ```
-./bin/regexp-tree -e '/ab/' -t
+./bin/regexp-tree -e '/ab/' --table all
 ```
 
 Result:
 
 ```
-DFA transition table:
-
+> - starting
 ✓ - accepting
 
-┌─────┬───┬───┐
-│     │ a │ b │
-├─────┼───┼───┤
-│ 1   │ 3 │   │
-├─────┼───┼───┤
-│ 2 ✓ │   │   │
-├─────┼───┼───┤
-│ 3   │   │ 2 │
-└─────┴───┴───┘
+NFA transition table:
+
+┌─────┬───┬─────────┐
+│     │ a │ ε*      │
+├─────┼───┼─────────┤
+│ 1 > │   │ {1,2,4} │
+├─────┼───┼─────────┤
+│ 2   │ 3 │ 2       │
+├─────┼───┼─────────┤
+│ 3   │   │ {3,4,2} │
+├─────┼───┼─────────┤
+│ 4 ✓ │   │ {4,2}   │
+└─────┴───┴─────────┘
+
+
+DFA transition table:
+
+┌───────┬───┐
+│       │ a │
+├───────┼───┤
+│ 1 ✓ > │ 2 │
+├───────┼───┤
+│ 2 ✓   │ 2 │
+└───────┴───┘
 ```
 
 > NOTE: the format of a regexp is `/ Body / OptionalFlags`.
