@@ -271,7 +271,7 @@ const productions = [[-1,1,(_1,_1loc) => { __loc = yyloc(_1loc, _1loc);__ = _1 }
 [19,1,(_1,_1loc) => { __loc = yyloc(_1loc, _1loc); __ = [_1]  }],
 [19,2,(_1,_2,_1loc,_2loc) => { __loc = yyloc(_1loc, _2loc); __ = [_1].concat(_2)  }],
 [19,4,(_1,_2,_3,_4,_1loc,_2loc,_3loc,_4loc) => { __loc = yyloc(_1loc, _4loc);
-      checkClassRange(_1.value, _3.value);
+      checkClassRange(_1, _3);
 
       __ = [
         Node({
@@ -288,7 +288,7 @@ const productions = [[-1,1,(_1,_1loc) => { __loc = yyloc(_1loc, _1loc);__ = _1 }
 [20,1,(_1,_1loc) => { __loc = yyloc(_1loc, _1loc);__ = _1 }],
 [20,2,(_1,_2,_1loc,_2loc) => { __loc = yyloc(_1loc, _2loc); __ = [_1].concat(_2)  }],
 [20,4,(_1,_2,_3,_4,_1loc,_2loc,_3loc,_4loc) => { __loc = yyloc(_1loc, _4loc);
-      checkClassRange(_1.value, _3.value);
+      checkClassRange(_1, _3);
 
       __ = [
         Node({
@@ -850,8 +850,8 @@ function getRange(text) {
  * Checks class range
  */
 function checkClassRange(from, to) {
-  if (from > to) {
-    throw new SyntaxError(`Range ${from}-${to} out of order in character class`);
+  if (from.kind === 'control' || to.kind === 'control' || (!isNaN(from.codePoint) && !isNaN(to.codePoint) && from.codePoint > to.codePoint)) {
+    throw new SyntaxError(`Range ${from.value}-${to.value} out of order in character class`);
   }
 }
 
@@ -860,27 +860,70 @@ function checkClassRange(from, to) {
  */
 function Char(value, kind, loc) {
   let symbol;
+  let codePoint;
 
   switch (kind) {
     case 'decimal': {
-      const code = Number(value.slice(1));
-      symbol = String.fromCodePoint(code);
+      codePoint = Number(value.slice(1));
+      symbol = String.fromCodePoint(codePoint);
       break;
     }
     case 'oct': {
-      const code = parseInt(value.slice(1), 8);
-      symbol = String.fromCodePoint(code);
+      codePoint = parseInt(value.slice(1), 8);
+      symbol = String.fromCodePoint(codePoint);
       break;
     }
     case 'hex':
     case 'unicode': {
       const hex = value.slice(2).replace('{', '');
-      const code = parseInt(hex, 16);
-      if (code > 0x10ffff) {
+      codePoint = parseInt(hex, 16);
+      if (codePoint > 0x10ffff) {
         throw new SyntaxError(`Bad character escape sequence: ${value}`);
       }
 
-      symbol = String.fromCodePoint(code);
+      symbol = String.fromCodePoint(codePoint);
+      break;
+    }
+    case 'meta': {
+      switch (value) {
+        case '\\t':
+          symbol = '\t';
+          codePoint = symbol.codePointAt(0);
+          break;
+        case '\\n':
+          symbol = '\n';
+          codePoint = symbol.codePointAt(0);
+          break;
+        case '\\r':
+          symbol = '\r';
+          codePoint = symbol.codePointAt(0);
+          break;
+        case '\\v':
+          symbol = '\v';
+          codePoint = symbol.codePointAt(0);
+          break;
+        case '\\f':
+          symbol = '\f';
+          codePoint = symbol.codePointAt(0);
+          break;
+        case '\\b':
+          symbol = '\b';
+          codePoint = symbol.codePointAt(0);
+        case '\\0':
+          symbol = '\0';
+          codePoint = 0;
+        case '.':
+          symbol = '.';
+          codePoint = NaN;
+          break;
+        default:
+          codePoint = NaN;
+      }
+      break;
+    }
+    case 'simple': {
+      symbol = value;
+      codePoint = symbol.codePointAt(0);
       break;
     }
   }
@@ -890,6 +933,7 @@ function Char(value, kind, loc) {
     value,
     kind,
     symbol,
+    codePoint,
   }, loc);
 }
 
