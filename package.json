@@ -1,6 +1,6 @@
 {
   "name": "regexp-tree",
-  "version": "0.0.58",
+  "version": "0.0.59",
   "license": "MIT",
   "description": "Regular Expressions parser in JavaScript",
   "repository": "DmitrySoshnikov/regexp-tree",
