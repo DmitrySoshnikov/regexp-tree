@@ -17,7 +17,9 @@ describe('basic', () => {
       body: {
         type: 'Char',
         value: 'a',
-        kind: 'simple'
+        symbol: 'a',
+        kind: 'simple',
+        codePoint: 'a'.codePointAt(0),
       },
       flags: '',
     });
@@ -32,14 +34,18 @@ describe('basic', () => {
           {
             type: 'Char',
             value: '(',
+            symbol: '(',
             kind: 'simple',
             escaped: true,
+            codePoint: '('.codePointAt(0)
           },
           {
             type: 'Char',
             value: ')',
+            symbol: ')',
             kind: 'simple',
             escaped: true,
+            codePoint: ')'.codePointAt(0)
           },
         ]
       },
@@ -55,12 +61,16 @@ describe('basic', () => {
         left: {
           type: 'Char',
           value: 'a',
+          symbol: 'a',
           kind: 'simple',
+          codePoint: 'a'.codePointAt(0)
         },
         right: {
           type: 'Char',
           value: 'b',
+          symbol: 'b',
           kind: 'simple',
+          codePoint: 'b'.codePointAt(0)
         }
       },
       flags: '',
@@ -76,12 +86,16 @@ describe('basic', () => {
           {
             type: 'Char',
             value: 'a',
+            symbol: 'a',
             kind: 'simple',
+            codePoint: 'a'.codePointAt(0)
           },
           {
             type: 'Char',
             value: 'b',
+            symbol: 'b',
             kind: 'simple',
+            codePoint: 'b'.codePointAt(0)
           }
         ],
       },
@@ -100,18 +114,23 @@ describe('basic', () => {
             from: {
               type: 'Char',
               value: 'a',
-              kind: 'simple'
+              symbol: 'a',
+              kind: 'simple',
+              codePoint: 'a'.codePointAt(0)
             },
             to: {
               type: 'Char',
               value: 'z',
-              kind: 'simple'
+              symbol: 'z',
+              kind: 'simple',
+              codePoint: 'z'.codePointAt(0)
             }
           },
           {
             type: 'Char',
             value: '\\d',
-            kind: 'meta'
+            kind: 'meta',
+            codePoint: NaN
           }
         ]
       },
@@ -149,147 +168,205 @@ describe('basic', () => {
           {
             type: 'Char',
             kind: 'simple',
-            value: '!'
+            value: '!',
+            symbol: '!',
+            codePoint: '!'.codePointAt(0)
           },
           {
             type: 'Char',
             kind: 'simple',
-            value: '"'
+            value: '"',
+            symbol: '"',
+            codePoint: '"'.codePointAt(0)
           },
           {
             type: 'Char',
             kind: 'simple',
-            value: '#'
+            value: '#',
+            symbol: '#',
+            codePoint: '#'.codePointAt(0)
           },
           {
             type: 'Char',
             kind: 'simple',
-            value: '$'
+            value: '$',
+            symbol: '$',
+            codePoint: '$'.codePointAt(0)
           },
           {
             type: 'Char',
             kind: 'simple',
-            value: '%'
+            value: '%',
+            symbol: '%',
+            codePoint: '%'.codePointAt(0)
           },
           {
             type: 'Char',
             kind: 'simple',
-            value: '&'
+            value: '&',
+            symbol: '&',
+            codePoint: '&'.codePointAt(0)
           },
           {
             type: 'Char',
             kind: 'simple',
-            value: '\''
+            value: '\'',
+            symbol: '\'',
+            codePoint: '\''.codePointAt(0)
           },
           {
             type: 'Char',
             kind: 'simple',
-            value: '('
+            value: '(',
+            symbol: '(',
+            codePoint: '('.codePointAt(0)
           },
           {
             type: 'Char',
             kind: 'simple',
-            value: ')'
+            value: ')',
+            symbol: ')',
+            codePoint: ')'.codePointAt(0)
           },
           {
             type: 'Char',
             kind: 'simple',
-            value: '*'
+            value: '*',
+            symbol: '*',
+            codePoint: '*'.codePointAt(0)
           },
           {
             type: 'Char',
             kind: 'simple',
-            value: '+'
+            value: '+',
+            symbol: '+',
+            codePoint: '+'.codePointAt(0)
           },
           {
             type: 'Char',
             kind: 'simple',
-            value: ','
+            value: ',',
+            symbol: ',',
+            codePoint: ','.codePointAt(0)
           },
           {
             type: 'Char',
             kind: 'simple',
-            value: '.'
+            value: '.',
+            symbol: '.',
+            codePoint: '.'.codePointAt(0)
           },
           {
             type: 'Char',
             kind: 'simple',
-            value: '/'
+            value: '/',
+            symbol: '/',
+            codePoint: '/'.codePointAt(0)
           },
           {
             type: 'Char',
             kind: 'simple',
-            value: ':'
+            value: ':',
+            symbol: ':',
+            codePoint: ':'.codePointAt(0)
           },
           {
             type: 'Char',
             kind: 'simple',
-            value: ';'
+            value: ';',
+            symbol: ';',
+            codePoint: ';'.codePointAt(0)
           },
           {
             type: 'Char',
             kind: 'simple',
-            value: '<'
+            value: '<',
+            symbol: '<',
+            codePoint: '<'.codePointAt(0)
           },
           {
             type: 'Char',
             kind: 'simple',
-            value: '='
+            value: '=',
+            symbol: '=',
+            codePoint: '='.codePointAt(0)
           },
           {
             type: 'Char',
             kind: 'simple',
-            value: '>'
+            value: '>',
+            symbol: '>',
+            codePoint: '>'.codePointAt(0)
           },
           {
             type: 'Char',
             kind: 'simple',
-            value: '?'
+            value: '?',
+            symbol: '?',
+            codePoint: '?'.codePointAt(0)
           },
           {
             type: 'Char',
             kind: 'simple',
-            value: '@'
+            value: '@',
+            symbol: '@',
+            codePoint: '@'.codePointAt(0)
           },
           {
             type: 'Char',
             kind: 'simple',
-            value: '^'
+            value: '^',
+            symbol: '^',
+            codePoint: '^'.codePointAt(0)
           },
           {
             type: 'Char',
             kind: 'simple',
-            value: '_'
+            value: '_',
+            symbol: '_',
+            codePoint: '_'.codePointAt(0)
           },
           {
             type: 'Char',
             kind: 'simple',
-            value: '`'
+            value: '`',
+            symbol: '`',
+            codePoint: '`'.codePointAt(0)
           },
           {
             type: 'Char',
             kind: 'simple',
-            value: '{'
+            value: '{',
+            symbol: '{',
+            codePoint: '{'.codePointAt(0)
           },
           {
             type: 'Char',
             kind: 'simple',
-            value: '|'
+            value: '|',
+            symbol: '|',
+            codePoint: '|'.codePointAt(0)
           },
           {
             type: 'Char',
             kind: 'simple',
-            value: '}'
+            value: '}',
+            symbol: '}',
+            codePoint: '}'.codePointAt(0)
           },
           {
             type: 'Char',
             kind: 'simple',
-            value: '~'
+            value: '~',
+            symbol: '~',
+            codePoint: '~'.codePointAt(0)
           },
           {
             type: 'Char',
             kind: 'simple',
-            value: '-'
+            value: '-',
+            symbol: '-',
+            codePoint: '-'.codePointAt(0)
           }
         ]
       },
@@ -315,7 +392,9 @@ describe('basic', () => {
             expression: {
               type: 'Char',
               value: 'a',
-              kind: 'simple'
+              symbol: 'a',
+              kind: 'simple',
+              codePoint: 'a'.codePointAt(0)
             }
           },
           {
@@ -331,7 +410,9 @@ describe('basic', () => {
             expression: {
               type: 'Char',
               value: 'b',
-              kind: 'simple'
+              symbol: 'b',
+              kind: 'simple',
+              codePoint: 'b'.codePointAt(0)
             }
           }
         ]
@@ -386,7 +467,9 @@ describe('basic', () => {
         expression: {
           type: 'Char',
           value: 'a',
-          kind: 'simple'
+          symbol: 'a',
+          kind: 'simple',
+          codePoint: 'a'.codePointAt(0)
         },
       },
       flags: '',
@@ -403,7 +486,9 @@ describe('basic', () => {
         expression: {
           type: 'Char',
           value: 'a',
-          kind: 'simple'
+          symbol: 'a',
+          kind: 'simple',
+          codePoint: 'a'.codePointAt(0)
         },
       },
       flags: '',
@@ -417,7 +502,9 @@ describe('basic', () => {
         expression: {
           type: 'Char',
           value: 'a',
-          kind: 'simple'
+          symbol: 'a',
+          kind: 'simple',
+          codePoint: 'a'.codePointAt(0)
         },
       },
       flags: '',
@@ -456,7 +543,9 @@ describe('basic', () => {
         assertion: {
           type: 'Char',
           value: 'a',
-          kind: 'simple'
+          symbol: 'a',
+          kind: 'simple',
+          codePoint: 'a'.codePointAt(0)
         },
       },
       flags: '',
@@ -471,7 +560,9 @@ describe('basic', () => {
         assertion: {
           type: 'Char',
           value: 'a',
-          kind: 'simple'
+          symbol: 'a',
+          kind: 'simple',
+          codePoint: 'a'.codePointAt(0)
         },
       },
       flags: '',
@@ -514,7 +605,9 @@ describe('basic', () => {
         assertion: {
           type: 'Char',
           value: 'a',
-          kind: 'simple'
+          symbol: 'a',
+          kind: 'simple',
+          codePoint: 'a'.codePointAt(0)
         },
       },
       flags: '',
@@ -529,7 +622,9 @@ describe('basic', () => {
         assertion: {
           type: 'Char',
           value: 'a',
-          kind: 'simple'
+          symbol: 'a',
+          kind: 'simple',
+          codePoint: 'a'.codePointAt(0)
         },
       },
       flags: '',
@@ -549,7 +644,9 @@ describe('basic', () => {
             expression: {
               type: 'Char',
               value: 'a',
-              kind: 'simple'
+              symbol: 'a',
+              kind: 'simple',
+              codePoint: 'a'.codePointAt(0)
             }
           },
           {
@@ -563,6 +660,7 @@ describe('basic', () => {
             value: '\\2',
             kind: 'decimal',
             symbol: String.fromCodePoint(2),
+            codePoint: 2
           }
         ]
       },
@@ -585,7 +683,9 @@ describe('basic', () => {
             expression: {
               type: 'Char',
               value: 'y',
-              kind: 'simple'
+              symbol: 'y',
+              kind: 'simple',
+              codePoint: 'y'.codePointAt(0)
             }
           },
           {
@@ -597,23 +697,31 @@ describe('basic', () => {
           {
             type: 'Char',
             value: 'k',
+            symbol: 'k',
             kind: 'simple',
             escaped: true,
+            codePoint: 'k'.codePointAt(0)
           },
           {
             type: 'Char',
             value: '<',
+            symbol: '<',
             kind: 'simple',
+            codePoint: '<'.codePointAt(0)
           },
           {
             type: 'Char',
             value: 'z',
+            symbol: 'z',
             kind: 'simple',
+            codePoint: 'z'.codePointAt(0)
           },
           {
             type: 'Char',
             value: '>',
+            symbol: '>',
             kind: 'simple',
+            codePoint: '>'.codePointAt(0)
           },
         ]
       },
@@ -631,45 +739,59 @@ describe('basic', () => {
           {
             type: 'Char',
             value: 'k',
+            symbol: 'k',
             kind: 'simple',
             escaped: true,
+            codePoint: 'k'.codePointAt(0)
           },
           {
             type: 'Char',
             value: '<',
+            symbol: '<',
             kind: 'simple',
+            codePoint: '<'.codePointAt(0)
           },
           {
             type: 'Char',
             value: 'a',
+            symbol: 'a',
             kind: 'simple',
+            codePoint: 'a'.codePointAt(0)
           },
           {
             type: 'Char',
             value: 'b',
+            symbol: 'b',
             kind: 'simple',
+            codePoint: 'b'.codePointAt(0)
           },
           {
             type: 'Char',
             value: '\\u003B',
             kind: 'unicode',
             symbol: String.fromCodePoint(0x003B),
+            codePoint: 0x003B
           },
           {
             type: 'Char',
             value: '\\u{003B}',
             kind: 'unicode',
             symbol: String.fromCodePoint(0x003B),
+            codePoint: 0x003B
           },
           {
             type: 'Char',
             value: 'c',
+            symbol: 'c',
             kind: 'simple',
+            codePoint: 'c'.codePointAt(0)
           },
           {
             type: 'Char',
             value: '>',
+            symbol: '>',
             kind: 'simple',
+            codePoint: '>'.codePointAt(0)
           },
         ]
       },
@@ -690,35 +812,46 @@ describe('basic', () => {
             expression: {
               type: 'Char',
               value: 'a',
-              kind: 'simple'
+              symbol: 'a',
+              kind: 'simple',
+              codePoint: 'a'.codePointAt(0)
             }
           },
           {
             type: 'Char',
             value: '\\1',
             symbol: String.fromCodePoint(1),
-            kind: 'decimal'
+            kind: 'decimal',
+            codePoint: 1
           },
           {
             type: 'Char',
             value: 'k',
+            symbol: 'k',
             kind: 'simple',
             escaped: true,
+            codePoint: 'k'.codePointAt(0)
           },
           {
             type: 'Char',
             value: '<',
+            symbol: '<',
             kind: 'simple',
+            codePoint: '<'.codePointAt(0)
           },
           {
             type: 'Char',
             value: 'z',
+            symbol: 'z',
             kind: 'simple',
+            codePoint: 'z'.codePointAt(0)
           },
           {
             type: 'Char',
             value: '>',
+            symbol: '>',
             kind: 'simple',
+            codePoint: '>'.codePointAt(0)
           },
         ]
       },
@@ -770,6 +903,7 @@ describe('basic', () => {
       value: '\\u003B',
       symbol: String.fromCodePoint(0x003b),
       kind: 'unicode',
+      codePoint: 0x003b
     });
 
     // Using `u` flag, 1 digit.
@@ -778,6 +912,7 @@ describe('basic', () => {
       value: '\\u{9}',
       symbol: String.fromCodePoint(9),
       kind: 'unicode',
+      codePoint: 9
     });
 
     // Using `u` flag, 6 digits, 10FFFF is max.
@@ -786,6 +921,7 @@ describe('basic', () => {
       value: '\\u{10FFFF}',
       symbol: String.fromCodePoint(0x10ffff),
       kind: 'unicode',
+      codePoint: 0x10ffff
     });
 
     // Using `u` flag, leading zeros.
@@ -794,6 +930,7 @@ describe('basic', () => {
       value: '\\u{000001D306}',
       symbol: String.fromCodePoint(0x000001d306),
       kind: 'unicode',
+      codePoint: 0x000001d306
     });
 
     // TODO: without `u` flag \u{1234} should be parsed NOT as
@@ -824,7 +961,9 @@ describe('basic', () => {
       body: {
         type: 'Char',
         value: 'a',
-        kind: 'simple'
+        symbol: 'a',
+        kind: 'simple',
+        codePoint: 'a'.codePointAt(0)
       },
       flags: 'gimuy',
     });
@@ -837,7 +976,9 @@ describe('basic', () => {
       body: {
         type: 'Char',
         value: 'a',
-        kind: 'simple'
+        symbol: 'a',
+        kind: 'simple',
+        codePoint: 'a'.codePointAt(0)
       },
       flags: 'gimuy',
     });
@@ -851,6 +992,7 @@ describe('basic', () => {
         value: '\\x33',
         kind: 'hex',
         symbol: String.fromCodePoint(0x33),
+        codePoint: 0x33
       },
       flags: '',
     });
@@ -864,6 +1006,7 @@ describe('basic', () => {
         value: '\\99',
         kind: 'decimal',
         symbol: String.fromCodePoint(99),
+        codePoint: 99
       },
       flags: '',
     });
@@ -876,7 +1019,9 @@ describe('basic', () => {
       body: {
         type: 'Char',
         value: 'a',
-        kind: 'simple'
+        symbol: 'a',
+        kind: 'simple',
+        codePoint: 'a'.codePointAt(0)
       },
       flags: 's',
     });

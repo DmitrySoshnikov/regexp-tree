@@ -47,7 +47,9 @@ describe('regexp-tree', () => {
       body: {
         type: 'Char',
         value: 'a',
+        symbol: 'a',
         kind: 'simple',
+        codePoint: 'a'.codePointAt(0)
       },
       flags: 'i',
     });
