@@ -51,5 +51,5 @@ function preservesInCharClass(value) {
 // into `a{2}`. TODO: more sophisticated analisys.
 
 function preservesEscape(value) {
-  return /[*\[\]()+?^$.\/\\\{\}]/.test(value);
+  return /[*\[\]()+?^$.\/\\\{\}\|]/.test(value);
 }

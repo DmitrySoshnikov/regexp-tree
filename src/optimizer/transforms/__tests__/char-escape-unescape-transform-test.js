@@ -18,10 +18,10 @@ describe('\e -> e', () => {
   });
 
   it('preserve escape', () => {
-    const re = transform(/\*\^\$\(\)\[\{\}/, [
+    const re = transform(/\*\^\$\(\)\[\{\}\|/, [
       charUnescape,
     ]);
-    expect(re.toString()).toBe(/\*\^\$\(\)\[\{\}/.toString());
+    expect(re.toString()).toBe(/\*\^\$\(\)\[\{\}\|/.toString());
   });
 
   it('char class', () => {
