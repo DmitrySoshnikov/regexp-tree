@@ -100,12 +100,16 @@ Which produces an AST node corresponding to this regular expression:
     left: {
       type: 'Char',
       value: 'a',
-      kind: 'simple'
+      symbol: 'a',
+      kind: 'simple',
+      codePoint: 97
     },
     right: {
       type: 'Char',
       value: 'b',
-      kind: 'simple'
+      symbol: 'b',
+      kind: 'simple',
+      codePoint: 98
     }
   },
   flags: 'i',
@@ -201,7 +205,9 @@ This attaches `loc` object to each AST node:
       {
         type: 'Char',
         value: 'a',
+        symbol: 'a',
         kind: 'simple',
+        codePoint: 97,
         loc: {
           start: {
             line: 1,
@@ -218,7 +224,9 @@ This attaches `loc` object to each AST node:
       {
         type: 'Char',
         value: 'b',
+        symbol: 'b',
         kind: 'simple',
+        codePoint: 98,
         loc: {
           start: {
             line: 1,
@@ -370,6 +378,8 @@ module.exports = {
   Char({node}) {
     if (node.kind === 'simple' && node.value === 'a') {
       node.value = 'b';
+      node.symbol = 'b';
+      node.codePoint = 98;
     }
   },
 };
@@ -404,7 +414,9 @@ const re = regexpTree.generate({
   body: {
     type: 'Char',
     value: 'a',
+    symbol: 'a',
     kind: 'simple',
+    codePoint: 97
   },
   flags: 'i',
 });
@@ -705,7 +717,9 @@ Node:
 {
   type: 'Char',
   value: 'z',
-  kind: 'simple'
+  symbol: 'z',
+  kind: 'simple',
+  codePoint: 122
 }
 ```
 
@@ -723,7 +737,9 @@ The same value, `escaped` flag is added:
 {
   type: 'Char',
   value: 'z',
+  symbol: 'z',
   kind: 'simple',
+  codePoint: 122,
   escaped: true
 }
 ```
@@ -745,7 +761,9 @@ OK, node:
 {
   type: 'Char',
   value: '*',
+  symbol: '*',
   kind: 'simple',
+  codePoint: 42,
   escaped: true
 }
 ```
@@ -766,11 +784,15 @@ Node:
 {
   type: 'Char',
   value: '\\n',
+  symbol: '\n',
   kind: 'meta',
+  codePoint: 10
 }
 ```
 
-Among other meta character are: `\f`, `\r`, `\n`, `\t`, `\v`, `\0`, `[\b]` (backspace char), `\s`, `\S`, `\w`, `\W`, `\d`, `\D`.
+Among other meta character are: `.`, `\f`, `\r`, `\n`, `\t`, `\v`, `\0`, `[\b]` (backspace char), `\s`, `\S`, `\w`, `\W`, `\d`, `\D`.
+
+> NOTE: Meta characters representing ranges (like `.`, `\s`, etc.) have `undefined` value for `symbol` and `NaN` for `codePoint`.
 
 > NOTE: `\b` and `\B` are parsed as `Assertion` node type, not `Char`.
 
@@ -788,7 +810,9 @@ Node:
 {
   type: 'Char',
   value: '\\cx',
+  symbol: undefined,
   kind: 'control',
+  codePoint: NaN
 }
 ```
 
@@ -806,7 +830,9 @@ Node:
 {
   type: 'Char',
   value: '\\x3B',
+  symbol: ';',
   kind: 'hex',
+  codePoint: 59
 }
 ```
 
@@ -824,7 +850,9 @@ Node:
 {
   type: 'Char',
   value: '\\42',
+  symbol: '*',
   kind: 'decimal',
+  codePoint: 42
 }
 ```
 
@@ -842,7 +870,9 @@ Node:
 {
   type: 'Char',
   value: '\\073',
+  symbol: ';',
   kind: 'oct',
+  codePoint: 59
 }
 ```
 
@@ -861,7 +891,9 @@ Node:
 {
   type: 'Char',
   value: '\\u003B',
+  symbol: ';',
   kind: 'unicode',
+  codePoint: 59
 }
 ```
 
@@ -886,12 +918,16 @@ A node:
     {
       type: 'Char',
       value: 'a',
-      kind: 'simple'
+      symbol: 'a',
+      kind: 'simple',
+      codePoint: 97
     },
     {
       type: 'Char',
       value: '*',
-      kind: 'simple'
+      symbol: '*',
+      kind: 'simple',
+      codePoint: 42
     }
   ]
 }
@@ -917,12 +953,16 @@ An AST node is the same, just `negative` property is added:
     {
       type: 'Char',
       value: 'a',
-      kind: 'simple'
+      symbol: 'a',
+      kind: 'simple',
+      codePoint: 97
     },
     {
       type: 'Char',
       value: 'b',
-      kind: 'simple'
+      symbol: 'b',
+      kind: 'simple',
+      codePoint: 98
     }
   ]
 }
@@ -947,12 +987,16 @@ A node:
       from: {
         type: 'Char',
         value: 'a',
-        kind: 'simple'
+        symbol: 'a',
+        kind: 'simple',
+        codePoint: 97
       },
       to: {
         type: 'Char',
         value: 'z',
-        kind: 'simple'
+        symbol: 'z',
+        kind: 'simple',
+        codePoint: 122
       }
     }
   ]
@@ -994,17 +1038,23 @@ A node:
     {
       type: 'Char',
       value: 'a',
-      kind: 'simple'
+      symbol: 'a',
+      kind: 'simple',
+      codePoint: 97
     },
     {
       type: 'Char',
       value: 'b',
-      kind: 'simple'
+      symbol: 'b',
+      kind: 'simple',
+      codePoint: 98
     },
     {
       type: 'Char',
       value: 'c',
-      kind: 'simple'
+      symbol: 'c',
+      kind: 'simple',
+      codePoint: 99
     }
   ]
 }
@@ -1038,12 +1088,16 @@ A node:
   left: {
     type: 'Char',
     value: 'a',
-    kind: 'simple'
+    symbol: 'a',
+    kind: 'simple',
+    codePoint: 97
   },
   right: {
     type: 'Char',
     value: 'b',
-    kind: 'simple'
+    symbol: 'b',
+    kind: 'simple',
+    codePoint: 98
   }
 }
 ```
@@ -1078,12 +1132,16 @@ A node:
           {
             type: 'Char',
             value: 'a',
-            kind: 'simple'
+            symbol: 'a',
+            kind: 'simple',
+            codePoint: 97
           },
           {
             type: 'Char',
             value: 'b',
-            kind: 'simple'
+            symbol: 'b',
+            kind: 'simple',
+            codePoint: 98
           }
         ]
       }
@@ -1091,7 +1149,9 @@ A node:
     {
       type: 'Char',
       value: 'c',
-      kind: 'simple'
+      symbol: 'c',
+      kind: 'simple',
+      codePoint: 99
     }
   ]
 }
@@ -1135,7 +1195,9 @@ We have the following node (the `name` property with value `foo` is added):
   expression: {
     type: 'Char',
     value: 'x',
-    kind: 'simple'
+    symbol: 'x',
+    kind: 'simple',
+    codePoint: 120
   }
 }
 ```
@@ -1165,12 +1227,16 @@ The same node, the `capturing` flag is `false`:
           {
             type: 'Char',
             value: 'a',
-            kind: 'simple'
+            symbol: 'a',
+            kind: 'simple',
+            codePoint: 97
           },
           {
             type: 'Char',
             value: 'b',
-            kind: 'simple'
+            symbol: 'b',
+            kind: 'simple',
+            codePoint: 98
           }
         ]
       }
@@ -1178,7 +1244,9 @@ The same node, the `capturing` flag is `false`:
     {
       type: 'Char',
       value: 'c',
-      kind: 'simple'
+      symbol: 'c',
+      kind: 'simple',
+      codePoint: 99
     }
   ]
 }
@@ -1210,12 +1278,16 @@ A node:
           {
             type: 'Char',
             value: 'a',
-            kind: 'simple'
+            symbol: 'a',
+            kind: 'simple',
+            codePoint: 97
           },
           {
             type: 'Char',
             value: 'b',
-            kind: 'simple'
+            symbol: 'b',
+            kind: 'simple',
+            codePoint: 98
           }
         ]
       }
@@ -1252,7 +1324,9 @@ A node:
       expression: {
         type: 'Char',
         value: 'w',
-        kind: 'simple'
+        symbol: 'w',
+        kind: 'simple',
+        codePoint: 119
       }
     },
     {
@@ -1291,7 +1365,9 @@ Node:
   expression: {
     type: 'Char',
     value: 'a',
-    kind: 'simple'
+    symbol: 'a',
+    kind: 'simple',
+    codePoint: 97
   },
   quantifier: {
     type: 'Quantifier',
@@ -1317,7 +1393,9 @@ Node:
   expression: {
     type: 'Char',
     value: 'a',
-    kind: 'simple'
+    symbol: 'a',
+    kind: 'simple',
+    codePoint: 97
   },
   quantifier: {
     type: 'Quantifier',
@@ -1344,7 +1422,9 @@ Node:
   expression: {
     type: 'Char',
     value: 'a',
-    kind: 'simple'
+    symbol: 'a',
+    kind: 'simple',
+    codePoint: 97
   },
   quantifier: {
     type: 'Quantifier',
@@ -1372,7 +1452,9 @@ The type of the quantifier is `Range`, and `from`, and `to` properties have the 
   expression: {
     type: 'Char',
     value: 'a',
-    kind: 'simple'
+    symbol: 'a',
+    kind: 'simple',
+    codePoint: 97
   },
   quantifier: {
     type: 'Quantifier',
@@ -1400,7 +1482,9 @@ An AST node for such range doesn't contain `to` property:
   expression: {
     type: 'Char',
     value: 'a',
-    kind: 'simple'
+    symbol: 'a',
+    kind: 'simple',
+    codePoint: 97
   },
   quantifier: {
     type: 'Quantifier',
@@ -1430,7 +1514,9 @@ An AST node for a closed range:
   expression: {
     type: 'Char',
     value: 'a',
-    kind: 'simple'
+    symbol: 'a',
+    kind: 'simple',
+    codePoint: 97
   },
   quantifier: {
     type: 'Quantifier',
@@ -1462,7 +1548,9 @@ Node:
   expression: {
     type: 'Char',
     value: 'a',
-    kind: 'simple'
+    symbol: 'a',
+    kind: 'simple',
+    codePoint: 97
   },
   quantifier: {
     type: 'Quantifier',
@@ -1509,7 +1597,9 @@ The node:
     {
       type: 'Char',
       value: 'a',
-      kind: 'simple'
+      symbol: 'a',
+      kind: 'simple',
+      codePoint: 97
     }
   ]
 }
@@ -1538,7 +1628,9 @@ A node:
     {
       type: 'Char',
       value: 'a',
-      kind: 'simple'
+      symbol: 'a',
+      kind: 'simple',
+      codePoint: 97
     },
     {
       type: 'Assertion',
@@ -1576,7 +1668,9 @@ A node:
     {
       type: 'Char',
       value: 'x',
-      kind: 'simple'
+      symbol: 'x',
+      kind: 'simple',
+      codePoint: 120
     },
     {
       type: 'Assertion',
@@ -1601,7 +1695,9 @@ A node is the same:
     {
       type: 'Char',
       value: 'x',
-      kind: 'simple'
+      symbol: 'x',
+      kind: 'simple',
+      codePoint: 120
     },
     {
       type: 'Assertion',
@@ -1632,7 +1728,9 @@ A node:
     {
       type: 'Char',
       value: 'a',
-      kind: 'simple'
+      symbol: 'a',
+      kind: 'simple',
+      codePoint: 97
     },
     {
       type: 'Assertion',
@@ -1640,7 +1738,9 @@ A node:
       assertion: {
         type: 'Char',
         value: 'b',
-        kind: 'simple'
+        symbol: 'b',
+        kind: 'simple',
+        codePoint: 98
       }
     }
   ]
@@ -1664,7 +1764,9 @@ A node is similar, just `negative` flag is added:
     {
       type: 'Char',
       value: 'a',
-      kind: 'simple'
+      symbol: 'a',
+      kind: 'simple',
+      codePoint: 97
     },
     {
       type: 'Assertion',
@@ -1673,7 +1775,9 @@ A node is similar, just `negative` flag is added:
       assertion: {
         type: 'Char',
         value: 'b',
-        kind: 'simple'
+        symbol: 'b',
+        kind: 'simple',
+        codePoint: 98
       }
     }
   ]
@@ -1706,13 +1810,17 @@ A node:
       assertion: {
         type: 'Char',
         value: 'a',
-        kind: 'simple'
+        symbol: 'a',
+        kind: 'simple',
+        codePoint: 97
       }
     },
     {
       type: 'Char',
       value: 'b',
-      kind: 'simple'
+      symbol: 'b',
+      kind: 'simple',
+      codePoint: 98
     },
   ]
 }
@@ -1739,13 +1847,17 @@ A node:
       assertion: {
         type: 'Char',
         value: 'a',
-        kind: 'simple'
+        symbol: 'a',
+        kind: 'simple',
+        codePoint: 97
       }
     },
     {
       type: 'Char',
       value: 'b',
-      kind: 'simple'
+      symbol: 'b',
+      kind: 'simple',
+      codePoint: 98
     },
   ]
 }
