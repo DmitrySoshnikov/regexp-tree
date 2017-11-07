@@ -34,7 +34,9 @@ describe('extended', () => {
               expression: {
                 type: 'Char',
                 kind: 'simple',
-                value: 'd'
+                value: 'd',
+                symbol: 'd',
+                codePoint: 'd'.codePointAt(0)
               },
               quantifier: {
                 type: 'Quantifier',
@@ -48,7 +50,9 @@ describe('extended', () => {
           {
             type: 'Char',
             kind: 'simple',
-            value: '-'
+            value: '-',
+            symbol: '-',
+            codePoint: '-'.codePointAt(0)
           },
           {
             type: 'Group',
@@ -60,7 +64,9 @@ describe('extended', () => {
               expression: {
                 type: 'Char',
                 kind: 'simple',
-                value: 'd'
+                value: 'd',
+                symbol: 'd',
+                codePoint: 'd'.codePointAt(0)
               },
               quantifier: {
                 type: 'Quantifier',
@@ -74,7 +80,9 @@ describe('extended', () => {
           {
             type: 'Char',
             kind: 'simple',
-            value: '-'
+            value: '-',
+            symbol: '-',
+            codePoint: '-'.codePointAt(0)
           },
           {
             type: 'Group',
@@ -86,7 +94,9 @@ describe('extended', () => {
               expression: {
                 kind: 'simple',
                 type: 'Char',
-                value: 'd'
+                value: 'd',
+                symbol: 'd',
+                codePoint: 'd'.codePointAt(0)
               },
               quantifier: {
                 type: 'Quantifier',
@@ -114,14 +124,18 @@ describe('extended', () => {
           {
             type: 'Char',
             value: ' ',
+            symbol: ' ',
             kind: 'simple',
             escaped: true,
+            codePoint: ' '.codePointAt(0)
           },
           {
             type: 'Char',
             value: '#',
+            symbol: '#',
             kind: 'simple',
             escaped: true,
+            codePoint: '#'.codePointAt(0)
           },
         ],
       },
@@ -140,12 +154,16 @@ describe('extended', () => {
           {
             type: 'Char',
             value: ' ',
+            symbol: ' ',
             kind: 'simple',
+            codePoint: ' '.codePointAt(0)
           },
           {
             type: 'Char',
             value: '#',
+            symbol: '#',
             kind: 'simple',
+            codePoint: '#'.codePointAt(0)
           },
         ],
       },

@@ -54,7 +54,9 @@ describe('NodePath', () => {
           {
             type: 'Char',
             value: 'a',
+            symbol: 'a',
             kind: 'simple',
+            codePoint: 'a'.codePointAt(0)
           },
           // No 'b' char.
         ]
@@ -231,7 +233,9 @@ describe('NodePath', () => {
           const xNode = {
             type: 'Char',
             value: 'x',
+            symbol: 'x',
             kind: 'simple',
+            codePoint: 'x'.codePointAt(0)
           };
 
           const parentPath = path.parentPath;
@@ -245,7 +249,9 @@ describe('NodePath', () => {
           const yNode = {
             type: 'Char',
             value: 'y',
+            symbol: 'y',
             kind: 'simple',
+            codePoint: 'y'.codePointAt(0)
           };
 
           parentPath.insertChildAt(yNode, 3);
@@ -267,7 +273,9 @@ describe('NodePath', () => {
           const zNode = {
             type: 'Char',
             value: 'z',
+            symbol: 'z',
             kind: 'simple',
+            codePoint: 'z'.codePointAt(0)
           };
           path.parentPath.insertChildAt(zNode, 4);
 
@@ -293,7 +301,9 @@ describe('NodePath', () => {
     const cNode = {
       type: 'Char',
       value: 'c',
+      symbol: 'c',
       kind: 'simple',
+      codePoint: 'c'.codePointAt(0)
     };
 
     bCharPath.replace(cNode);
@@ -307,7 +317,9 @@ describe('NodePath', () => {
           {
             type: 'Char',
             value: 'a',
+            symbol: 'a',
             kind: 'simple',
+            codePoint: 'a'.codePointAt(0)
           },
           // 'b' replaced with 'c'
           cNode
@@ -387,7 +399,9 @@ describe('NodePath', () => {
     const cNode = {
       type: 'Char',
       value: 'c',
+      symbol: 'c',
       kind: 'simple',
+      codePoint: 'c'.codePointAt(0)
     };
 
     const groupNode = {
@@ -420,7 +434,9 @@ describe('NodePath', () => {
     const dNode = {
       type: 'Char',
       value: 'd',
+      symbol: 'd',
       kind: 'simple',
+      codePoint: 'd'.codePointAt(0)
     };
     alterPath.appendChild(dNode);
 
@@ -546,7 +562,9 @@ describe('NodePath', () => {
     const node =  {
       type: 'Char',
       value: 'a',
+      symbol: 'a',
       kind: 'simple',
+      codePoint: 'a'.codePointAt(0)
     };
 
     const path = NodePath.getForNode(

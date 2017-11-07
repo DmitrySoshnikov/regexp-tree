@@ -45,7 +45,9 @@ describe('transform-basic', () => {
         expression: {
           type: 'Char',
           value: 'a',
+          symbol: 'a',
           kind: 'simple',
+          codePoint: 'a'.codePointAt(0),
           loc: {
             source: 'a',
             start: {

@@ -23,12 +23,16 @@ Result:
           from: {
             type: 'Char',
             value: 'a',
-            kind: 'simple'
+            symbol: 'a',
+            kind: 'simple',
+            codePoint: 97
           },
           to: {
             type: 'Char',
             value: 'z',
-            kind: 'simple'
+            symbol: 'z',
+            kind: 'simple',
+            codePoint: 122
           }
         }
       ]

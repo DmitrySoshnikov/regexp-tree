@@ -301,7 +301,9 @@ describe('traverse-basic', () => {
       body: {
         type: 'Char',
         value: '.',
+        symbol: '.',
         kind: 'meta',
+        codePoint: NaN
       },
       flags: '',
     });
