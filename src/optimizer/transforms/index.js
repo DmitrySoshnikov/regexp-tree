@@ -24,6 +24,9 @@ module.exports = [
   // \e -> e
   require('./char-escape-unescape-transform'),
 
+  // (ab|ab) -> (ab)
+  require('./disjunction-remove-duplicates-transform'),
+
   // (a|b|c) -> [abc]
   require('./group-single-chars-to-char-class')
 ];
