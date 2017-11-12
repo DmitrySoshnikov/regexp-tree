@@ -4,4 +4,4 @@
 
 npm test
 
-./node_modules/.bin/eslint src/
+npm run eslint
