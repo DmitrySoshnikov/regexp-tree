@@ -10,7 +10,6 @@ const NFAState = require('../nfa-state');
 
 const {
   EPSILON,
-  EPSILON_CLOSURE,
 } = require('../../special-symbols');
 
 // x|y
@@ -89,12 +88,12 @@ describe('nfa', () => {
     const nfa = getDefaultNFA();
 
     expect(nfa.getTransitionTable()).toEqual({
-      1: {"ε*": [1, 2, 5]},
-      2: {"x": [3], "ε*": [2]},
-      3: {"ε*": [3, 4]},
-      4: {"ε*": [4]},
-      5: {"y": [6], "ε*": [5]},
-      6: {"ε*": [6, 4]},
+      1: {'ε*': [1, 2, 5]},
+      2: {'x': [3], 'ε*': [2]},
+      3: {'ε*': [3, 4]},
+      4: {'ε*': [4]},
+      5: {'y': [6], 'ε*': [5]},
+      6: {'ε*': [6, 4]},
     });
   });
 

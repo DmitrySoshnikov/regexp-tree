@@ -5,8 +5,6 @@
 
 'use strict';
 
-const NFAState = require('./nfa-state');
-
 const parser = require('../../../parser');
 
 const transform = require('../../../transform');
@@ -15,15 +13,9 @@ const desugaringTransforms = require('../transforms');
 const {
   alt,
   char,
-  e,
   or,
   rep,
 } = require('./builders');
-
-const {
-  EPSILON,
-  EPSILON_CLOSURE,
-} = require('../special-symbols');
 
 /**
  * Helper `gen` function calls node type handler.
@@ -68,8 +60,6 @@ const generator = {
   },
 
   Char(node) {
-    const value = node.value;
-
     if (node.kind !== 'simple') {
       throw new Error(`NFA/DFA: Only simple chars are supported yet.`);
     }

@@ -5,8 +5,6 @@
 
 'use strict';
 
-const NFAState = require('./nfa-state');
-
 const TablePrinter = require('../table-printer');
 const colors = require('colors');
 

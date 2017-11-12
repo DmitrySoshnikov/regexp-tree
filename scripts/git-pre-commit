@@ -3,3 +3,5 @@
 # Pre-commit validaitons:
 
 npm test
+
+./node_modules/.bin/eslint src/

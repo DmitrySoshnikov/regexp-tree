@@ -23,7 +23,7 @@ describe('compat-transpiler-integration-test', () => {
       namedCapturingGroups: {
         name: 1,
       },
-    })
+    });
   });
 
   it('applies whitelist only', () => {

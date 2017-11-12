@@ -72,7 +72,7 @@ describe('NodePath', () => {
       // First handler, removes current 'b', and further 'c'.
       {
         Char(path) {
-          const {node, parent, property, index} = path;
+          const {node} = path;
 
           if (node.value === 'b') {
 
@@ -115,7 +115,7 @@ describe('NodePath', () => {
         // This handler is not called for 'b', and 'c' since
         // they were removed in the previous handler.
         Char(path) {
-          const {node, parent, property, index} = path;
+          const {node} = path;
 
           // Never can be 'b' or 'c', since they were removed.
           expect(path.value).not.toBe('b');
@@ -162,7 +162,7 @@ describe('NodePath', () => {
     // '/abcd/' -> '/ad/'
     traverse.traverse(ast, {
       Char(path) {
-        const {node, parent, property, index} = path;
+        const {node} = path;
         if (node.value === 'b' || node.value === 'c') {
           path.remove();
         }
@@ -178,7 +178,7 @@ describe('NodePath', () => {
     // '/abcdefghi/' -> '/bfi/'
     traverse.traverse(ast, {
       Char(path) {
-        const {node, parent, property, index} = path;
+        const {node} = path;
 
         // From 'd' remove previous 'a', 'c', 'd' (itself), and 'e'.
         // After this it is: bfghi
@@ -214,7 +214,7 @@ describe('NodePath', () => {
     // '/abcdefghi/' -> '/bxyfzi/'
     traverse.traverse(ast, {
       Char(path) {
-        const {node, parent, property, index} = path;
+        const {node} = path;
 
         // From 'd' remove previous 'a', 'c', inserts 'x' before 'd',
         // removes 'd' (itself), insert 'y' after 'e', remove 'e'.
@@ -339,8 +339,8 @@ describe('NodePath', () => {
     const aNode = aCharPath.node;
     const bNode = bCharPath.node;
 
-    bodyPath.node.mark = "body";
-    groupPath.node.mark = "group";
+    bodyPath.node.mark = 'body';
+    groupPath.node.mark = 'group';
 
     // swap a and b
     groupPath.setChild(aNode);
@@ -350,35 +350,37 @@ describe('NodePath', () => {
     expect(generator.generate(ast)).toBe('/b(a)/');
 
     // body and group still ok
-    expect(bodyPath.node.mark).toBe('body')
-    expect(groupPath.node.mark).toBe('group')
-    expect(bodyPath.getChild(1).node.mark).toBe('group')
+    expect(bodyPath.node.mark).toBe('body');
+    expect(groupPath.node.mark).toBe('group');
+    expect(bodyPath.getChild(1).node.mark).toBe('group');
 
     // first is now Char 'b' in body
-    expect(bodyPath.getChild(0).node.type).toBe('Char')
-    expect(bodyPath.getChild(0).node.value).toBe('b')
+    expect(bodyPath.getChild(0).node.type).toBe('Char');
+    expect(bodyPath.getChild(0).node.value).toBe('b');
     // parentPath should point to the same node as parent
-    expect(bodyPath.getChild(0).parentPath.node).toBe(bodyPath.getChild(0).parent)
+    expect(bodyPath.getChild(0).parentPath.node)
+      .toBe(bodyPath.getChild(0).parent);
     // now the parent of 'b' is the body
-    expect(bodyPath.getChild(0).parent.mark).toBe('body')
-    expect(bodyPath.getChild(0).parent.type).toBe('Alternative')
+    expect(bodyPath.getChild(0).parent.mark).toBe('body');
+    expect(bodyPath.getChild(0).parent.type).toBe('Alternative');
     // Group has children property 'expressions'
-    expect(bodyPath.getChild(0).property).toBe('expressions')
+    expect(bodyPath.getChild(0).property).toBe('expressions');
     // and an index of 0
-    expect(bodyPath.getChild(0).index).toBe(0)
+    expect(bodyPath.getChild(0).index).toBe(0);
 
     // second is Char 'a' in the Group
-    expect(bodyPath.getChild(1).getChild().node.type).toBe('Char')
-    expect(bodyPath.getChild(1).getChild().node.value).toBe('a')
+    expect(bodyPath.getChild(1).getChild().node.type).toBe('Char');
+    expect(bodyPath.getChild(1).getChild().node.value).toBe('a');
     // parentPath should point to the same node as parent
-    expect(bodyPath.getChild(1).getChild().parentPath.node).toBe(bodyPath.getChild(1).getChild().parent)
+    expect(bodyPath.getChild(1).getChild().parentPath.node)
+      .toBe(bodyPath.getChild(1).getChild().parent);
     // now the parent of 'a' is the Group
-    expect(bodyPath.getChild(1).getChild().parent.mark).toBe('group')
-    expect(bodyPath.getChild(1).getChild().parent.type).toBe('Group')
+    expect(bodyPath.getChild(1).getChild().parent.mark).toBe('group');
+    expect(bodyPath.getChild(1).getChild().parent.type).toBe('Group');
     // Group has child property 'expression'
-    expect(bodyPath.getChild(1).getChild().property).toBe('expression')
+    expect(bodyPath.getChild(1).getChild().property).toBe('expression');
     // and no index!
-    expect(bodyPath.getChild(1).getChild().index).toBe(null)
+    expect(bodyPath.getChild(1).getChild().index).toBe(null);
 
     // the locally stored NodePaths should have new parents
     expect(bCharPath.parentPath).toBe(bodyPath);
@@ -405,13 +407,13 @@ describe('NodePath', () => {
     };
 
     const groupNode = {
-      type: "Group",
+      type: 'Group',
       capturing: true,
       expression: null
     };
 
     const alterNode = {
-      type: "Alternative",
+      type: 'Alternative',
       expressions: []
     };
 
@@ -495,12 +497,12 @@ describe('NodePath', () => {
     const bodyPath = NodePath.getForNode(ast.body);
     const groupPath = bodyPath.getChild(1);
 
-    expect(groupPath.node.type).toBe("Group");
+    expect(groupPath.node.type).toBe('Group');
     expect(groupPath.getParent()).toBe(bodyPath);
 
     const alterPath = groupPath.getChild();
 
-    expect(alterPath.node.type).toBe("Alternative");
+    expect(alterPath.node.type).toBe('Alternative');
     expect(alterPath.getParent()).toBe(groupPath);
 
     const bCharPath = alterPath.getChild(0);

@@ -52,13 +52,3 @@ function rewriteExactOne(path) {
 
   path.parentPath.replace(path.parentPath.node.expression);
 }
-
-function rewriteClosedSame(path) {
-  const {node} = path;
-
-  if (node.from !== node.to) {
-    return;
-  }
-
-  delete node.to;
-}

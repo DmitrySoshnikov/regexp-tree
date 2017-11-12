@@ -32,7 +32,8 @@
     "nomnom": "^1.8.1"
   },
   "devDependencies": {
-    "syntax-cli": "^0.0.91",
-    "jest-cli": "^19.0.2"
+    "eslint": "^4.11.0",
+    "jest-cli": "^19.0.2",
+    "syntax-cli": "^0.0.91"
   }
 }

@@ -9,7 +9,6 @@ const TablePrinter = require('../table-printer');
 const colors = require('colors');
 
 const {
-  EPSILON,
   EPSILON_CLOSURE,
 } = require('../special-symbols');
 
@@ -138,7 +137,6 @@ class DFA {
    * combined states '1,2,3' -> 1, '3,4' -> 2, etc.
    */
   _remapStateNumbers(calculatedDFATable) {
-    const resultDFATable = {};
     const newStatesMap = {};
 
     this._originalTransitionTable = calculatedDFATable;

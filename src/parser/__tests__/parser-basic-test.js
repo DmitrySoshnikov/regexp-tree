@@ -139,6 +139,7 @@ describe('basic', () => {
   });
 
   it('empty class', () => {
+    /*eslint no-empty-character-class:0*/
     expect(re(/[]/)).toEqual({
       type: 'RegExp',
       body: {
@@ -865,8 +866,7 @@ describe('basic', () => {
       const range = [];
 
       for (
-        let idx = start.charCodeAt(0),
-        end = stop.charCodeAt(0);
+        let idx = start.charCodeAt(0), end = stop.charCodeAt(0);
         idx <= end;
         ++idx
       ) {

@@ -112,6 +112,7 @@ describe('generator-basic', () => {
   });
 
   it('empty positive character class', () => {
+    /*eslint no-empty-character-class:0*/
     test(/[]/);
   });
 

@@ -10,7 +10,6 @@ const NFAState = require('./nfa-state');
 
 const {
   EPSILON,
-  EPSILON_CLOSURE,
 } = require('../special-symbols');
 
 // -----------------------------------------------------------------------------
@@ -63,7 +62,7 @@ function altPair(first, second) {
 
   first.out.addTransition(EPSILON, second.in);
 
-  return new NFA(first.in, second.out)
+  return new NFA(first.in, second.out);
 }
 
 /**

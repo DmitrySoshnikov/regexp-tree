@@ -27,7 +27,7 @@ module.exports = {
 };
 
 function shouldUnescape(path) {
-  const {node, node: {value}, parent} = path;
+  const {node: {value}, parent} = path;
 
   // In char class (, etc are allowed.
   if (parent.type !== 'CharacterClass') {

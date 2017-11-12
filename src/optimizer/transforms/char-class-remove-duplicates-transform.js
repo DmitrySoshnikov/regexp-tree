@@ -20,8 +20,8 @@ module.exports = {
       if (sources.hasOwnProperty(source)) {
         childPath.remove();
 
-         // Since we remove the current node.
-         // TODO: make it simpler for users with a method.
+        // Since we remove the current node.
+        // TODO: make it simpler for users with a method.
         i--;
       }
 

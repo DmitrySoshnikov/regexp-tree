@@ -41,7 +41,7 @@ function listToDisjunction(list) {
       type: 'Disjunction',
       left,
       right,
-    }
+    };
   });
 }
 

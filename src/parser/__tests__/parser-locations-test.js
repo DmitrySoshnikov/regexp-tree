@@ -147,7 +147,7 @@ describe('locations', () => {
       loc: {
         source: '/|/',
         start: {
-        line: 1,
+          line: 1,
           column: 0,
           offset: 0,
         },

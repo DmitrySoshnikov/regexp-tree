@@ -16,7 +16,6 @@ const {
 
 const {
   EPSILON,
-  EPSILON_CLOSURE,
 } = require('../../special-symbols');
 
 // x|y
@@ -69,13 +68,13 @@ describe('dfa', () => {
     const dfa = new DFA(getDefaultNFA());
 
     expect(dfa.getOriginalTransitionTable()).toEqual({
-      "1,2,5": {"x": "3,4", "y": "6,4"},
-      "3,4": {},
-      "6,4": {},
+      '1,2,5': {'x': '3,4', 'y': '6,4'},
+      '3,4': {},
+      '6,4': {},
     });
 
     expect(dfa.getTransitionTable()).toEqual({
-      1: {"x": 3, "y": 2},
+      1: {'x': 3, 'y': 2},
       2: {},
       3: {},
     });

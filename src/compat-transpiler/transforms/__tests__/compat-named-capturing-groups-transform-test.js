@@ -24,7 +24,7 @@ describe('compat-named-capturing-groups-transform', () => {
     expect(compatNamedCapturingGroups.getExtra()).toEqual({
       foo: 1,
       bar: 3,
-    })
+    });
   });
 
 });

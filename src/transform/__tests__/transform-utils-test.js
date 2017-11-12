@@ -6,8 +6,6 @@
 const parser = require('../../parser');
 const transformUtils = require('../utils');
 
-const {TransformResult, transform} = require('..');
-
 describe('transform-utils', () => {
 
   it('disjunctionToList', () => {

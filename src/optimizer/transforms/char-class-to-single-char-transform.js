@@ -44,7 +44,7 @@ module.exports = {
         start: node.loc.start,
         end: node.loc.start + value.length,
       },
-    })
+    });
   }
 };
 
