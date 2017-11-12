@@ -40,6 +40,17 @@ function astTraverse(root, options = {}) {
     }
 
     if (res !== false) {
+
+      // A node can be replaced during traversal, so we have to
+      // recalculate it from the parent, to avoid traversing "dead" nodes.
+      if (parent) {
+        if (idx) {
+          node = parent[prop][idx];
+        } else {
+          node = parent[prop];
+        }
+      }
+
       for (let prop in node) if (node.hasOwnProperty(prop)) {
         if (skipProperty ? skipProperty(prop, node) : prop[0] === '$') {
           continue;
