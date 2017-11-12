@@ -10,6 +10,13 @@ const quantifierRangeToSymbol = require('../quantifier-range-to-symbol-transform
 
 describe('quantifier range to symbol', () => {
 
+  it('a{0,} -> a*', () => {
+    const re = transform(/[a-z]{0,}/, [
+      quantifierRangeToSymbol,
+    ]);
+    expect(re.toString()).toBe('/[a-z]*/');
+  });
+
   it('a{1,} -> a+', () => {
     const re = transform(/[a-z]{1,}/, [
       quantifierRangeToSymbol,
