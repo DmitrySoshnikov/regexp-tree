@@ -28,5 +28,8 @@ module.exports = [
   require('./disjunction-remove-duplicates-transform'),
 
   // (a|b|c) -> [abc]
-  require('./group-single-chars-to-char-class')
+  require('./group-single-chars-to-char-class'),
+
+  // (?:a) -> a
+  require('./ungroup-transform')
 ];
