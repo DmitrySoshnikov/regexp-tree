@@ -73,4 +73,12 @@ describe('optimizer-integration-test', () => {
       .toBe(optimized.toString());
   });
 
+  it('finds the best optimization', () => {
+    const original = /a|a/;
+    const optimized = /a/;
+
+    expect(optimizer.optimize(original).toString())
+      .toBe(optimized.toString());
+  });
+
 });
