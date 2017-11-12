@@ -8,7 +8,7 @@
 const {transform} = require('../../../../transform');
 const charPlusToStar = require('../char-plus-to-star-transform');
 
-describe('a+ -> aa+', () => {
+describe('a+ -> aa*', () => {
 
   it('replaces simple chars', () => {
     const re = transform(/a+/, [

@@ -182,6 +182,7 @@ class NodePath {
    * Replaces a node with the passed one.
    */
   replace(newNode) {
+    NodePath.registry.delete(this.node);
 
     this.node = newNode;
 
