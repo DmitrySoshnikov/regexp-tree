@@ -21,9 +21,6 @@ module.exports = [
   // [\d] -> \d, [^\w] -> \W
   require('./char-class-to-single-char-transform'),
 
-  // aa* -> a+
-  require('./char-star-to-plus-transform'),
-
   // \e -> e
   require('./char-escape-unescape-transform'),
 
