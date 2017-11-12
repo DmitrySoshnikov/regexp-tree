@@ -9,6 +9,9 @@ module.exports = [
   // [\d\d] -> [\d]
   require('./char-class-remove-duplicates-transform'),
 
+  // a{1,2}a{2,3} -> a{3,5}
+  require('./quantifiers-merge-transform'),
+
   // a{1,} -> a+, a{3,3} -> a{3}, a{1} -> a
   require('./quantifier-range-to-symbol-transform'),
 
@@ -17,9 +20,6 @@ module.exports = [
 
   // [\d] -> \d, [^\w] -> \W
   require('./char-class-to-single-char-transform'),
-
-  // aa* -> a+
-  require('./char-star-to-plus-transform'),
 
   // \e -> e
   require('./char-escape-unescape-transform'),
