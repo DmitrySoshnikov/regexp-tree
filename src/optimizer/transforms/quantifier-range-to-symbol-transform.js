@@ -9,6 +9,7 @@
  * A regexp-tree plugin to replace different range-based quantifiers
  * with their symbol equivalents.
  *
+ * a{0,} -> a*
  * a{1,} -> a+
  * a{1} -> a
  *
@@ -24,6 +25,9 @@ module.exports = {
       return;
     }
 
+    // a{0,} -> a*
+    rewriteOpenZero(path);
+
     // a{1,} -> a+
     rewriteOpenOne(path);
 
@@ -31,6 +35,17 @@ module.exports = {
     rewriteExactOne(path);
   }
 };
+
+function rewriteOpenZero(path) {
+  const {node} = path;
+
+  if (node.from !== 0 || node.to) {
+    return;
+  }
+
+  node.kind = '*';
+  delete node.from;
+}
 
 function rewriteOpenOne(path) {
   const {node} = path;
