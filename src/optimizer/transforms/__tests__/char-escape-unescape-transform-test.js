@@ -28,7 +28,7 @@ describe('\e -> e', () => {
     const re = transform(/[\e\*\(\]\ \^\$\-]\(\n/, [
       charUnescape,
     ]);
-    expect(re.toString()).toBe(/[e*(\] ^$\-]\(\n/.toString());
+    expect(re.toString()).toBe(/[e*(\] \^$\-]\(\n/.toString());
   });
 
 });

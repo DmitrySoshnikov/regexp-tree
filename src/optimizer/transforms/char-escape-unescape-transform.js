@@ -38,13 +38,14 @@ function shouldUnescape(path) {
 }
 
 /**
- * \], \\, \-
+ * \], \\, \^, \-
  *
  * Note: \- always preserved to avoid `[a\-z]` turning into `[a-z]`.
+ * Note: \^ always preserved to avoid `[\^a]` turning into `[^a]`.
  * TODO: more sophisticated analisys.
  */
 function preservesInCharClass(value) {
-  return /[\]\\\\-]/.test(value);
+  return /[\]\\^-]/.test(value);
 }
 
 // Note: \{ and \} are always preserved to avoid `a\{2\}` turning

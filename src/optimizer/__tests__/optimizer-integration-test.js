@@ -27,7 +27,7 @@ describe('optimizer-integration-test', () => {
 
   it('preserve escape', () => {
     const original = /^[\^\*\$\(\)]\^\*\$\(\)\.\[\]\/\\$/;
-    const optimized = /^[^*$()]\^\*\$\(\)\.\[\]\/\\$/;
+    const optimized = /^[\^*$()]\^\*\$\(\)\.\[\]\/\\$/;
 
     expect(optimizer.optimize(original).toString())
       .toBe(optimized.toString());
