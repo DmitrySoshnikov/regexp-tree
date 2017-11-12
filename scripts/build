@@ -1,1 +1,7 @@
+#!/bin/sh
+
+# Rebuild parser.
 ./node_modules/syntax-cli/bin/syntax -g ./src/parser/regexp.bnf -o "`pwd`/src/parser/generated/regexp-tree.js" -m lalr1 --loc
+
+# Setup pre-push hook.
+ln -s ./scripts/git-pre-push .git/hooks/pre-push
