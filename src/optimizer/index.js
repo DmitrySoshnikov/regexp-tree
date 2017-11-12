@@ -26,11 +26,19 @@ module.exports = {
    *   /\w+e+/
    */
   optimize(regexp) {
+    let prevResult;
     let result;
-    optimizationTransforms.forEach(transformer => {
-      result = transform.transform(regexp, transformer);
-      regexp = result.getAST();
-    });
+    do {
+      if (result) {
+        prevResult = result.toRegExp().toString();
+        regexp = result.toRegExp();
+      }
+      optimizationTransforms.forEach(transformer => {
+        result = transform.transform(regexp, transformer);
+        regexp = result.getAST();
+      });
+    } while (result.toRegExp().toString() !== prevResult);
+
     return result;
   },
 };
