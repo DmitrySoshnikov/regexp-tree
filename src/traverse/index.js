@@ -184,7 +184,11 @@ module.exports = {
             } else {
               // A path/node can be removed by some previous handler.
               if (!nodePath.isRemoved()) {
-                handler[node.type](nodePath);
+                const handlerResult = handler[node.type](nodePath);
+                // Explicitly stop traversal.
+                if (handlerResult === false) {
+                  return false;
+                }
               }
             }
           }
