@@ -16,12 +16,11 @@ module.exports = {
     const {node, parent} = path;
     const childPath = path.getChild();
 
-    if (node.capturing) {
+    if (node.capturing || !childPath) {
       return;
     }
 
     if (
-      childPath &&
       childPath.node.type === 'Disjunction' &&
       parent.type !== 'RegExp'
     ) {

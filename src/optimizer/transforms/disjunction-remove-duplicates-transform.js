@@ -25,7 +25,7 @@ module.exports = {
     const uniqueNodesMap = {};
 
     const parts = disjunctionToList(node).filter(part => {
-      const encoded = NodePath.getForNode(part).jsonEncode();
+      const encoded = part ? NodePath.getForNode(part).jsonEncode() : 'null';
 
       // Already recorded this part, filter out.
       if (uniqueNodesMap.hasOwnProperty(encoded)) {

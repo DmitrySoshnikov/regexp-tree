@@ -50,4 +50,11 @@ describe('(ab|bc|ab) -> (ab|bc)', () => {
     expect(re2.toString()).toBe('/(?:ab|bc)/');
   });
 
+  it('handles empty parts', () => {
+    const re = transform(/a|b|||/, [
+      disjunctionRemoveDuplicates
+    ]);
+    expect(re.toString()).toBe('/a|b|/');
+  });
+
 });

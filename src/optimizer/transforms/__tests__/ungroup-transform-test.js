@@ -64,4 +64,11 @@ describe('ungroup', () => {
     expect(re.toString()).toBe('/(a)/');
   });
 
+  it('does not ungroup empty groups', () => {
+    const re = transform(/(?:)+/, [
+      ungroup,
+    ]);
+    expect(re.toString()).toBe('/(?:)+/');
+  });
+
 });
