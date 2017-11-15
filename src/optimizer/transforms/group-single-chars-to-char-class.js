@@ -60,6 +60,11 @@ const handlers = {
 };
 
 function shouldProcess(expression, charset) {
+  if (!expression) {
+    // Abort on empty disjunction part
+    return false;
+  }
+
   const {type} = expression;
 
   if (type === 'Disjunction') {

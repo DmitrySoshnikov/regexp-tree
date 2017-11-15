@@ -59,4 +59,11 @@ describe('(a|b|c) -> ([abc])', () => {
     expect(re.toString()).toBe('/(a|b|no)/');
   });
 
+  it('has no effet on empty values', () => {
+    const re = transform(/(a|b|)/, [
+      singleCharsGroupToCharClass,
+    ]);
+    expect(re.toString()).toBe('/(a|b|)/');
+  });
+
 });
