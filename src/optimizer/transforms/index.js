@@ -30,6 +30,9 @@ module.exports = [
   // (a|b|c) -> [abc]
   require('./group-single-chars-to-char-class'),
 
+  // (?:)a -> a
+  require('./remove-empty-group-transform'),
+
   // (?:a) -> a
   require('./ungroup-transform')
 ];
