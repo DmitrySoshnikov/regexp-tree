@@ -34,5 +34,8 @@ module.exports = [
   require('./remove-empty-group-transform'),
 
   // (?:a) -> a
-  require('./ungroup-transform')
+  require('./ungroup-transform'),
+
+  // abcabcabc -> (?:abc){3}
+  require('./combine-repeating-patterns-transform')
 ];
