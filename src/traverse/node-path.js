@@ -122,6 +122,7 @@ class NodePath {
     if (this.isRemoved()) {
       return;
     }
+    NodePath.registry.delete(this.node);
 
     this.node = null;
 
