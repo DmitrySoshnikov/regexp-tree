@@ -67,6 +67,8 @@ function getInverseMeta(value) {
     : value.toLowerCase();
 }
 
+// Note: \{ and \} are always preserved to avoid `a[{]2[}]` turning
+// into `a{2}`.
 function shouldEscape(value) {
-  return /[*\[()+?]/.test(value);
+  return /[*[()+?$./{}|]/.test(value);
 }
