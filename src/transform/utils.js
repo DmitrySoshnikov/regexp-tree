@@ -19,7 +19,7 @@ function disjunctionToList(node) {
 
   const list = [];
 
-  if (node.left.type === 'Disjunction') {
+  if (node.left && node.left.type === 'Disjunction') {
     list.push(...disjunctionToList(node.left), node.right);
   } else {
     list.push(node.left, node.right);

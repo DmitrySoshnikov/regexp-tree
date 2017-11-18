@@ -20,6 +20,15 @@ describe('transform-utils', () => {
     ]);
   });
 
+  it('handles empty parts', () => {
+    const disjunction = parser.parse('/|/').body;
+    const list = transformUtils.disjunctionToList(disjunction);
+    expect(list).toEqual([
+      disjunction.left, // null
+      disjunction.right // null
+    ]);
+  });
+
   it('disjunctionToList', () => {
     const list = [
       {type: 'Char', value: 'a', kind: 'simple', codePoint: 97, symbol: 'a'},
