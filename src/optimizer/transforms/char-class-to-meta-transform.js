@@ -10,13 +10,19 @@
  * their meta symbols equivalents.
  */
 module.exports = {
+  _hasIFlag: false,
+  _hasUFlag: false,
+  init(ast) {
+    this._hasIFlag = ast.flags.includes('i');
+    this._hasUFlag = ast.flags.includes('u');
+  },
   CharacterClass(path) {
 
     // [0-9] -> \d
     rewriteNumberRanges(path);
 
     // [a-zA-Z_0-9] -> \w
-    rewriteWordRanges(path);
+    rewriteWordRanges(path, this._hasIFlag, this._hasUFlag);
 
     // [ \t\r\n\f] -> \s
     rewriteWhitespaceRanges(path);
@@ -50,13 +56,15 @@ function rewriteNumberRanges(path) {
  * Thus, the ranges may go in any order, and other symbols/ranges
  * are kept untouched, e.g. [a-z_\dA-Z$] -> [\w$]
  */
-function rewriteWordRanges(path) {
+function rewriteWordRanges(path, hasIFlag, hasUFlag) {
   const {node} = path;
 
   let numberPath = null;
   let lowerCasePath = null;
   let upperCasePath = null;
   let underscorePath = null;
+  let u017fPath = null;
+  let u212aPath = null;
 
   node.expressions.forEach((expression, i) => {
 
@@ -79,14 +87,25 @@ function rewriteWordRanges(path) {
     else if (isUnderscore(expression)) {
       underscorePath = path.getChild(i);
     }
+
+    else if (hasIFlag && hasUFlag && isU017fPath(expression)) {
+      u017fPath = path.getChild(i);
+    }
+
+    else if (hasIFlag && hasUFlag && isU212aPath(expression)) {
+      u212aPath = path.getChild(i);
+    }
   });
 
   // If we found the whole pattern, replace it.
   if (
     numberPath &&
-    lowerCasePath &&
-    upperCasePath &&
-    underscorePath
+    (
+      (lowerCasePath && upperCasePath) ||
+      (hasIFlag && (lowerCasePath || upperCasePath))
+    ) &&
+    underscorePath &&
+    (!hasUFlag || !hasIFlag || (u017fPath && u212aPath))
   ) {
 
     // Put \w in place of \d.
@@ -102,9 +121,19 @@ function rewriteWordRanges(path) {
     });
 
     // Other paths are removed.
-    lowerCasePath.remove();
-    upperCasePath.remove();
+    if (lowerCasePath) {
+      lowerCasePath.remove();
+    }
+    if (upperCasePath) {
+      upperCasePath.remove();
+    }
     underscorePath.remove();
+    if (u017fPath) {
+      u017fPath.remove();
+    }
+    if (u212aPath) {
+      u212aPath.remove();
+    }
   }
 }
 
@@ -216,3 +245,17 @@ function isUnderscore(node) {
   );
 }
 
+function isU017fPath(node) {
+  return (
+    node.type === 'Char' &&
+    node.kind === 'unicode' &&
+    node.codePoint === 0x017f
+  );
+}
+function isU212aPath(node) {
+  return (
+    node.type === 'Char' &&
+    node.kind === 'unicode' &&
+    node.codePoint === 0x212a
+  );
+}

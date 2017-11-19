@@ -24,6 +24,20 @@ describe('char-class-to-meta', () => {
     expect(re.toString()).toBe('/[\\w$]/');
   });
 
+  it('replaces word ranges when regexp has i flag', () => {
+    const re = transform(/[0-9a-z_$]/i, [
+      charClassToMeta,
+    ]);
+    expect(re.toString()).toBe('/[\\w$]/i');
+  });
+
+  it('replaces word ranges when regexp has i and u flags', () => {
+    const re = transform(/[\da-zA-Z_\u017F\u212A$]/iu, [
+      charClassToMeta,
+    ]);
+    expect(re.toString()).toBe('/[\\w$]/iu');
+  });
+
   it('whitespace ranges', () => {
     const re = transform(/[ \t\r\n\f]/, [
       charClassToMeta,
