@@ -884,7 +884,6 @@ Unicode char started with `\u`, followed by a hex number:
 
 ```
 \u003B
-\u{003B}
 ```
 
 Node:
@@ -896,6 +895,43 @@ Node:
   symbol: ';',
   kind: 'unicode',
   codePoint: 59
+}
+```
+
+When using the `u` flag, unicode chars can also be represented using `\u` followed by a hex number between curly braces:
+
+```
+\u{1F680}
+```
+
+Node:
+
+```js
+{
+  type: 'Char',
+  value: '\\u{1F680}',
+  symbol: '🚀',
+  kind: 'unicode',
+  codePoint: 128640
+}
+```
+
+When using the `u` flag, unicode chars can also be represented using a surrogate pair:
+
+```
+\ud83d\ude80
+```
+
+Node:
+
+```js
+{
+  type: 'Char',
+  value: '\\ud83d\\ude80',
+  symbol: '🚀',
+  kind: 'unicode',
+  codePoint: 128640,
+  isSurrogatePair: true
 }
 ```
 
