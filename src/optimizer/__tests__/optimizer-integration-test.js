@@ -81,4 +81,12 @@ describe('optimizer-integration-test', () => {
       .toBe(optimized.toString());
   });
 
+  it('applies whitelist only', () => {
+    const original = '/(?:[a])/';
+    const optimized = '/[a]/';
+
+    expect(optimizer.optimize(original, ['ungroup']).toString())
+      .toBe(optimized.toString());
+  });
+
 });
