@@ -58,11 +58,11 @@ function isAppropriateChar(node) {
 }
 
 function isMeta(value) {
-  return /^\\[dwsDWS$]/.test(value);
+  return /^\\[dwsDWS]$/.test(value);
 }
 
 function getInverseMeta(value) {
-  return /[dws$]/.test(value)
+  return /[dws]/.test(value)
     ? value.toUpperCase()
     : value.toLowerCase();
 }
