@@ -25,7 +25,11 @@ module.exports = {
    *
    *   /\w+e+/
    */
-  optimize(regexp) {
+  optimize(regexp, transformsWhitelist = []) {
+    const transformToApply = transformsWhitelist.length > 0
+      ? transformsWhitelist
+      : Object.keys(optimizationTransforms);
+
     let prevResult;
     let result;
     do {
@@ -33,7 +37,18 @@ module.exports = {
         prevResult = result.toRegExp().toString();
         regexp = result.toRegExp();
       }
-      optimizationTransforms.forEach(transformer => {
+      transformToApply.forEach(transformName => {
+
+        if (!optimizationTransforms.hasOwnProperty(transformName)) {
+          throw new Error(
+            `Unknown optimization-transform: ${transformName}. ` +
+            `Available transforms are: ` +
+            Object.keys(optimizationTransforms).join(', ')
+          );
+        }
+
+        const transformer = optimizationTransforms[transformName];
+
         result = transform.transform(regexp, transformer);
         regexp = result.getAST();
       });

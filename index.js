@@ -120,8 +120,8 @@ const regexpTree = {
    *
    * @return TransformResult object
    */
-  optimize(regexp) {
-    return optimizer.optimize(regexp);
+  optimize(regexp, whitelist) {
+    return optimizer.optimize(regexp, whitelist);
   },
 
   /**
