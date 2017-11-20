@@ -19,6 +19,8 @@
 CHAR                    [^*?+\[()]
 ESC                     \\
 U                       [0-9a-fA-F]
+U_LEAD_SURROGATE        [dD][89abAB][0-9a-fA-F]{2}
+U_TRAIL_SURROGATE       [dD][c-fC-F][0-9a-fA-F]{2}
 
 GROUP_NAME              ([\w$]|\\'u'[0-9a-fA-F]{4}|\\'u{'[0-9a-fA-F]{1,}'}')+
 
@@ -35,96 +37,113 @@ GROUP_NAME              ([\w$]|\\'u'[0-9a-fA-F]{4}|\\'u{'[0-9a-fA-F]{1,}'}')+
  *   <class>'('   return 'CHAR'
  *
  * This allows making BNF grammar simpler with less productions, and states.
+ *
+ * <u_class> is the same but with unicode flag.
  */
 %s class
+%s u_class
 
 /**
  * State for "extended" regexp, enabled by `x` flag.
  *
  * In this state whitespace are ignored, and expressions can
  * use #-comments.
+ *
+ * <xu> is the same but with unicode flag.
  */
 %s x
+%s xu
+
+/**
+ * State for "unicode" regexp, enabled by `u` flag.
+ *
+ * In this state surrogate pairs are treated as codepoints and
+ * \u{} syntax is understood.
+ */
+%s u
 
 %%
 
-<x>'#'[^\n]+             /* skip comments */
-<x>\s+                   /* skip whitespace */
+<x,xu>'#'[^\n]+                      /* skip comments */
+<x,xu>\s+                            /* skip whitespace */
 
-<class>{ESC}'-'          return 'ESC_CHAR'
-<class>'-'               return 'DASH'
-<class>'/'               return 'CHAR'
-<class>'#'               return 'CHAR'
-<class>'|'               return 'CHAR'
-<class>'.'               return 'CHAR'
+<class,u_class>{ESC}'-'              return 'ESC_CHAR'
+<class,u_class>'-'                   return 'DASH'
+<class,u_class>'/'                   return 'CHAR'
+<class,u_class>'#'                   return 'CHAR'
+<class,u_class>'|'                   return 'CHAR'
+<class,u_class>'.'                   return 'CHAR'
 
-<class>'{'               return 'CHAR'
+<class,u_class>'{'                   return 'CHAR'
 
-'{'\d+'}'                return 'RANGE_EXACT'
-'{'\d+',}'               return 'RANGE_OPEN'
-'{'\d+','\d+'}'          return 'RANGE_CLOSED'
+'{'\d+'}'                            return 'RANGE_EXACT'
+'{'\d+',}'                           return 'RANGE_OPEN'
+'{'\d+','\d+'}'                      return 'RANGE_CLOSED'
 
-{ESC}'k<'{GROUP_NAME}'>' return 'NAMED_GROUP_REF'
+{ESC}'k<'{GROUP_NAME}'>'             return 'NAMED_GROUP_REF'
 
-{ESC}'b'                 return 'ESC_b'
-{ESC}'B'                 return 'ESC_B'
+{ESC}'b'                             return 'ESC_b'
+{ESC}'B'                             return 'ESC_B'
 
-{ESC}'c'[a-zA-Z]         return 'CTRL_CH'
+{ESC}'c'[a-zA-Z]                     return 'CTRL_CH'
 
-{ESC}'0'\d{1,2}          return 'OCT_CODE'
-{ESC}'0'                 return 'DEC_CODE'
-{ESC}\d{1,3}             return 'DEC_CODE'
+{ESC}'0'\d{1,2}                      return 'OCT_CODE'
+{ESC}'0'                             return 'DEC_CODE'
+{ESC}\d{1,3}                         return 'DEC_CODE'
 
-{ESC}'u'{U}{4}           return 'U_CODE'
-{ESC}'u{'{U}{1,}'}'      return 'U_CODE'
+<u,xu,u_class>{ESC}'u'{U_LEAD_SURROGATE}{ESC}'u'{U_TRAIL_SURROGATE} return 'U_CODE_SURROGATE'
 
-{ESC}'x'{U}{2}           return 'HEX_CODE'
+<u,xu,u_class>{ESC}'u{'{U}{1,}'}'   return 'U_CODE'
 
-{ESC}[tnrdDsSwWvf]       return 'META_CHAR'
+{ESC}'u'{U}{4}                      return 'U_CODE'
 
-{ESC}'/'                 return 'ESC_CHAR'
+{ESC}'x'{U}{2}                      return 'HEX_CODE'
 
-{ESC}{CHAR}              return 'ESC_CHAR'
-{ESC}[*?+\[()]           return 'ESC_CHAR'
+{ESC}[tnrdDsSwWvf]                  return 'META_CHAR'
 
-<class>'('               return 'CHAR'
-<class>')'               return 'CHAR'
+{ESC}'/'                            return 'ESC_CHAR'
 
-'(?='                    return 'POS_LA_ASSERT'
-'(?!'                    return 'NEG_LA_ASSERT'
+{ESC}{CHAR}                         return 'ESC_CHAR'
+{ESC}[*?+\[()]                      return 'ESC_CHAR'
 
-'(?<='                   return 'POS_LB_ASSERT'
-'(?<!'                   return 'NEG_LB_ASSERT'
+<class,u_class>'('                  return 'CHAR'
+<class,u_class>')'                  return 'CHAR'
 
-'(?:'                    return 'NON_CAPTURE_GROUP'
+'(?='                               return 'POS_LA_ASSERT'
+'(?!'                               return 'NEG_LA_ASSERT'
 
-'(?<'{GROUP_NAME}'>'     { yytext = yytext.slice(3, -1); return 'NAMED_CAPTURE_GROUP' }
+'(?<='                              return 'POS_LB_ASSERT'
+'(?<!'                              return 'NEG_LB_ASSERT'
 
-'('                      return 'L_PAREN'
-')'                      return 'R_PAREN'
+'(?:'                               return 'NON_CAPTURE_GROUP'
 
-<class>[*?+[^$]          return 'CHAR'
-<class>{ESC}']'          return 'ESC_CHAR'
+'(?<'{GROUP_NAME}'>'                { yytext = yytext.slice(3, -1); return 'NAMED_CAPTURE_GROUP' }
 
-<class>']'               { this.popState(); return 'R_BRACKET' }
+'('                                 return 'L_PAREN'
+')'                                 return 'R_PAREN'
 
-'^'                      return 'BOS'
-'$'                      return 'EOS'
+<class,u_class>[*?+[^$]             return 'CHAR'
+<class,u_class>{ESC}']'             return 'ESC_CHAR'
 
-'*'                      return 'STAR'
-'?'                      return 'Q_MARK'
-'+'                      return 'PLUS'
+<class,u_class>']'                  { this.popState(); return 'R_BRACKET' }
 
-'|'                      return 'BAR'
+'^'                                 return 'BOS'
+'$'                                 return 'EOS'
 
-'.'                      return 'ANY'
+'*'                                 return 'STAR'
+'?'                                 return 'Q_MARK'
+'+'                                 return 'PLUS'
 
-'/'                      return 'SLASH'
+'|'                                 return 'BAR'
 
-{CHAR}                   return 'CHAR'
+'.'                                 return 'ANY'
 
-'[^'                     { this.pushState('class'); return 'NEG_CLASS' }
-'['                      { this.pushState('class'); return 'L_BRACKET' }
+'/'                                 return 'SLASH'
+
+{CHAR}                              return 'CHAR'
+
+'[^'                                { const s = this.getCurrentState(); this.pushState(s === 'u' || s === 'xu' ? 'u_class' : 'class'); return 'NEG_CLASS' }
+'['                                 { const s = this.getCurrentState(); this.pushState(s === 'u' || s === 'xu' ? 'u_class' : 'class'); return 'L_BRACKET' }
 
 /lex
 
@@ -156,8 +175,15 @@ yyparse.onParseBegin = (string, lexer) => {
   const lastSlash = string.lastIndexOf('/');
   const flags = string.slice(lastSlash);
 
-  if (flags.includes('x')) {
-    lexer.pushState('x');
+  if (flags.includes('x') && flags.includes('u')) {
+    lexer.pushState('xu');
+  } else {
+    if (flags.includes('x')) {
+      lexer.pushState('x');
+    }
+    if (flags.includes('u')) {
+      lexer.pushState('u');
+    }
   }
 };
 
@@ -203,13 +229,22 @@ function Char(value, kind, loc) {
     }
     case 'hex':
     case 'unicode': {
-      const hex = value.slice(2).replace('{', '');
-      codePoint = parseInt(hex, 16);
-      if (codePoint > 0x10ffff) {
-        throw new SyntaxError(`Bad character escape sequence: ${value}`);
-      }
+      if (value.lastIndexOf('\\u') > 0) {
+        let [lead, trail] = value.split('\\u').slice(1);
+        lead = parseInt(lead, 16);
+        trail = parseInt(trail, 16);
+        codePoint = (lead - 0xd800) * 0x400 + (trail - 0xdc00) + 0x10000;
 
-      symbol = String.fromCodePoint(codePoint);
+        symbol = String.fromCodePoint(codePoint);
+      } else {
+        const hex = value.slice(2).replace('{', '');
+        codePoint = parseInt(hex, 16);
+        if (codePoint > 0x10ffff) {
+          throw new SyntaxError(`Bad character escape sequence: ${value}`);
+        }
+
+        symbol = String.fromCodePoint(codePoint);
+      }
       break;
     }
     case 'meta': {
@@ -594,6 +629,9 @@ SourceCharacter
 
   | ESC_CHAR
     { $$ = Char($1.slice(1), 'simple', @$); $$.escaped = true; }
+
+  | U_CODE_SURROGATE
+    { $$ = Char($1, 'unicode', @$); $$.isSurrogatePair = true; }
 
   | U_CODE
     { $$ = Char($1, 'unicode', @$) }

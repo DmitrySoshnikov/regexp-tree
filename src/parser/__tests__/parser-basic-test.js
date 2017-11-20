@@ -933,26 +933,67 @@ describe('basic', () => {
       codePoint: 0x000001d306
     });
 
-    // TODO: without `u` flag \u{1234} should be parsed NOT as
-    // a unicode code point, but as an (escaped) `u` character,
-    // repeated 1234 times.
+    // Not using `u` flag, not parsed as a unicode code point,
+    // but as an (escaped) `u` character repeated 1234 times.
+    expect(re(/\u{1234}/).body).toEqual({
+      type: 'Repetition',
+      expression: {
+        type: 'Char',
+        value: 'u',
+        symbol: 'u',
+        kind: 'simple',
+        escaped: true,
+        codePoint: 'u'.codePointAt(0)
+      },
+      quantifier: {
+        type: 'Quantifier',
+        kind: 'Range',
+        from: 1234,
+        to: 1234,
+        greedy: true
+      }
+    });
 
-    // expect(re(/\u{1234}/).body).toEqual({
-    //   type: 'Repetition',
-    //   expression: {
-    //     type: 'Char',
-    //     value: 'u',
-    //     kind: 'simple',
-    //     escaped: true
-    //   },
-    //   quantifier: {
-    //     type: 'Quantifier',
-    //     kind: 'Range',
-    //     from: 1234,
-    //     to: 1234,
-    //     greedy: true
-    //   }
-    // });
+    // Using `u` flag, surrogate pairs.
+    expect(re(/\ud83d\ude80/u).body).toEqual({
+      type: 'Char',
+      value: '\\ud83d\\ude80',
+      kind: 'unicode',
+      symbol: String.fromCodePoint(0x1F680),
+      codePoint: 0x1F680,
+      isSurrogatePair: true
+    });
+
+    // Using `u` flag, surrogate pairs in character class.
+    expect(re(/[\ud83d\ude80]/u).body).toEqual({
+      type: 'CharacterClass',
+      expressions: [{
+        type: 'Char',
+        value: '\\ud83d\\ude80',
+        kind: 'unicode',
+        symbol: String.fromCodePoint(0x1F680),
+        codePoint: 0x1F680,
+        isSurrogatePair: true
+      }]
+    });
+
+    // Not using `u` flag, surrogate pairs are treated as two characters
+    expect(re(/\ud83d\ude80/).body).toEqual({
+      type: 'Alternative',
+      expressions: [{
+        type: 'Char',
+        value: '\\ud83d',
+        kind: 'unicode',
+        symbol: String.fromCodePoint(0xd83d),
+        codePoint: 0xd83d
+      }, {
+        type: 'Char',
+        value: '\\ude80',
+        kind: 'unicode',
+        symbol: String.fromCodePoint(0xde80),
+        codePoint: 0xde80
+      }]
+    });
   });
 
   it('valid sorted flags', () => {
