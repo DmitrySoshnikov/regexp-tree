@@ -5,6 +5,7 @@
 
 'use strict';
 
+const DFAMinimizer = require('./dfa-minimizer');
 const TablePrinter = require('../table-printer');
 const colors = require('colors');
 
@@ -18,6 +19,18 @@ const {
 class DFA {
   constructor(nfa) {
     this._nfa = nfa;
+  }
+
+  /**
+   * Minimizes DFA.
+   */
+  minimize() {
+    this.getTransitionTable();
+
+    this._originalAcceptingStateNumbers = this._acceptingStateNumbers;
+    this._originalTransitionTable = this._transitionTable;
+
+    DFAMinimizer.minimize(this);
   }
 
   /**
@@ -49,6 +62,20 @@ class DFA {
     }
 
     return this._originalAcceptingStateNumbers;
+  }
+
+  /**
+   * Sets transition table.
+   */
+  setTransitionTable(table) {
+    this._transitionTable = table;
+  }
+
+  /**
+   * Sets accepting states.
+   */
+  setAcceptingStateNumbers(stateNumbers) {
+    this._acceptingStateNumbers = stateNumbers;
   }
 
   /**
@@ -183,8 +210,8 @@ class DFA {
   /**
    * Prints transition table.
    */
-  printTransitionTable() {
-    console.info(colors.bold(`\nDFA transition table:\n`));
+  printTransitionTable(header = '\nDFA transition table:\n') {
+    console.info(colors.bold(header));
 
     const alphabet = [...this.getAlphabet()];
 

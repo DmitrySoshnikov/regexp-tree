@@ -100,5 +100,43 @@ describe('dfa', () => {
     expect(dfa.matches('aaa')).toBe(true);
   });
 
+  it('minimizes', () => {
+    const dfa = new DFA(getDefaultNFA());
+
+    expect(dfa.getTransitionTable()).toEqual({
+      1: {'x': 3, 'y': 2},
+      2: {},
+      3: {},
+    });
+
+    dfa.minimize();
+
+    expect(dfa.getTransitionTable()).toEqual({
+      1: {'x': 2, 'y': 2},
+      2: {},
+    });
+  });
+
+  it('matches minimize', () => {
+    const dfa = new DFA(getDefaultNFA());
+    dfa.minimize();
+
+    expect(dfa.matches('x')).toBe(true);
+    expect(dfa.matches('y')).toBe(true);
+
+    expect(dfa.matches('z')).toBe(false);
+    expect(dfa.matches('')).toBe(false);
+  });
+
+  it('matches rep', () => {
+    const dfa = new DFA(rep(char('a')));
+    dfa.minimize();
+
+    expect(dfa.matches('')).toBe(true);
+    expect(dfa.matches('a')).toBe(true);
+    expect(dfa.matches('aa')).toBe(true);
+    expect(dfa.matches('aaa')).toBe(true);
+  });
+
 });
 
