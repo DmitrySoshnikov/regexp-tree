@@ -7,6 +7,8 @@
 
 const NodePath = require('../../traverse/node-path');
 
+const {increaseQuantifierByOne} = require('../../transform/utils');
+
 /**
  * A regexp-tree plugin to combine repeating patterns.
  *
@@ -182,25 +184,4 @@ function combineRepetitionWithPrevious(alternative, child, index) {
     }
   }
   return index;
-}
-
-function increaseQuantifierByOne(quantifier) {
-  if (quantifier.kind === '*') {
-
-    quantifier.kind = '+';
-
-  } else if (quantifier.kind === '?') {
-
-    quantifier.kind = 'Range';
-    quantifier.from = 1;
-    quantifier.to = 2;
-
-  } else if (quantifier.kind === 'Range') {
-
-    quantifier.from += 1;
-    if (quantifier.to) {
-      quantifier.to += 1;
-    }
-
-  }
 }

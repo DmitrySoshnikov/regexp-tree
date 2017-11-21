@@ -43,4 +43,75 @@ describe('transform-utils', () => {
     expect(disjunction).toEqual(expected);
   });
 
+  it('increaseQuantifierByOne', () => {
+    const quantifiers = [{
+        type: 'Quantifier',
+        kind: '*',
+        greedy: true
+    }, {
+      type: 'Quantifier',
+      kind: '+',
+      greedy: false
+    }, {
+      type: 'Quantifier',
+      kind: '?',
+      greedy: true
+    }, {
+      type: 'Quantifier',
+      kind: 'Range',
+      from: 2,
+      to: 2,
+      greedy: true
+    }, {
+      type: 'Quantifier',
+      kind: 'Range',
+      from: 2,
+      greedy: false
+    }, {
+      type: 'Quantifier',
+      kind: 'Range',
+      from: 2,
+      to: 3,
+      greedy: true
+    }];
+    const quantifiersIncreased = [{
+      type: 'Quantifier',
+      kind: '+',
+      greedy: true
+    }, {
+      type: 'Quantifier',
+      kind: 'Range',
+      from: 2,
+      greedy: false
+    }, {
+      type: 'Quantifier',
+      kind: 'Range',
+      from: 1,
+      to: 2,
+      greedy: true
+    }, {
+      type: 'Quantifier',
+      kind: 'Range',
+      from: 3,
+      to: 3,
+      greedy: true
+    }, {
+      type: 'Quantifier',
+      kind: 'Range',
+      from: 3,
+      greedy: false
+    }, {
+      type: 'Quantifier',
+      kind: 'Range',
+      from: 3,
+      to: 4,
+      greedy: true
+    }];
+
+    quantifiers.forEach((quantifier, i) => {
+      transformUtils.increaseQuantifierByOne(quantifier);
+      expect(quantifier).toEqual(quantifiersIncreased[i])
+    });
+  });
+
 });

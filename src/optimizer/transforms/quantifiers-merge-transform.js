@@ -5,6 +5,8 @@
 
 'use strict';
 
+const {increaseQuantifierByOne} = require('../../transform/utils');
+
 /**
  * A regexp-tree plugin to merge quantifiers
  *
@@ -88,46 +90,8 @@ module.exports = {
         return;
       }
 
-      if (node.quantifier.kind === '*') {
-        // aa* -> a+
-        // aa*? -> a+?
-        node.quantifier.kind = '+';
-
-        previousSibling.remove();
-
-      } else if (node.quantifier.kind === '+') {
-        // aa+ -> a{2,}
-        // aa+? -> a{2,}?
-        node.quantifier.kind = 'Range';
-        node.quantifier.from = 2;
-        delete node.quantifier.to;
-
-        previousSibling.remove();
-
-      } else if (node.quantifier.kind === '?') {
-        // aa? -> a{1,2}
-        // aa?? -> a{1,2}?
-        node.quantifier.kind = 'Range';
-        node.quantifier.from = 1;
-        node.quantifier.to = 2;
-
-        previousSibling.remove();
-
-      } else if (node.quantifier.kind === 'Range') {
-        // aa{3} -> a{4}
-        // aa{3}? -> a{4}?
-        // aa{3,} -> a{4,}
-        // aa{3,}? -> a{4,}?
-        // aa{3,5} -> a{4,6}
-        // aa{3,5}? -> a{4,6}?
-        node.quantifier.from = node.quantifier.from + 1;
-        if (node.quantifier.to) {
-          node.quantifier.to = node.quantifier.to + 1;
-        }
-
-        previousSibling.remove();
-
-      }
+      increaseQuantifierByOne(node.quantifier);
+      previousSibling.remove();
     }
   }
 };

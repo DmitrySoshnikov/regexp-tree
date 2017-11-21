@@ -36,10 +36,15 @@ describe('abcdefabcdef -> (?:abcdef){2}', () => {
 describe('(?:abc){4}abc -> (?:abc){5}', () => {
 
   it('combines pattern with repetition on the left', () => {
-    const re = transform(/(?:abc){4}abc/, [
+    let re = transform(/(?:abc){4}abc/, [
       combineRepeatingPatterns
     ]);
     expect(re.toString()).toBe('/(?:abc){5}/');
+
+    re = transform(/(?:abc)+abc/, [
+      combineRepeatingPatterns
+    ]);
+    expect(re.toString()).toBe('/(?:abc){2,}/');
   });
 
 });

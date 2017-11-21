@@ -45,7 +45,45 @@ function listToDisjunction(list) {
   });
 }
 
+/**
+ * Increases a quantifier by one.
+ * Does not change greediness.
+ * * -> +
+ * + -> {2,}
+ * ? -> {1,2}
+ * {2} -> {3}
+ * {2,} -> {3,}
+ * {2,3} -> {3,4}
+ */
+function increaseQuantifierByOne(quantifier) {
+  if (quantifier.kind === '*') {
+
+    quantifier.kind = '+';
+
+  } else if (quantifier.kind === '+') {
+
+    quantifier.kind = 'Range';
+    quantifier.from = 2;
+    delete quantifier.to;
+
+  } else if (quantifier.kind === '?') {
+
+    quantifier.kind = 'Range';
+    quantifier.from = 1;
+    quantifier.to = 2;
+
+  } else if (quantifier.kind === 'Range') {
+
+    quantifier.from += 1;
+    if (quantifier.to) {
+      quantifier.to += 1;
+    }
+
+  }
+}
+
 module.exports = {
   disjunctionToList,
   listToDisjunction,
+  increaseQuantifierByOne,
 };
