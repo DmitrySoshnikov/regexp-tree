@@ -15,6 +15,9 @@ module.exports = {
   // a{1,} -> a+, a{3,3} -> a{3}, a{1} -> a
   'quantifierRangeToSymbol': require('./quantifier-range-to-symbol-transform'),
 
+  // [a-de-f] -> [a-f]
+  'charClassClassrangesMerge': require('./char-class-classranges-merge-transform'),
+
   // [0-9] -> [\d]
   'charClassToMeta': require('./char-class-to-meta-transform'),
 
