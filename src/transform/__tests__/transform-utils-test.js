@@ -45,9 +45,9 @@ describe('transform-utils', () => {
 
   it('increaseQuantifierByOne', () => {
     const quantifiers = [{
-        type: 'Quantifier',
-        kind: '*',
-        greedy: true
+      type: 'Quantifier',
+      kind: '*',
+      greedy: true
     }, {
       type: 'Quantifier',
       kind: '+',
@@ -110,7 +110,7 @@ describe('transform-utils', () => {
 
     quantifiers.forEach((quantifier, i) => {
       transformUtils.increaseQuantifierByOne(quantifier);
-      expect(quantifier).toEqual(quantifiersIncreased[i])
+      expect(quantifier).toEqual(quantifiersIncreased[i]);
     });
   });
 
