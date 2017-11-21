@@ -284,7 +284,7 @@ function combinesWithFollowingClassRange(expression, classRange) {
   if (classRange && classRange.type === 'ClassRange') {
     // Considering the elements were ordered alphabetically,
     // there is only one case to handle
-    // [ab-e] -> [b-e]
+    // [ab-e] -> [a-e]
     if (
       expression.type === 'Char' &&
       !isNaN(expression.codePoint) &&
