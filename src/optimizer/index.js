@@ -34,8 +34,8 @@ module.exports = {
     let result;
     do {
       if (result) {
-        prevResult = result.toRegExp().toString();
-        regexp = result.toRegExp();
+        prevResult = result.toString();
+        regexp = prevResult;
       }
       transformToApply.forEach(transformName => {
 
@@ -52,7 +52,7 @@ module.exports = {
         result = transform.transform(regexp, transformer);
         regexp = result.getAST();
       });
-    } while (result.toRegExp().toString() !== prevResult);
+    } while (result.toString() !== prevResult);
 
     return result;
   },
