@@ -122,4 +122,38 @@ describe('char-class-classranges-merge', () => {
     expect(re.toString()).toBe('/[\\u{1F680}-\\ud83d\\ude9b]/u');
   });
 
+  it('combines sequential chars into class ranges', () => {
+    let re = transform(/[facbdemlpqno]/, [
+      charClassClassrangesMerge,
+    ]);
+    expect(re.toString()).toBe('/[a-fl-q]/');
+
+    re = transform(/[\u0014\u0015\u0016]/, [
+      charClassClassrangesMerge,
+    ]);
+    expect(re.toString()).toBe('/[\\u0014-\\u0016]/');
+
+    re = transform(/[a\u0062c\u0064]/, [
+      charClassClassrangesMerge,
+    ]);
+    expect(re.toString()).toBe('/[a-\\u0064]/');
+
+    re = transform(/[a\u{62}c\u{64}]/u, [
+      charClassClassrangesMerge,
+    ]);
+    expect(re.toString()).toBe('/[a-\\u{64}]/u');
+
+    re = transform(/[\ud83d\ude88\ud83d\ude89\ud83d\ude8a]/u, [
+      charClassClassrangesMerge,
+    ]);
+    expect(re.toString()).toBe('/[\\ud83d\\ude88-\\ud83d\\ude8a]/u');
+  });
+
+  it('does not combine sequential chars that are nor in \\w nor number-coded', () => {
+    const re = transform(/[<=>?]/, [
+      charClassClassrangesMerge,
+    ]);
+    expect(re.toString()).toBe('/[<=>?]/');
+  });
+
 });
