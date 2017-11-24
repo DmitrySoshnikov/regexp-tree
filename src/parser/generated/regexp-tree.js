@@ -360,7 +360,13 @@ const lexRules = [[/^#[^\n]+/, function() { /* skip comments */ }],
 [/^\\x[0-9a-fA-F]{2}/, function() { return 'HEX_CODE' }],
 [/^\\[tnrdDsSwWvf]/, function() { return 'META_CHAR' }],
 [/^\\\//, function() { return 'ESC_CHAR' }],
-[/^\\[^*?+\[()]/, function() { return 'ESC_CHAR' }],
+[/^\\[^*?+\[()]/, function() { 
+                                        const s = this.getCurrentState();
+                                        if (s === 'u' || s === 'xu' || s === 'u_class') {
+                                            throw new SyntaxError(`invalid Unicode escape ${yytext}`);
+                                        }
+                                        return 'ESC_CHAR';
+                                     }],
 [/^\\[*?+\[()]/, function() { return 'ESC_CHAR' }],
 [/^\(/, function() { return 'CHAR' }],
 [/^\)/, function() { return 'CHAR' }],
