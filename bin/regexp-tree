@@ -3,53 +3,50 @@
 'use strict';
 
 const colors = require('colors');
-const fs = require('fs');
 const os = require('os');
 const regexpTree = require('..');
 
-const options = require('nomnom')
-  .script('regexp-tree')
+function enforceUnique(v) {
+  return Array.isArray(v) ? v[v.length - 1] : v;
+}
+
+const options = require('yargs')
+  .usage('Usage: $0 [options]')
   .options({
     expression: {
-      abbr: 'e',
-      help: 'A regular expression to be parsed',
-      type: 'string',
-      required: true,
+      alias: 'e',
+      describe: 'A regular expression to be parsed',
+      demandOption: true,
+      requiresArg: true,
+      coerce: enforceUnique,
     },
     loc: {
-      abbr: 'l',
-      help: 'Whether to capture AST node locations',
-      flag: true,
+      alias: 'l',
+      describe: 'Whether to capture AST node locations',
     },
     optimize: {
-      abbr: 'o',
-      help: 'Apply optimizer on the passed expression',
-      flag: true,
+      alias: 'o',
+      describe: 'Apply optimizer on the passed expression',
     },
     compat: {
-      abbr: 'c',
-      help: 'Apply compat-transpiler on the passed expression',
-      flag: true,
+      alias: 'c',
+      describe: 'Apply compat-transpiler on the passed expression',
     },
     table: {
-      abbr: 't',
-      help: 'Print NFA/DFA transition tables (nfa/dfa/all)',
-      callback(table) {
-        const ALLOWED = ['nfa', 'dfa', 'all'];
-        if (!ALLOWED.includes(table)) {
-          return colors.red(
-            `\nUnknown table option: "${table}". ` +
-            `Available options are: ${ALLOWED.join('/')}.\n`
-          );
-        }
-      }
-    },
+      alias: 't',
+      describe: 'Print NFA/DFA transition tables (nfa/dfa/all)',
+      nargs: 1,
+      choices: ['nfa', 'dfa', 'all'],
+      coerce: enforceUnique,
+    }
   })
-  .parse();
+  .alias('help', 'h')
+  .alias('version', 'v')
+  .argv;
 
 function shouldStripQuotes(expression) {
   return os.platform() === 'win32' && (
-    (expression[0] === "'" && expression[expression.length - 1] === "'") ||
+    (expression[0] === `'` && expression[expression.length - 1] === `'`) ||
     (expression[0] === '"' && expression[expression.length - 1] === '"')
   );
 }
@@ -78,7 +75,7 @@ function main() {
 
   if (optimize) {
     const optimized = regexpTree.optimize(expression);
-    console.info('\n', bold('Optimized:'), optimized.toString(), '\n');
+    console.info('\n', colors.bold('Optimized:'), optimized.toString(), '\n');
     return;
   }
 
@@ -87,7 +84,10 @@ function main() {
 
   if (compat) {
     const compatTranspiled = regexpTree.compatTranspile(expression);
-    console.info('\n', bold('Compat:'), compatTranspiled.toString(), '\n');
+    console.info(
+      '\n', colors.bold('Compat:'),
+      compatTranspiled.toString(), '\n'
+    );
     return;
   }
 
@@ -125,10 +125,6 @@ function main() {
 
   console.info(JSON.stringify(parsed, null, 2));
 
-}
-
-function bold(text) {
-  return `\x1b[1m${text}\x1b[0m`;
 }
 
 if (require.main === module) {
