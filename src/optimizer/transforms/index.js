@@ -6,6 +6,9 @@
 'use strict';
 
 module.exports = {
+  // \ud83d\ude80 -> \u{1f680}
+  'charSurrogatePairToSingleUnicode': require('./char-surrogate-pair-to-single-unicode-transform'),
+
   // [\d\d] -> [\d]
   'charClassRemoveDuplicates': require('./char-class-remove-duplicates-transform'),
 
