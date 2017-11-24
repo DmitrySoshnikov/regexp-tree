@@ -11,6 +11,7 @@
  * [a-ec] -> [a-e]
  * [a-ec-e] -> [a-e]
  * [\w\da-f] -> [\w]
+ * [abcdef] -> [a-f]
  */
 module.exports = {
   _hasIUFlags: false,
@@ -40,6 +41,10 @@ module.exports = {
       ) {
         expressions.splice(i, 1);
         i--;
+      } else {
+        const nbMergedChars = charCombinesWithPrecedingChars(expression, i, expressions);
+        expressions.splice(i - nbMergedChars + 1, nbMergedChars);
+        i -= nbMergedChars;
       }
     }
   }
@@ -311,4 +316,53 @@ function fitsInClassRange(expression, classRange) {
     return fitsInClassRange(expression.from, classRange) && fitsInClassRange(expression.to, classRange);
   }
   return expression.codePoint >= classRange.from.codePoint && expression.codePoint <= classRange.to.codePoint;
+}
+
+/**
+ * @param {Object} expression - Char or ClassRange node
+ * @param {Number} index
+ * @param {Object[]} expressions - expressions in CharClass
+ * @returns {number} - Number of characters combined with expression
+ */
+function charCombinesWithPrecedingChars(expression, index, expressions) {
+  if (!isMetaWCharOrCode(expression)) {
+    return 0;
+  }
+  let nbMergedChars = 0;
+  while (index > 0) {
+    let currentExpression = expressions[index];
+    let precedingExpresion = expressions[index - 1];
+    if (
+      isMetaWCharOrCode(precedingExpresion) &&
+      precedingExpresion.codePoint === currentExpression.codePoint - 1
+    ) {
+      nbMergedChars++;
+      index--;
+    } else {
+      break;
+    }
+  }
+
+  if (nbMergedChars > 1) {
+    expressions[index] = {
+      type: 'ClassRange',
+      from: expressions[index],
+      to: expression
+    };
+    return nbMergedChars;
+  }
+  return 0;
+}
+
+function isMetaWCharOrCode(expression) {
+  return expression &&
+    expression.type === 'Char' &&
+    !isNaN(expression.codePoint) &&
+    (
+      fitsInMetaW(expression, false) ||
+      expression.kind === 'unicode' ||
+      expression.kind === 'hex' ||
+      expression.kind === 'oct' ||
+      expression.kind === 'decimal'
+    );
 }
