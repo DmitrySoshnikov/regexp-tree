@@ -232,8 +232,8 @@ function fitsInMetaD(expression) {
  */
 function fitsInMetaW(expression, hasIUFlags) {
   return fitsInMetaD(expression) ||
-    (expression.codePoint >= 0x41 && expression.codePoint <= 0x5a) || // a-z
-    (expression.codePoint >= 0x61 && expression.codePoint <= 0x7a) || // A-Z
+    (expression.codePoint >= 0x41 && expression.codePoint <= 0x5a) || // A-Z
+    (expression.codePoint >= 0x61 && expression.codePoint <= 0x7a) || // a-z
     expression.value === '_' ||
     (hasIUFlags && (expression.codePoint === 0x017f || expression.codePoint === 0x212a));
 }
