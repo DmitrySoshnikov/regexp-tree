@@ -103,7 +103,14 @@ GROUP_NAME              ([\w$]|\\'u'[0-9a-fA-F]{4}|\\'u{'[0-9a-fA-F]{1,}'}')+
 
 {ESC}'/'                            return 'ESC_CHAR'
 
-{ESC}{CHAR}                         return 'ESC_CHAR'
+{ESC}{CHAR}                         {
+                                        const s = this.getCurrentState();
+                                        if (s === 'u' || s === 'xu' || s === 'u_class') {
+                                            throw new SyntaxError(`invalid Unicode escape ${yytext}`);
+                                        }
+                                        return 'ESC_CHAR';
+                                    }
+
 {ESC}[*?+\[()]                      return 'ESC_CHAR'
 
 <class,u_class>'('                  return 'CHAR'

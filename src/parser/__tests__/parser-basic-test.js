@@ -1068,4 +1068,10 @@ describe('basic', () => {
     });
   });
 
+  it('throws error on invalid Unicode escape', () => {
+    expect(() => parser.parse('/\\p/u')).toThrowError(SyntaxError);
+    expect(() => parser.parse('/\\e/u')).toThrowError(SyntaxError);
+    expect(() => parser.parse('/\\g/u')).toThrowError(SyntaxError);
+  });
+
 });
