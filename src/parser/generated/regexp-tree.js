@@ -360,14 +360,14 @@ const lexRules = [[/^#[^\n]+/, function() { /* skip comments */ }],
 [/^\\x[0-9a-fA-F]{2}/, function() { return 'HEX_CODE' }],
 [/^\\[tnrdDsSwWvf]/, function() { return 'META_CHAR' }],
 [/^\\\//, function() { return 'ESC_CHAR' }],
-[/^\\[^*?+\[()]/, function() { 
+[/^\\[^*?+\[()\\|]/, function() { 
                                         const s = this.getCurrentState();
                                         if (s === 'u' || s === 'xu' || s === 'u_class') {
                                             throw new SyntaxError(`invalid Unicode escape ${yytext}`);
                                         }
                                         return 'ESC_CHAR';
                                      }],
-[/^\\[*?+\[()]/, function() { return 'ESC_CHAR' }],
+[/^\\[*?+\[()\\|]/, function() { return 'ESC_CHAR' }],
 [/^\(/, function() { return 'CHAR' }],
 [/^\)/, function() { return 'CHAR' }],
 [/^\(\?=/, function() { return 'POS_LA_ASSERT' }],
@@ -389,7 +389,7 @@ const lexRules = [[/^#[^\n]+/, function() { /* skip comments */ }],
 [/^\|/, function() { return 'BAR' }],
 [/^\./, function() { return 'ANY' }],
 [/^\//, function() { return 'SLASH' }],
-[/^[^*?+\[()]/, function() { return 'CHAR' }],
+[/^[^*?+\[()\\|]/, function() { return 'CHAR' }],
 [/^\[\^/, function() {  const s = this.getCurrentState(); this.pushState(s === 'u' || s === 'xu' ? 'u_class' : 'class'); return 'NEG_CLASS'  }],
 [/^\[/, function() {  const s = this.getCurrentState(); this.pushState(s === 'u' || s === 'xu' ? 'u_class' : 'class'); return 'L_BRACKET'  }]];
 const lexRulesByConditions = {"INITIAL":[9,10,11,12,13,14,15,16,17,18,21,22,23,24,25,26,29,30,31,32,33,34,35,36,40,41,42,43,44,45,46,47,48,49,50],"u":[9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,29,30,31,32,33,34,35,36,40,41,42,43,44,45,46,47,48,49,50],"xu":[0,1,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,29,30,31,32,33,34,35,36,40,41,42,43,44,45,46,47,48,49,50],"x":[0,1,9,10,11,12,13,14,15,16,17,18,21,22,23,24,25,26,29,30,31,32,33,34,35,36,40,41,42,43,44,45,46,47,48,49,50],"u_class":[2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50],"class":[2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50]};
