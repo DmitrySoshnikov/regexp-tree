@@ -9,6 +9,9 @@ module.exports = {
   // \ud83d\ude80 -> \u{1f680}
   'charSurrogatePairToSingleUnicode': require('./char-surrogate-pair-to-single-unicode-transform'),
 
+  // \u0061 -> a
+  'charCodeToSimpleChar': require('./char-code-to-simple-char-transform'),
+
   // /Aa/i -> /aa/i
   'charCaseInsensitiveLowerCaseTransform': require('./char-case-insensitive-lowercase-transform'),
 
