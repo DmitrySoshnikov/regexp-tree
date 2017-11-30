@@ -6,6 +6,7 @@
     },
     "extends": "eslint:recommended",
     "rules": {
+        "no-control-regex": "off",
         "indent": ["error", 2, { "SwitchCase": 1 }],
         "linebreak-style": [
             "error",
