@@ -30,7 +30,7 @@ function shouldUnescape(path) {
   const {node: {value}, index, parent} = path;
 
   // In char class (, etc are allowed.
-  if (parent.type !== 'CharacterClass') {
+  if (parent.type !== 'CharacterClass' && parent.type !== 'ClassRange') {
     return !preservesEscape(value, index, parent);
   }
 
@@ -61,7 +61,7 @@ function preservesEscape(value, index, parent) {
     return preservesClosingCurlyBraceEscape(index, parent);
   }
 
-  return /[*[\]()+?^$./\\|]/.test(value);
+  return /[*[()+?^$./\\|]/.test(value);
 }
 
 function consumeNumbers(startIndex, parent, rtl) {

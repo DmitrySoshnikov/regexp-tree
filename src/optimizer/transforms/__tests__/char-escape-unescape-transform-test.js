@@ -11,10 +11,10 @@ const charUnescape = require('../char-escape-unescape-transform');
 describe('\e -> e', () => {
 
   it('simple chars', () => {
-    const re = transform(/\e\*/, [
+    const re = transform(/\e\*\]/, [
       charUnescape,
     ]);
-    expect(re.toString()).toBe(/e\*/.toString());
+    expect(re.toString()).toBe(/e\*]/.toString());
   });
 
   it('preserve escape', () => {
@@ -66,10 +66,12 @@ describe('\e -> e', () => {
   });
 
   it('char class', () => {
-    const re = transform(/[\e\*\(\]\ \^\$\-]\(\n/, [
+    const re = transform(/[\e\*\(\]\ \^\$\/-\?\-]\(\n/, [
       charUnescape,
     ]);
-    expect(re.toString()).toBe(/[e*(\] ^$-]\(\n/.toString());
+    // Can't use native toString() conversion on a regexp here
+    // because Node 6 stringifies /[/]/ as /[\/]/
+    expect(re.toString()).toBe('/[e*(\\] ^$/-?-]\\(\\n/');
   });
 
   it('does not unescape \^ in char class when in first position', () => {
