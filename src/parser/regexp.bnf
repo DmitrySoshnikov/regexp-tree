@@ -16,7 +16,7 @@
 
 %lex
 
-CHAR                    [^*?+\[()]
+CHAR                    [^*?+\[()\\|]
 ESC                     \\
 U                       [0-9a-fA-F]
 U_LEAD_SURROGATE        [dD][89abAB][0-9a-fA-F]{2}
@@ -111,7 +111,7 @@ GROUP_NAME              ([\w$]|\\'u'[0-9a-fA-F]{4}|\\'u{'[0-9a-fA-F]{1,}'}')+
                                         return 'ESC_CHAR';
                                     }
 
-{ESC}[*?+\[()]                      return 'ESC_CHAR'
+{ESC}[*?+\[()\\|]                   return 'ESC_CHAR'
 
 <class,u_class>'('                  return 'CHAR'
 <class,u_class>')'                  return 'CHAR'
