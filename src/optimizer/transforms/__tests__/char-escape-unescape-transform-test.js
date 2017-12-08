@@ -88,4 +88,11 @@ describe('\e -> e', () => {
     expect(re.toString()).toBe(/[a\-z]/.toString());
   });
 
+  it('does not unescape space and # when x flag is set', () => {
+    const re = transform('/\\ \\#[\\ \\#]/x', [
+      charUnescape
+    ]);
+    expect(re.toString()).toBe('/\\ \\#[ #]/x');
+  });
+
 });

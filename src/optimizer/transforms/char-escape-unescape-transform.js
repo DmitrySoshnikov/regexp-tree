@@ -13,6 +13,10 @@
  * [\(] -> [(]
  */
 module.exports = {
+  _hasXFlag: false,
+  init(ast) {
+    this._hasXFlag = ast.flags.includes('x');
+  },
   Char(path) {
     const {node} = path;
 
@@ -20,18 +24,18 @@ module.exports = {
       return;
     }
 
-    if (shouldUnescape(path)) {
+    if (shouldUnescape(path, this._hasXFlag)) {
       delete node.escaped;
     }
   }
 };
 
-function shouldUnescape(path) {
+function shouldUnescape(path, hasXFlag) {
   const {node: {value}, index, parent} = path;
 
   // In char class (, etc are allowed.
   if (parent.type !== 'CharacterClass' && parent.type !== 'ClassRange') {
-    return !preservesEscape(value, index, parent);
+    return !preservesEscape(value, index, parent, hasXFlag);
   }
 
   return !preservesInCharClass(value, index, parent);
@@ -52,13 +56,17 @@ function preservesInCharClass(value, index, parent) {
   return /[\]\\]/.test(value);
 }
 
-function preservesEscape(value, index, parent) {
+function preservesEscape(value, index, parent, hasXFlag) {
   if (value === '{') {
     return preservesOpeningCurlyBraceEscape(index, parent);
   }
 
   if (value === '}') {
     return preservesClosingCurlyBraceEscape(index, parent);
+  }
+
+  if (hasXFlag && /[ #]/.test(value)) {
+    return true;
   }
 
   return /[*[()+?^$./\\|]/.test(value);
