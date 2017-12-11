@@ -41,11 +41,6 @@ function rewriteNumberRanges(path) {
         type: 'Char',
         value: '\\d',
         kind: 'meta',
-        loc: {
-          source: '\\d',
-          start: expression.loc.start,
-          end: expression.loc.start + 2,
-        },
       });
     }
   });
@@ -113,11 +108,6 @@ function rewriteWordRanges(path, hasIFlag, hasUFlag) {
       type: 'Char',
       value: '\\w',
       kind: 'meta',
-      loc: {
-        source: '\\w',
-        start: numberPath.node.loc.start,
-        end: numberPath.node.loc.start + 2,
-      },
     });
 
     // Other paths are removed.

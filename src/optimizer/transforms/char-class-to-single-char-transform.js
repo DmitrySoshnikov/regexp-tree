@@ -39,11 +39,6 @@ module.exports = {
       value,
       kind,
       escaped: escaped || shouldEscape(value),
-      loc: {
-        source: value,
-        start: node.loc.start,
-        end: node.loc.start + value.length,
-      },
     });
   }
 };
