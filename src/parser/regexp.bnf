@@ -753,6 +753,10 @@ Group
 CapturingGroup
   : NAMED_CAPTURE_GROUP Disjunction R_PAREN
     {
+      if (namedGroups.hasOwnProperty($1)) {
+        throw new SyntaxError(`Duplicate of the named group "${$1}".`);
+      }
+
       capturingGroupsCount++;
       namedGroups[$1] = capturingGroupsCount;
 

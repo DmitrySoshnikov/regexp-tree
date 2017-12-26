@@ -227,6 +227,10 @@ const productions = [[-1,1,(_1,_1loc) => { __loc = yyloc(_1loc, _1loc);__ = _1 }
 [14,1,(_1,_1loc) => { __loc = yyloc(_1loc, _1loc);__ = _1 }],
 [14,1,(_1,_1loc) => { __loc = yyloc(_1loc, _1loc);__ = _1 }],
 [15,3,(_1,_2,_3,_1loc,_2loc,_3loc) => { __loc = yyloc(_1loc, _3loc);
+      if (namedGroups.hasOwnProperty(_1)) {
+        throw new SyntaxError(`Duplicate of the named group "${_1}".`);
+      }
+
       capturingGroupsCount++;
       namedGroups[_1] = capturingGroupsCount;
 

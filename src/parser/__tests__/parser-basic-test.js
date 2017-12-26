@@ -375,6 +375,12 @@ describe('basic', () => {
     });
   });
 
+  it('named capturing group duplicate', () => {
+    expect(() => parser.parse('/(?<foo>)(?<foo>)/')).toThrowError(
+      new SyntaxError(`Duplicate of the named group "foo".`)
+    );
+  });
+
   it('capturing group numbers', () => {
     expect(re('/(?:)(a)(?:)(?<name>b)/')).toEqual({
       type: 'RegExp',
