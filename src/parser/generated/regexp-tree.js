@@ -351,7 +351,11 @@ const lexRules = [[/^#[^\n]+/, function() { /* skip comments */ }],
 [/^\{\d+\}/, function() { return 'RANGE_EXACT' }],
 [/^\{\d+,\}/, function() { return 'RANGE_OPEN' }],
 [/^\{\d+,\d+\}/, function() { return 'RANGE_CLOSED' }],
-[/^\\k<([\w$]|\\u[0-9a-fA-F]{4}|\\u\{[0-9a-fA-F]{1,}\})+>/, function() { return 'NAMED_GROUP_REF' }],
+[/^\\k<([\w$]|\\u[0-9a-fA-F]{4}|\\u\{[0-9a-fA-F]{1,}\})+>/, function() { 
+                                       const groupName = yytext.slice(3, -1);
+                                       validateUnicodeGroupName(groupName, this.getCurrentState());
+                                       return 'NAMED_GROUP_REF';
+                                      }],
 [/^\\b/, function() { return 'ESC_b' }],
 [/^\\B/, function() { return 'ESC_B' }],
 [/^\\c[a-zA-Z]/, function() { return 'CTRL_CH' }],
@@ -366,11 +370,11 @@ const lexRules = [[/^#[^\n]+/, function() { /* skip comments */ }],
 [/^\\\//, function() { return 'ESC_CHAR' }],
 [/^\\[ #]/, function() { return 'ESC_CHAR' }],
 [/^\\[^*?+\[()\\|]/, function() { 
-                                        const s = this.getCurrentState();
-                                        if (s === 'u' || s === 'xu' || s === 'u_class') {
-                                            throw new SyntaxError(`invalid Unicode escape ${yytext}`);
-                                        }
-                                        return 'ESC_CHAR';
+                                      const s = this.getCurrentState();
+                                      if (s === 'u' || s === 'xu' || s === 'u_class') {
+                                        throw new SyntaxError(`invalid Unicode escape ${yytext}`);
+                                      }
+                                      return 'ESC_CHAR';
                                      }],
 [/^\\[*?+\[()\\|]/, function() { return 'ESC_CHAR' }],
 [/^\(/, function() { return 'CHAR' }],
@@ -380,7 +384,11 @@ const lexRules = [[/^#[^\n]+/, function() { /* skip comments */ }],
 [/^\(\?<=/, function() { return 'POS_LB_ASSERT' }],
 [/^\(\?<!/, function() { return 'NEG_LB_ASSERT' }],
 [/^\(\?:/, function() { return 'NON_CAPTURE_GROUP' }],
-[/^\(\?<([\w$]|\\u[0-9a-fA-F]{4}|\\u\{[0-9a-fA-F]{1,}\})+>/, function() {  yytext = yytext.slice(3, -1); return 'NAMED_CAPTURE_GROUP'  }],
+[/^\(\?<([\w$]|\\u[0-9a-fA-F]{4}|\\u\{[0-9a-fA-F]{1,}\})+>/, function() { 
+                                      yytext = yytext.slice(3, -1);
+                                      validateUnicodeGroupName(yytext, this.getCurrentState());
+                                      return 'NAMED_CAPTURE_GROUP';
+                                     }],
 [/^\(/, function() { return 'L_PAREN' }],
 [/^\)/, function() { return 'R_PAREN' }],
 [/^[*?+[^$]/, function() { return 'CHAR' }],
@@ -1009,6 +1017,24 @@ function GroupRefOrDecChar(text, textLoc) {
 }
 
 /**
+ * Unicode names.
+ */
+const uRe = /^\\u[0-9a-fA-F]{4}/;
+const ucpRe = /^\\u\{[0-9a-fA-F]{1,}\}/;
+
+/**
+ * Validates Unicode group name.
+ */
+function validateUnicodeGroupName(name, state) {
+  const isUnicodeName = uRe.test(name) || ucpRe.test(name);
+  const isUnicodeState = (state === 'u' || state === 'xu' || state === 'u_class');
+
+  if (isUnicodeName && !isUnicodeState) {
+    throw new SyntaxError(`invalid group Unicode name "${name}", use \`u\` flag.`);
+  }
+}
+
+/**
  * Extracts from `\k<foo>` pattern either a backreference
  * to a named capturing group (if it presents), or parses it
  * as a list of char: `\k`, `<`, `f`, etc.
@@ -1041,8 +1067,6 @@ function NamedGroupRefOrChars(text, textLoc) {
   }
 
   const charRe = /^[\w$<>]/;
-  const uRe = /^\\u[0-9a-fA-F]{4}/;
-  const ucpRe = /^\\u\{[0-9a-fA-F]{1,}\}/;
   let loc;
 
   const chars = [

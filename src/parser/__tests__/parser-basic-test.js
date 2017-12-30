@@ -381,6 +381,21 @@ describe('basic', () => {
     );
   });
 
+  it.only('named unicode name', () => {
+    expect(() => parser.parse('/(?<\\u{41}\\u0042>)/')).toThrowError(
+      new SyntaxError(
+        `invalid group Unicode name "\\u{41}\\u0042", use \`u\` flag.`
+      )
+    );
+
+    expect(() => parser.parse('/(?<A>)\\k<\\u{41}>/')).toThrowError(
+      new SyntaxError(`invalid group Unicode name "\\u{41}", use \`u\` flag.`)
+    );
+
+    expect(() => parser.parse('/(?<\\u{41}>)/u')).not.toThrow();
+    expect(() => parser.parse('/(?<A>)\\k<\\u{41}>/u')).not.toThrow();
+  });
+
   it('capturing group numbers', () => {
     expect(re('/(?:)(a)(?:)(?<name>b)/')).toEqual({
       type: 'RegExp',
