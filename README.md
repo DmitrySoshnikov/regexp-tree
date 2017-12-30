@@ -695,11 +695,11 @@ Below are the AST node types for different regular expressions patterns:
   - [$ end marker](#-end-marker)
   - [Boundary assertions](#boundary-assertions)
   - [Lookahead assertions](#lookahead-assertions)
-    - [Positive lookahead assertions](#positive-lookahead-assertions)
-    - [Negative lookahead assertions](#negative-lookahead-assertions)
+    - [Positive lookahead assertion](#positive-lookahead-assertion)
+    - [Negative lookahead assertion](#negative-lookahead-assertion)
   - [Lookbehind assertions](#lookbehind-assertions)
-    - [Positive lookbehind assertions](#positive-lookbehind-assertions)
-    - [Negative lookbehind assertions](#negative-lookbehind-assertions)
+    - [Positive lookbehind assertion](#positive-lookbehind-assertion)
+    - [Negative lookbehind assertion](#negative-lookbehind-assertion)
 
 #### Char
 
