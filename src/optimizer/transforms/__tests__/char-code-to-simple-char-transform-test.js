@@ -16,7 +16,7 @@ describe('char-code-to-simple-char', () => {
     ]);
     expect(re.toString()).toBe('/A ~[B-Lm-r]/');
 
-    re = transform(/\u{41}\u{20}\u{7e}[\u{42}-\u{4c}\u{6d}-\u{72}]/u, [
+    re = transform('/\\u{41}\\u{20}\\u{7e}[\\u{42}-\\u{4c}\\u{6d}-\\u{72}]/u', [
       charCodeToSimpleChar,
     ]);
     expect(re.toString()).toBe('/A ~[B-Lm-r]/u');
@@ -43,7 +43,7 @@ describe('char-code-to-simple-char', () => {
     ]);
     expect(re.toString()).toBe('/\\u0016\\u00a9/');
 
-    re = transform(/\u{16}\u{a9}/u, [
+    re = transform('/\\u{16}\\u{a9}/u', [
       charCodeToSimpleChar,
     ]);
     expect(re.toString()).toBe('/\\u{16}\\u{a9}/u');
@@ -70,7 +70,7 @@ describe('char-code-to-simple-char', () => {
     ]);
     expect(re.toString()).toBe('/[\\u005a-\\u0061]/');
 
-    re = transform(/[\u{5a}-\u{61}]/u, [
+    re = transform('/[\\u{5a}-\\u{61}]/u', [
       charCodeToSimpleChar,
     ]);
     expect(re.toString()).toBe('/[\\u{5a}-\\u{61}]/u');
@@ -97,7 +97,7 @@ describe('char-code-to-simple-char', () => {
     ]);
     expect(re.toString()).toBe('/[\\-]/');
 
-    re = transform(/[\u005d\u{5c}\x5e]/u, [
+    re = transform('/[\\u005d\\u{5c}\\x5e]/u', [
       charCodeToSimpleChar,
     ]);
     expect(re.toString()).toBe('/[\\]\\\\\\^]/u');
@@ -107,9 +107,12 @@ describe('char-code-to-simple-char', () => {
     ]);
     expect(re.toString()).toBe('/\\*\\+\\?\\/\\}/');
 
-    re = transform(/\u005b\u{28}\x29\u005e\u{24}\x2e\u005c\u{7c}\x7b/u, [
-      charCodeToSimpleChar,
-    ]);
+    re = transform(
+      '/\\u005b\\u{28}\\x29\\u005e\\u{24}\\x2e\\u005c\\u{7c}\\x7b/u',
+      [
+        charCodeToSimpleChar,
+      ]
+    );
     expect(re.toString()).toBe('/\\[\\(\\)\\^\\$\\.\\\\\\|\\{/u');
   });
 

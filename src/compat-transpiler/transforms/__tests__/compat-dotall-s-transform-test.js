@@ -14,21 +14,21 @@ describe('compat-dotall-s-transform', () => {
     const re = transform('/a.b/s', [
       compatDotAllSTransform,
     ]);
-    expect(re.toString()).toBe(/a[\0-\uFFFF]b/.toString());
+    expect(re.toString()).toBe('/a[\\0-\\uFFFF]b/');
   });
 
   it('with u flag', () => {
     const re = transform('/a.b/su', [
       compatDotAllSTransform,
     ]);
-    expect(re.toString()).toBe(/a[\0-\u{10FFFF}]b/u.toString());
+    expect(re.toString()).toBe('/a[\\0-\\u{10FFFF}]b/u');
   });
 
   it('no s', () => {
-    const re = transform(/a.b/u, [
+    const re = transform('/a.b/u', [
       compatDotAllSTransform,
     ]);
-    expect(re.toString()).toBe(/a.b/u.toString());
+    expect(re.toString()).toBe('/a.b/u');
   });
 
 });

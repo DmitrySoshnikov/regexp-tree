@@ -11,14 +11,14 @@ const charSurrogatePairToSingleUnicode = require('../char-surrogate-pair-to-sing
 describe('\\ud83d\\ude80 -> \\u{1f680}', () => {
 
   it('\\ud83d\\ude80 -> \\u{1f680}', () => {
-    const re = transform(/\ud83d\ude80/u, [
+    const re = transform('/\\ud83d\\ude80/u', [
       charSurrogatePairToSingleUnicode
     ]);
     expect(re.toString()).toBe('/\\u{1f680}/u');
   });
 
   it('does not run when unicode flag is absent', () => {
-    const re = transform(/\ud83d\ude80/, [
+    const re = transform('/\\ud83d\\ude80/', [
       charSurrogatePairToSingleUnicode
     ]);
     expect(re.toString()).toBe('/\\ud83d\\ude80/');

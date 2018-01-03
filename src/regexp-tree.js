@@ -5,17 +5,15 @@
 
 'use strict';
 
-module.exports = require('./dist/regexp-tree');
+const compatTranspiler = require('./compat-transpiler');
+const generator = require('./generator');
+const optimizer = require('./optimizer');
+const parser = require('./parser');
+const transform = require('./transform');
+const traverse = require('./traverse');
+const fa = require('./interpreter/finite-automaton');
 
-const compatTranspiler = require('./src/compat-transpiler');
-const generator = require('./src/generator');
-const optimizer = require('./src/optimizer');
-const parser = require('./src/parser');
-const transform = require('./src/transform');
-const traverse = require('./src/traverse');
-const fa = require('./src/interpreter/finite-automaton');
-
-const {RegExpTree} = require('./src/compat-transpiler/runtime');
+const {RegExpTree} = require('./compat-transpiler/runtime');
 
 /**
  * An API object for RegExp processing (parsing/transform/generation).

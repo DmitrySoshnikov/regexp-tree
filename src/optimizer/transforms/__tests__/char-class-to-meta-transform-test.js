@@ -32,7 +32,7 @@ describe('char-class-to-meta', () => {
   });
 
   it('replaces word ranges when regexp has i and u flags', () => {
-    const re = transform(/[\da-zA-Z_\u017F\u212A$]/iu, [
+    const re = transform('/[\\da-zA-Z_\\u017F\\u212A$]/iu', [
       charClassToMeta,
     ]);
     expect(re.toString()).toBe('/[\\w$]/iu');

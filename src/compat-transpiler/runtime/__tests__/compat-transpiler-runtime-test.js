@@ -11,12 +11,12 @@ describe('compat-transpiler-runtime', () => {
 
   it('named capturing groups', () => {
     const originalSource = '(?<year>\\d{4})-(?<month>\\d{2})-(?<day>\\d{2})';
-    const originalFlags = 'gsu';
+    const originalFlags = 'gs';
 
     const originalRe = `/${originalSource}/${originalFlags}`;
 
     // This is what regexp-tree produces.
-    const compat = /(\d{4})-(\d{2})-(\d{2})/gu;
+    const compat = /(\d{4})-(\d{2})-(\d{2})/g;
 
     const re = new RegExpTree(compat, {
       flags: originalFlags,
@@ -39,7 +39,6 @@ describe('compat-transpiler-runtime', () => {
     expect(re.ignoreCase).toBe(false);
     expect(re.multiline).toBe(false);
     expect(re.sticky).toBe(false);
-    expect(re.unicode).toBe(true);
 
     // Testing runtime.
     const string = '2017-04-14';

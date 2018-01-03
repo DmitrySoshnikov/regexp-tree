@@ -5,36 +5,37 @@
 
 'use strict';
 
-module.exports = require('./dist/regexp-tree');
+var compatTranspiler = require('./compat-transpiler');
+var generator = require('./generator');
+var optimizer = require('./optimizer');
+var parser = require('./parser');
+var _transform = require('./transform');
+var _traverse = require('./traverse');
+var fa = require('./interpreter/finite-automaton');
 
-const compatTranspiler = require('./src/compat-transpiler');
-const generator = require('./src/generator');
-const optimizer = require('./src/optimizer');
-const parser = require('./src/parser');
-const transform = require('./src/transform');
-const traverse = require('./src/traverse');
-const fa = require('./src/interpreter/finite-automaton');
-
-const {RegExpTree} = require('./src/compat-transpiler/runtime');
+var _require = require('./compat-transpiler/runtime'),
+    RegExpTree = _require.RegExpTree;
 
 /**
  * An API object for RegExp processing (parsing/transform/generation).
  */
-const regexpTree = {
+
+
+var regexpTree = {
   /**
    * Parser module exposed.
    */
-  parser,
+  parser: parser,
 
   /**
    * Expose finite-automaton module.
    */
-  fa,
+  fa: fa,
 
   /**
    * `TransformResult` exposed.
    */
-  TransformResult: transform.TransformResult,
+  TransformResult: _transform.TransformResult,
 
   /**
    * Parses a regexp string, producing an AST.
@@ -52,9 +53,10 @@ const regexpTree = {
    *
    * @return Object AST
    */
-  parse(regexp, options) {
-    return parser.parse(`${regexp}`, options);
+  parse: function parse(regexp, options) {
+    return parser.parse('' + regexp, options);
   },
+
 
   /**
    * Traverses a RegExp AST.
@@ -71,9 +73,10 @@ const regexpTree = {
    *     },
    *   });
    */
-  traverse(ast, handlers) {
-    return traverse.traverse(ast, handlers);
+  traverse: function traverse(ast, handlers) {
+    return _traverse.traverse(ast, handlers);
   },
+
 
   /**
    * Transforms a regular expression.
@@ -87,9 +90,10 @@ const regexpTree = {
    *
    * @return TransformResult - a transformation result.
    */
-  transform(regexp, handlers) {
-    return transform.transform(regexp, handlers);
+  transform: function transform(regexp, handlers) {
+    return _transform.transform(regexp, handlers);
   },
+
 
   /**
    * Generates a RegExp string from an AST.
@@ -100,19 +104,21 @@ const regexpTree = {
    *
    *   regexpTree.generate(regexpTree.parse('/[a-z]+/i')); // '/[a-z]+/i'
    */
-  generate(ast) {
+  generate: function generate(ast) {
     return generator.generate(ast);
   },
+
 
   /**
    * Creates a RegExp object from a regexp string.
    *
    * @param string regexp
    */
-  toRegExp(regexp) {
-    const compat = this.compatTranspile(regexp);
+  toRegExp: function toRegExp(regexp) {
+    var compat = this.compatTranspile(regexp);
     return new RegExp(compat.getSource(), compat.getFlags());
   },
+
 
   /**
    * Optimizes a regular expression by replacing some
@@ -122,9 +128,10 @@ const regexpTree = {
    *
    * @return TransformResult object
    */
-  optimize(regexp, whitelist) {
+  optimize: function optimize(regexp, whitelist) {
     return optimizer.optimize(regexp, whitelist);
   },
+
 
   /**
    * Translates a regular expression in new syntax or in new format
@@ -134,9 +141,10 @@ const regexpTree = {
    *
    * @return TransformResult object
    */
-  compatTranspile(regexp, whitelist) {
+  compatTranspile: function compatTranspile(regexp, whitelist) {
     return compatTranspiler.transform(regexp, whitelist);
   },
+
 
   /**
    * Executes a regular expression on a string.
@@ -144,16 +152,16 @@ const regexpTree = {
    * @param RegExp|string re - a regular expression.
    * @param string string - a testing string.
    */
-  exec(re, string) {
+  exec: function exec(re, string) {
     if (typeof re === 'string') {
-      const compat = this.compatTranspile(re);
-      const extra = compat.getExtra();
+      var compat = this.compatTranspile(re);
+      var extra = compat.getExtra();
 
       if (extra.namedCapturingGroups) {
         re = new RegExpTree(compat.toRegExp(), {
           flags: compat.getFlags(),
           source: compat.getSource(),
-          groups: extra.namedCapturingGroups,
+          groups: extra.namedCapturingGroups
         });
       } else {
         re = compat.toRegExp();
@@ -161,7 +169,7 @@ const regexpTree = {
     }
 
     return re.exec(string);
-  },
+  }
 };
 
 module.exports = regexpTree;

@@ -24,18 +24,18 @@
     "ECMAScript"
   ],
   "author": "Dmitry Soshnikov",
-  "engines": {
-    "node": ">=6"
-  },
   "dependencies": {
     "cli-table2": "^0.2.0",
     "colors": "^1.1.2",
     "yargs": "^10.0.3"
   },
   "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "1.6.1",
+    "babel-preset-flow": "6.23.0",
     "eslint": "^4.11.0",
     "jest-cli": "^19.0.2",
     "shelljs": "^0.7.8",
-    "syntax-cli": "^0.0.98"
+    "syntax-cli": "^0.0.99"
   }
 }

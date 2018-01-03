@@ -52,7 +52,7 @@ You can also [try it online](https://astexplorer.net/#/gist/4ea2b52f0e546af6fb14
 
 The _regexp-tree_ parser is implemented as an automatic LR parser using [Syntax](https://www.npmjs.com/package/syntax-cli) tool. The parser module is generated from the [regexp grammar](https://github.com/DmitrySoshnikov/regexp-tree/blob/master/src/parser/regexp.bnf), which is based on the regular expressions grammar used in ECMAScript.
 
-For development from the github repository, run `build` command to generate the parser module:
+For development from the github repository, run `build` command to generate the parser module, and transpile JS code:
 
 ```
 git clone https://github.com/<your-github-account>/regexp-tree.git
@@ -62,8 +62,6 @@ npm run build
 
 ./bin/regexp-tree --help
 ```
-
-> NOTE: You need to run `build` command every time you change the grammar file.
 
 ### Usage as a CLI
 

@@ -28,7 +28,7 @@ describe('char-class-classranges-merge', () => {
   });
 
   it('merges chars in \w with i and u flags', () => {
-    const re = transform(/[\u212a\w\u017fa]/iu, [
+    const re = transform('/[\\u212a\\w\\u017fa]/iu', [
       charClassClassrangesMerge,
     ]);
     expect(re.toString()).toBe('/[\\w]/iu');
@@ -89,12 +89,12 @@ describe('char-class-classranges-merge', () => {
     ]);
     expect(re.toString()).toBe('/[\\u0024-\\u0035]/');
 
-    re = transform(/[\u{24}-\u{35}\u0027\u{28}]/u, [
+    re = transform('/[\\u{24}-\\u{35}\\u0027\\u{28}]/u', [
       charClassClassrangesMerge,
     ]);
     expect(re.toString()).toBe('/[\\u{24}-\\u{35}]/u');
 
-    re = transform(/[\ud83d\ude80-\ud83d\ude88\ud83d\ude83]/u, [
+    re = transform('/[\\ud83d\\ude80-\\ud83d\\ude88\\ud83d\\ude83]/u', [
       charClassClassrangesMerge,
     ]);
     expect(re.toString()).toBe('/[\\ud83d\\ude80-\\ud83d\\ude88]/u');
@@ -111,14 +111,17 @@ describe('char-class-classranges-merge', () => {
     ]);
     expect(re.toString()).toBe('/[\\u0024-\\u0042]/');
 
-    re = transform(/[\u{24}-\u{35}\u0036-\u0042]/u, [
+    re = transform('/[\\u{24}-\\u{35}\\u0036-\\u0042]/u', [
       charClassClassrangesMerge,
     ]);
     expect(re.toString()).toBe('/[\\u{24}-\\u0042]/u');
 
-    re = transform(/[\u{1F680}-\ud83d\ude88\ud83d\ude89-\ud83d\ude9b]/u, [
-      charClassClassrangesMerge,
-    ]);
+    re = transform(
+      '/[\\u{1F680}-\\ud83d\\ude88\\ud83d\\ude89-\\ud83d\\ude9b]/u',
+      [
+        charClassClassrangesMerge,
+      ]
+    );
     expect(re.toString()).toBe('/[\\u{1F680}-\\ud83d\\ude9b]/u');
   });
 
@@ -138,12 +141,12 @@ describe('char-class-classranges-merge', () => {
     ]);
     expect(re.toString()).toBe('/[a-\\u0064]/');
 
-    re = transform(/[a\u{62}c\u{64}]/u, [
+    re = transform('/[a\\u{62}c\\u{64}]/u', [
       charClassClassrangesMerge,
     ]);
     expect(re.toString()).toBe('/[a-\\u{64}]/u');
 
-    re = transform(/[\ud83d\ude88\ud83d\ude89\ud83d\ude8a]/u, [
+    re = transform('/[\\ud83d\\ude88\\ud83d\\ude89\\ud83d\\ude8a]/u', [
       charClassClassrangesMerge,
     ]);
     expect(re.toString()).toBe('/[\\ud83d\\ude88-\\ud83d\\ude8a]/u');

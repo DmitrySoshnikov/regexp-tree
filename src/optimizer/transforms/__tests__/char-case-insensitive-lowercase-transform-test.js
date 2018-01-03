@@ -31,14 +31,14 @@ describe('char-case-insensitive-lowercase', () => {
     ]);
     expect(re.toString()).toBe('/\\u0061/i');
 
-    re = transform(/\u{41}/iu, [
+    re = transform('/\\u{41}/iu', [
       charCaseInsensitiveLowercase,
     ]);
     expect(re.toString()).toBe('/\\u{61}/iu');
   });
 
   it('lowercases char >= \\u1000 when u flag is set', () => {
-    const re = transform(/\u10a0/iu, [
+    const re = transform('/\\u10a0/iu', [
       charCaseInsensitiveLowercase,
     ]);
     expect(re.toString()).toBe('/\\u2d00/iu');
@@ -72,7 +72,7 @@ describe('char-case-insensitive-lowercase', () => {
     ]);
     expect(re.toString()).toBe('/[\\u0061-\\u007a\\u0062-\\u0068]/i');
 
-    re = transform(/[\u{41}-\u{5a}\u{42}-\u{48}]/iu, [
+    re = transform('/[\\u{41}-\\u{5a}\\u{42}-\\u{48}]/iu', [
       charCaseInsensitiveLowercase,
     ]);
     expect(re.toString()).toBe('/[\\u{61}-\\u{7a}\\u{62}-\\u{68}]/iu');
