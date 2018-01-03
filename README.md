@@ -63,6 +63,8 @@ npm run build
 ./bin/regexp-tree --help
 ```
 
+> NOTE: JS code transpilation is used to support older versions of Node. For faster development cycle you can use `npm run watch` command, which continuously transpiles JS code.
+
 ### Usage as a CLI
 
 Check the options available from CLI:

@@ -8,6 +8,7 @@
   "bugs": "https://github.com/DmitrySoshnikov/regexp-tree/issues",
   "scripts": {
     "build": "node scripts/build.js",
+    "watch": "node scripts/build.js --watch",
     "test": "jest",
     "prepublish": "npm run build && npm test",
     "eslint": "eslint src/ && eslint bin/regexp-tree"
