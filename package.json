@@ -9,7 +9,7 @@
   "scripts": {
     "build": "node scripts/build.js",
     "test": "jest",
-    "prepublish": "npm test && npm run build",
+    "prepublish": "npm run build && npm test",
     "eslint": "eslint src/ && eslint bin/regexp-tree"
   },
   "bin": {
