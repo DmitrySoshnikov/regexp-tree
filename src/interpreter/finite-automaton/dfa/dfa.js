@@ -109,7 +109,7 @@ class DFA {
       for (const nfaAcceptingState of nfaAcceptingStates) {
         // If any of the states from NFA is accepting, DFA's
         // state is accepting as well.
-        if (states.includes(nfaAcceptingState)) {
+        if (states.indexOf(nfaAcceptingState) !== -1) {
           this._acceptingStateNumbers.add(states.join(','));
           break;
         }
