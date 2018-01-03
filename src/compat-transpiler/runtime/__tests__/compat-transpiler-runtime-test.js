@@ -38,7 +38,7 @@ describe('compat-transpiler-runtime', () => {
     expect(re.global).toBe(true);
     expect(re.ignoreCase).toBe(false);
     expect(re.multiline).toBe(false);
-    expect(re.sticky).toBe(false);
+    expect(re.sticky).not.toBe(true);
 
     // Testing runtime.
     const string = '2017-04-14';
