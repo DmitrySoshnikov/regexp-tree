@@ -29,6 +29,8 @@ function astTraverse(root, options = {}) {
   const post = options.post;
   const skipProperty = options.skipProperty;
 
+  //console.log('astTraverse: options: ' + JSON.stringify(options));
+
   function visit(node, parent, prop, idx) {
     if (!node || typeof node.type !== 'string') {
       return;
@@ -124,6 +126,9 @@ module.exports = {
    *   nodes traversal should be used in rare cases, when no `NodePath`
    *   features are needed.
    *
+   *   `pre(nodePath)` - a hook called on node enter
+   *   `post`(nodePath) - a hook called on node exit
+   *
    * Special hooks:
    *
    *   - `shouldRun(ast)` - a predicate determining whether the handler
@@ -132,7 +137,8 @@ module.exports = {
    * NOTE: Multiple handlers are used as an optimization of applying all of
    * them in one AST traversal pass.
    */
-  traverse(ast, handlers, options = {asNodes: false}) {
+  traverse(ast, handlers, options = {asNodes: false, pre: false, post: false}) {
+    //console.log(`traverse: options ${JSON.stringify(options)}`);
     if (!Array.isArray(handlers)) {
       handlers = [handlers];
     }
@@ -175,6 +181,11 @@ module.exports = {
           );
         }
 
+        // User-supplied pre
+        if (typeof options.pre === 'function') {
+          options.pre(nodePath);
+        }
+
         for (const handler of handlers) {
           // "Catch-all" `*` handler.
           if (typeof handler['*'] === 'function') {
@@ -207,6 +218,31 @@ module.exports = {
               }
             }
           }
+        }
+      },
+
+      post(node, parent, prop, index) {
+
+        if (typeof options.pre !== 'function')
+          return;
+
+        let parentPath;
+        let nodePath;
+
+        if (!options.asNodes) {
+          parentPath = NodePath.getForNode(parent);
+
+          nodePath = NodePath.getForNode(
+            node,
+            parentPath,
+            prop,
+            index
+          );
+        }
+
+        // User-supplied post
+        if (typeof options.post === 'function') {
+          options.post(nodePath);
         }
       },
 

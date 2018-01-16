@@ -69,8 +69,8 @@ const regexpTree = {
    *     },
    *   });
    */
-  traverse(ast, handlers) {
-    return traverse.traverse(ast, handlers);
+  traverse(ast, handlers, options) {
+    return traverse.traverse(ast, handlers, options);
   },
 
   /**
