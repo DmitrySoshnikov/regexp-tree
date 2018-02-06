@@ -298,13 +298,13 @@ The [traverse](https://github.com/DmitrySoshnikov/regexp-tree/tree/master/src/tr
 Visiting a node follows this algorithm:
 - call `pre` handler.
 - recurse into node's children.
-` call `post` handler.
+- call `post` handler.
 
 For each node type of interest, you can provide either:
 - a function (`pre`).
 - an object with members `pre` and `post`.
 
-You can also provide a `\*` handler which will be executed on every node.
+You can also provide a `*` handler which will be executed on every node.
 
 Example:
 
@@ -327,11 +327,11 @@ regexpTree.traverse(ast, {
     ...
   },
 
-  // Handle "Char" node type.
+  // Handle "Char" node type, before and after.
   Char: {
     pre({node}) {
       ...
-    }
+    },
     post({node}) {
       ...
     }

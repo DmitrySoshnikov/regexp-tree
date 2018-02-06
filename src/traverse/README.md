@@ -7,13 +7,13 @@ Once a regular expression is parsed, it is possible to handle needed nodes by us
 Visiting a node follows this algorithm:
 - call `pre` handler.
 - recurse into node's children.
-` call `post` handler.
+- call `post` handler.
 
 For each node type of interest, you can provide either:
 - a function (`pre`).
 - an object with members `pre` and `post`.
 
-You can also provide a `\*` handler which will be executed on every node.
+You can also provide a `*` handler which will be executed on every node.
 
 ```js
 const regexpTree = require('regexp-tree');
@@ -23,6 +23,11 @@ const ast = regexpTree.parse('/[a-z]{1,}/');
 
 // Handle nodes.
 regexpTree.traverse(ast, {
+
+  // Visit every node before any type-specific handlers.
+  '*': function({node}) {
+    ...
+  },
 
   // Handle "Quantifier" node type,
   // transforming `{1,}` quantifier to `+`.
@@ -37,6 +42,17 @@ regexpTree.traverse(ast, {
       delete node.from;
     }
   },
+
+  // Handle "Char" node type, before and after.
+  Char: {
+    pre({node}) {
+      ...
+    },
+    post({node}) {
+      ...
+    }
+  }
+
 });
 
 // Generate the regexp.
