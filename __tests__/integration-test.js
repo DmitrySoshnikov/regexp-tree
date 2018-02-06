@@ -55,24 +55,62 @@ describe('regexp-tree', () => {
     });
 
     // 2. Traverse.
-    const visited = [];
+
+    // 2a. With functions.
+    const traverseFunctionsVisited = [];
 
     regexpTree.traverse(ast, {
       RegExp({node}) {
-        visited.push(node.type);
+        traverseFunctionsVisited.push(node.type);
         expect(node.type).toBe('RegExp');
       },
 
       Char({node}) {
-        visited.push(node.type);
+        traverseFunctionsVisited.push(node.type);
         expect(node.type).toBe('Char');
         expect(node.value).toBe('a');
       }
     });
 
-    expect(visited).toEqual([
+    expect(traverseFunctionsVisited).toEqual([
       'RegExp',
       'Char',
+    ]);
+
+    // 2b. With objects.
+    const traverseObjectsVisited = [];
+
+    regexpTree.traverse(ast, {
+      RegExp: {
+        pre({node}) {
+          traverseObjectsVisited.push(`${node.type}_pre`);
+          expect(node.type).toBe('RegExp');
+        },
+        post({node}) {
+          traverseObjectsVisited.push(`${node.type}_post`);
+          expect(node.type).toBe('RegExp');
+        }
+      },
+
+      Char: {
+        pre({node}) {
+          traverseObjectsVisited.push(`${node.type}_pre`);
+          expect(node.type).toBe('Char');
+          expect(node.value).toBe('a');
+        },
+        post({node}) {
+          traverseObjectsVisited.push(`${node.type}_post`);
+          expect(node.type).toBe('Char');
+          expect(node.value).toBe('a');
+        }
+      }
+    });
+
+    expect(traverseObjectsVisited).toEqual([
+      'RegExp_pre',
+      'Char_pre',
+      'Char_post',
+      'RegExp_post',
     ]);
 
     // 3. Generate.
