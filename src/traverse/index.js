@@ -160,7 +160,7 @@ module.exports = {
       }
     });
 
-    function _getPathFor (node, parent, prop, index) {
+    function getPathFor(node, parent, prop, index) {
       const parentPath = NodePath.getForNode(parent);
       const nodePath = NodePath.getForNode(
         node,
@@ -180,7 +180,7 @@ module.exports = {
       pre(node, parent, prop, index) {
         let nodePath;
         if (!options.asNodes) {
-          nodePath = _getPathFor(node, parent, prop, index);
+          nodePath = getPathFor(node, parent, prop, index);
         }
 
         for (const handler of handlers) {
@@ -195,8 +195,7 @@ module.exports = {
                   return false;
                 }
               }
-            }
-            else {
+            } else {
               handler['*'](node, parent, prop, index);
             }
           }
@@ -240,7 +239,7 @@ module.exports = {
 
         let nodePath;
         if (!options.asNodes) {
-          nodePath = _getPathFor(node, parent, prop, index);
+          nodePath = getPathFor(node, parent, prop, index);
         }
 
         for (const handler of handlers) {
