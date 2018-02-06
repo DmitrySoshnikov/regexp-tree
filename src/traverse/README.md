@@ -2,7 +2,18 @@
 
 Provides traversal API with _vistor_ pattern for regexp ASTs. See [the specification](https://github.com/DmitrySoshnikov/regexp-tree#ast-nodes-specification) for AST nodes format.
 
-Once a regular expression is parsed, it is possible to handle needed nodes by using traversal API. Handlers receive an instance of `NodePath` class, which encapsulates `node` itself, and other convenient properties, and methods.
+Once a regular expression is parsed, it is possible to handle needed nodes by using the traversal API. Handlers receive an instance of `NodePath` class, which encapsulates `node` itself, and other convenient properties, and methods.
+
+Visiting a node follows this algorithm:
+- call `pre` handler.
+- recurse into node's children.
+` call `post` handler.
+
+For each node type of interest, you can provide either:
+- a function (`pre`).
+- an object with members `pre` and `post`.
+
+You can also provide a `\*` handler which will be executed on every node.
 
 ```js
 const regexpTree = require('regexp-tree');

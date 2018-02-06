@@ -293,7 +293,18 @@ const parsed = regexpTree.parse(/a|b/, {
 
 ### Using traversal API
 
-The [traverse](https://github.com/DmitrySoshnikov/regexp-tree/tree/master/src/traverse) module allows handling needed AST nodes using _visitor_ pattern. In Node the module is exposed as `regexpTree.traverse` method. Handlers receive an instance of [NodePath](https://github.com/DmitrySoshnikov/regexp-tree/blob/master/src/traverse/README.md#nodepath-class) class, which encapsulates `node` itself, its `parent` node, `property`, and `index` (in case if a node is a part of a collection).
+The [traverse](https://github.com/DmitrySoshnikov/regexp-tree/tree/master/src/traverse) module allows handling needed AST nodes using the _visitor_ pattern. In Node the module is exposed as the `regexpTree.traverse` method. Handlers receive an instance of the [NodePath](https://github.com/DmitrySoshnikov/regexp-tree/blob/master/src/traverse/README.md#nodepath-class) class, which encapsulates `node` itself, its `parent` node, `property`, and `index` (in case the node is part of a collection).
+
+Visiting a node follows this algorithm:
+- call `pre` handler.
+- recurse into node's children.
+` call `post` handler.
+
+For each node type of interest, you can provide either:
+- a function (`pre`).
+- an object with members `pre` and `post`.
+
+You can also provide a `\*` handler which will be executed on every node.
 
 Example:
 
@@ -303,13 +314,29 @@ const regexpTree = require('regexp-tree');
 // Get AST.
 const ast = regexpTree.parse('/[a-z]{1,}/');
 
-// Handle nodes.
+// Traverse AST nodes.
 regexpTree.traverse(ast, {
+
+  // Visit every node before any type-specific handlers.
+  '*': function({node}) {
+    ...
+  },
 
   // Handle "Quantifier" node type.
   Quantifier({node}) {
     ...
   },
+
+  // Handle "Char" node type.
+  Char: {
+    pre({node}) {
+      ...
+    }
+    post({node}) {
+      ...
+    }
+  }
+
 });
 
 // Generate the regexp.
