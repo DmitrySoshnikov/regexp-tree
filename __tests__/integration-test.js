@@ -82,23 +82,23 @@ describe('regexp-tree', () => {
 
     regexpTree.traverse(ast, {
       RegExp: {
-        pre(node) {
+        pre({node}) {
           traverseObjects_visited.push(`${node.type}_pre`);
           expect(node.type).toBe('RegExp');
         },
-        post(node) {
+        post({node}) {
           traverseObjects_visited.push(`${node.type}_post`);
           expect(node.type).toBe('RegExp');
         }
       },
 
       Char: {
-        pre(node) {
+        pre({node}) {
           traverseObjects_visited.push(`${node.type}_pre`);
           expect(node.type).toBe('Char');
           expect(node.value).toBe('a');
         },
-        post(node) {
+        post({node}) {
           traverseObjects_visited.push(`${node.type}_post`);
           expect(node.type).toBe('Char');
           expect(node.value).toBe('a');

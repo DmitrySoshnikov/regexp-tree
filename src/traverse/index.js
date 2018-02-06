@@ -207,7 +207,6 @@ module.exports = {
           else if (handler[node.type] &&
                    typeof handler[node.type] === 'object' &&
                    typeof handler[node.type].pre === 'function') {
-            console.error(`Got a post func for ${node.type}`);
             handlerFunc_pre = handler[node.type].pre.bind(handler);
           }
 
@@ -217,7 +216,6 @@ module.exports = {
             } else {
               // A path/node can be removed by some previous handler.
               if (!nodePath.isRemoved()) {
-                //console.error(`Calling pre with ${JSON.stringify(nodePath)}`);
                 const handlerResult = handlerFunc_pre(nodePath);
                 // Explicitly stop traversal.
                 if (handlerResult === false) {
@@ -234,6 +232,10 @@ module.exports = {
        * Handler on node exit.
        */
       post(node, parent, prop, index) {
+        if (!node) { // No node? Not sure how this can happen, but without it many tests fail.
+          return;
+        }
+
         let parentPath;
         let nodePath;
 
@@ -254,7 +256,6 @@ module.exports = {
           if (handler[node.type] &&
               typeof handler[node.type] === 'object' &&
               typeof handler[node.type].post === 'function') {
-            console.error(`Got a post func for ${node.type}`);
             handlerFunc_post = handler[node.type].post;
           }
 
@@ -264,7 +265,6 @@ module.exports = {
             } else {
               // A path/node can be removed by some previous handler.
               if (!nodePath.isRemoved()) {
-                //console.error(`Calling post with ${JSON.stringify(nodePath)}`);
                 const handlerResult = handlerFunc_post(nodePath);
                 // Explicitly stop traversal.
                 if (handlerResult === false) {
