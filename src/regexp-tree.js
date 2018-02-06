@@ -60,7 +60,7 @@ const regexpTree = {
    * @param Object ast
    * @param Object | Array<Object> handlers
    *
-   * A `handler` is an object containing handler function for needed
+   * Each `handler` is an object containing handler function for needed
    * node types. Example:
    *
    *   regexpTree.traverse(ast, {
@@ -68,6 +68,9 @@ const regexpTree = {
    *       ...
    *     },
    *   });
+	 *
+	 * The value for a node type may also be an object with functions pre and post.
+	 * This enables more context-aware analyses, e.g. measuring star height.
    */
   traverse(ast, handlers, options) {
     return traverse.traverse(ast, handlers, options);

@@ -29,8 +29,6 @@ function astTraverse(root, options = {}) {
   const post = options.post;
   const skipProperty = options.skipProperty;
 
-  //console.log('astTraverse: options: ' + JSON.stringify(options));
-
   function visit(node, parent, prop, idx) {
     if (!node || typeof node.type !== 'string') {
       return;
@@ -108,12 +106,17 @@ module.exports = {
    *
    * @param Object ast - an AST node
    *
-   * @param Array<Object>|Object handlers:
+   * @param Object | Array<Object> handlers:
    *
    *   an object (or an array of objects)
-   *   containing handler function per node. In case of an array of
-   *   handlers, they are applied in order. A handler may return a
-   *   transformed node (or a different type).
+   *
+   *   Each such object contains a handler function per node.
+   *   In case of an array of handlers, they are applied in order.
+   *   A handler may return a transformed node (or a different type).
+   *
+   *   The per-node function may instead be an object with functions pre and post.
+   *   pre is called before visiting the node, post after.
+   *   If a handler is a function, it is treated as the pre function, with an empty post.
    *
    * @param Object options:
    *
@@ -126,9 +129,6 @@ module.exports = {
    *   nodes traversal should be used in rare cases, when no `NodePath`
    *   features are needed.
    *
-   *   `pre(nodePath)` - a hook called on node enter
-   *   `post`(nodePath) - a hook called on node exit
-   *
    * Special hooks:
    *
    *   - `shouldRun(ast)` - a predicate determining whether the handler
@@ -137,13 +137,13 @@ module.exports = {
    * NOTE: Multiple handlers are used as an optimization of applying all of
    * them in one AST traversal pass.
    */
-  traverse(ast, handlers, options = {asNodes: false, pre: false, post: false}) {
-    //console.log(`traverse: options ${JSON.stringify(options)}`);
+  traverse(ast, handlers, options = {asNodes: false}) {
+
     if (!Array.isArray(handlers)) {
       handlers = [handlers];
     }
 
-    // Filter out handlers by result of `shouldRun`, if the method presents.
+    // Filter out handlers by result of `shouldRun`, if the method is present.
     handlers = handlers.filter(handler => {
       if (typeof handler.shouldRun !== 'function') {
         return true;
@@ -181,11 +181,6 @@ module.exports = {
           );
         }
 
-        // User-supplied pre
-        if (typeof options.pre === 'function') {
-          options.pre(nodePath);
-        }
-
         for (const handler of handlers) {
           // "Catch-all" `*` handler.
           if (typeof handler['*'] === 'function') {
@@ -204,13 +199,26 @@ module.exports = {
           }
 
           // Per-node handler.
-          if (typeof handler[node.type] === 'function') {
+          let handlerFunc_pre = null;
+          if (handler[node.type] &&
+              typeof handler[node.type] === 'function') {
+            handlerFunc_pre = handler[node.type].bind(handler);
+          }
+          else if (handler[node.type] &&
+                   typeof handler[node.type] === 'object' &&
+                   typeof handler[node.type].pre === 'function') {
+            console.error(`Got a post func for ${node.type}`);
+            handlerFunc_pre = handler[node.type].pre.bind(handler);
+          }
+
+          if (handlerFunc_pre) {
             if (options.asNodes) {
-              handler[node.type](node, parent, prop, index);
+              handlerFunc_pre(node, parent, prop, index);
             } else {
               // A path/node can be removed by some previous handler.
               if (!nodePath.isRemoved()) {
-                const handlerResult = handler[node.type](nodePath);
+                //console.error(`Calling pre with ${JSON.stringify(nodePath)}`);
+                const handlerResult = handlerFunc_pre(nodePath);
                 // Explicitly stop traversal.
                 if (handlerResult === false) {
                   return false;
@@ -218,14 +226,14 @@ module.exports = {
               }
             }
           }
-        }
-      },
+        } // Loop over handlers
 
+      }, // pre func
+
+      /**
+       * Handler on node exit.
+       */
       post(node, parent, prop, index) {
-
-        if (typeof options.pre !== 'function')
-          return;
-
         let parentPath;
         let nodePath;
 
@@ -240,11 +248,33 @@ module.exports = {
           );
         }
 
-        // User-supplied post
-        if (typeof options.post === 'function') {
-          options.post(nodePath);
-        }
-      },
+        for (const handler of handlers) {
+          // Per-node handler.
+          let handlerFunc_post = null;
+          if (handler[node.type] &&
+              typeof handler[node.type] === 'object' &&
+              typeof handler[node.type].post === 'function') {
+            console.error(`Got a post func for ${node.type}`);
+            handlerFunc_post = handler[node.type].post;
+          }
+
+          if (handlerFunc_post) {
+            if (options.asNodes) {
+              handlerFunc_post(node, parent, prop, index);
+            } else {
+              // A path/node can be removed by some previous handler.
+              if (!nodePath.isRemoved()) {
+                //console.error(`Calling post with ${JSON.stringify(nodePath)}`);
+                const handlerResult = handlerFunc_post(nodePath);
+                // Explicitly stop traversal.
+                if (handlerResult === false) {
+                  return false;
+                }
+              }
+            }
+          }
+        } // Loop over handlers
+      }, // post func
 
       /**
        * Skip locations by default.
