@@ -28,7 +28,7 @@ You can get an overview of the tool in [this article](https://medium.com/@Dmitry
 - [Creating RegExp objects](#creating-regexp-objects)
 - [Executing regexes](#executing-regexes)
 - [Using interpreter API](#using-interpreter-api)
-  - [Printing NFA/DFA tables](#printing-nfa-dfa-tables)
+  - [Printing NFA/DFA tables](#printing-nfadfa-tables)
 - [AST nodes specification](#ast-nodes-specification)
 
 ### Installation
