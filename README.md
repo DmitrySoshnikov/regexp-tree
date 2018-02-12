@@ -28,6 +28,7 @@ You can get an overview of the tool in [this article](https://medium.com/@Dmitry
 - [Creating RegExp objects](#creating-regexp-objects)
 - [Executing regexes](#executing-regexes)
 - [Using interpreter API](#using-interpreter-api)
+  - [Printing NFA/DFA tables](#printing-nfa-dfa-tables)
 - [AST nodes specification](#ast-nodes-specification)
 
 ### Installation
@@ -114,44 +115,6 @@ Which produces an AST node corresponding to this regular expression:
   },
   flags: 'i',
 }
-```
-
-The `--table` option allows displaying NFA/DFA transition table:
-
-```
-./bin/regexp-tree -e '/ab/' --table all
-```
-
-Result:
-
-```
-> - starting
-✓ - accepting
-
-NFA transition table:
-
-┌─────┬───┬─────────┐
-│     │ a │ ε*      │
-├─────┼───┼─────────┤
-│ 1 > │   │ {1,2,4} │
-├─────┼───┼─────────┤
-│ 2   │ 3 │ 2       │
-├─────┼───┼─────────┤
-│ 3   │   │ {3,4,2} │
-├─────┼───┼─────────┤
-│ 4 ✓ │   │ {4,2}   │
-└─────┴───┴─────────┘
-
-
-DFA transition table:
-
-┌───────┬───┐
-│       │ a │
-├───────┼───┤
-│ 1 ✓ > │ 2 │
-├───────┼───┤
-│ 2 ✓   │ 2 │
-└───────┴───┘
 ```
 
 > NOTE: the format of a regexp is `/ Body / OptionalFlags`.
@@ -682,6 +645,75 @@ const reDFA = new DFA(re);
 console.log(reDFA.matches('ab')); // true
 console.log(reDFA.matches('')); // true
 console.log(reDFA.matches('c')); // true
+```
+
+#### Printing NFA/DFA tables
+
+The `--table` option allows displaying NFA/DFA transition tables. RegExp Tree also applies _DFA minimization_ (using _N-equivalence_ algorithm), and produces the minimal transition table as its final result.
+
+In the example below for the `/a|b|c/` regexp, we first obtain the NFA transition table, which is further converted to the original DFA transition table (down from the 10 non-deterministic states to 4 deterministic states), and eventually minimized to the final DFA table (from 4 to only 2 states).
+
+```
+./bin/regexp-tree -e '/a|b|c/' --table all
+```
+
+Result:
+
+```
+> - starting
+✓ - accepting
+
+NFA transition table:
+
+┌─────┬───┬───┬────┬─────────────┐
+│     │ a │ b │ c  │ ε*          │
+├─────┼───┼───┼────┼─────────────┤
+│ 1 > │   │   │    │ {1,2,3,7,9} │
+├─────┼───┼───┼────┼─────────────┤
+│ 2   │   │   │    │ {2,3,7}     │
+├─────┼───┼───┼────┼─────────────┤
+│ 3   │ 4 │   │    │ 3           │
+├─────┼───┼───┼────┼─────────────┤
+│ 4   │   │   │    │ {4,5,6}     │
+├─────┼───┼───┼────┼─────────────┤
+│ 5   │   │   │    │ {5,6}       │
+├─────┼───┼───┼────┼─────────────┤
+│ 6 ✓ │   │   │    │ 6           │
+├─────┼───┼───┼────┼─────────────┤
+│ 7   │   │ 8 │    │ 7           │
+├─────┼───┼───┼────┼─────────────┤
+│ 8   │   │   │    │ {8,5,6}     │
+├─────┼───┼───┼────┼─────────────┤
+│ 9   │   │   │ 10 │ 9           │
+├─────┼───┼───┼────┼─────────────┤
+│ 10  │   │   │    │ {10,6}      │
+└─────┴───┴───┴────┴─────────────┘
+
+
+DFA: Original transition table:
+
+┌─────┬───┬───┬───┐
+│     │ a │ b │ c │
+├─────┼───┼───┼───┤
+│ 1 > │ 4 │ 3 │ 2 │
+├─────┼───┼───┼───┤
+│ 2 ✓ │   │   │   │
+├─────┼───┼───┼───┤
+│ 3 ✓ │   │   │   │
+├─────┼───┼───┼───┤
+│ 4 ✓ │   │   │   │
+└─────┴───┴───┴───┘
+
+
+DFA: Minimized transition table:
+
+┌─────┬───┬───┬───┐
+│     │ a │ b │ c │
+├─────┼───┼───┼───┤
+│ 1 > │ 2 │ 2 │ 2 │
+├─────┼───┼───┼───┤
+│ 2 ✓ │   │   │   │
+└─────┴───┴───┴───┘
 ```
 
 ### AST nodes specification

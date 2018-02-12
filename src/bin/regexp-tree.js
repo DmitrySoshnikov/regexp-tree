@@ -111,7 +111,10 @@ function main() {
 
     if (shouldPrintDFA) {
       const dfa = fa.toDFA(expression);
-      dfa.printTransitionTable();
+      dfa.printTransitionTable('\nDFA: Original transition table:\n');
+
+      dfa.minimize();
+      dfa.printTransitionTable('\nDFA: Minimized transition table:\n');
     }
 
     return;

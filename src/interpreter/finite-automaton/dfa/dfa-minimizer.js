@@ -76,7 +76,7 @@ function minimize(dfa) {
         for (const handledState of Object.keys(handledStates)) {
           // This and some previously handled state are equivalent --
           // just append this state to the same set.
-          if (areEquivalent(state, handledState, alphabet)) {
+          if (areEquivalent(state, handledState, table, alphabet)) {
             handledStates[handledState].add(state);
             handledStates[state] = handledStates[handledState];
             continue restSets;
@@ -132,12 +132,16 @@ function minimize(dfa) {
   for (const [set, idx] of remaped.entries()) {
     minimizedTable[idx] = {};
     for (const symbol of alphabet) {
-      // All states in a set are equivalent, so take the first one
-      // to see where it goes on symbol.
-      const originalState = set.values().next().value;
       updateAcceptingStates(set, idx);
 
-      const originalTransition = table[originalState][symbol];
+      // Determine original transition for this symbol from the set.
+      let originalTransition;
+      for (const originalState of set) {
+        originalTransition = table[originalState][symbol];
+        if (originalTransition) {
+          break;
+        }
+      }
 
       if (originalTransition) {
         minimizedTable[idx][symbol] = remaped.get(
@@ -183,9 +187,9 @@ function sameRow(r1, r2) {
  * Checks whether two states are N-equivalent, i.e. whether they go
  * to the same set on a symbol.
  */
-function areEquivalent(s1, s2, alphabet) {
+function areEquivalent(s1, s2, table, alphabet) {
   for (const symbol of alphabet) {
-    if (!goToSameSet(s1, s2, symbol)) {
+    if (!goToSameSet(s1, s2, table, symbol)) {
       return false;
     }
   }
@@ -195,11 +199,22 @@ function areEquivalent(s1, s2, alphabet) {
 /**
  * Checks whether states go to the same set.
  */
-function goToSameSet(s1, s2, symbol) {
+function goToSameSet(s1, s2, table, symbol) {
   if (!currentTransitionMap[s1] || !currentTransitionMap[s2]) {
     return false;
   }
-  return currentTransitionMap[s1][symbol] === currentTransitionMap[s2][symbol];
+
+  const originalTransitionS1 = table[s1][symbol];
+  const originalTransitionS2 = table[s2][symbol];
+
+  // If no actual transition on this symbol, treat it as positive.
+  if (!originalTransitionS1 && !originalTransitionS2) {
+    return true;
+  }
+
+  // Otherwise, check if they are in the same sets.
+  return currentTransitionMap[s1].has(originalTransitionS1) &&
+    currentTransitionMap[s2].has(originalTransitionS2);
 }
 
 module.exports = {

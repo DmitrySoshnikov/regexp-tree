@@ -8,39 +8,86 @@
 const DFAMinimizer = require('../dfa-minimizer');
 const fa = require('../../index');
 
+function testMinimization({
+  regexp,
+  originalTable,
+  minimizedTable,
+  newAcceptingStates,
+}) {
+  const dfa = fa.toDFA(regexp);
+  expect(dfa.getTransitionTable()).toEqual(originalTable);
+
+  const minimized = DFAMinimizer.minimize(dfa);
+
+  expect(minimized.getTransitionTable()).toEqual(minimizedTable);
+  expect(minimized.getAcceptingStateNumbers()).toEqual(newAcceptingStates);
+}
+
 describe('dfa-minimizer', () => {
 
   it('a|b', () => {
-    const dfa = fa.toDFA(/a|b/);
-
-    expect(dfa.getTransitionTable()).toEqual({
-      1: {a: 3, b: 2},
-      2: {},
-      3: {},
+    testMinimization({
+      regexp: /a|b|c|d/,
+      originalTable: {
+        1: {a: 5, b: 4, c: 3, d: 2},
+        2: {},
+        3: {},
+        4: {},
+        5: {},
+      },
+      minimizedTable: {
+        1: {a: 2, b: 2, c: 2, d: 2},
+        2: {},
+      },
+      newAcceptingStates: new Set([2]),
     });
-
-    const minimized = DFAMinimizer.minimize(dfa);
-
-    expect(minimized.getTransitionTable()).toEqual({
-      1: {a: 2, b: 2},
-      2: {},
-    });
-
-    expect(minimized.getAcceptingStateNumbers()).toEqual(new Set([2]));
   });
 
   it('a*', () => {
-    const dfa = fa.toDFA(/a*/);
-
-    expect(dfa.getTransitionTable()).toEqual({
-      1: {a: 2},
-      2: {a: 2},
+    testMinimization({
+      regexp: /a*/,
+      originalTable: {
+        1: {a: 2},
+        2: {a: 2},
+      },
+      minimizedTable: {
+        1: {a: 1},
+      },
+      newAcceptingStates: new Set([1]),
     });
+  });
 
-    const minimized = DFAMinimizer.minimize(dfa);
+  it('aa*', () => {
+    testMinimization({
+      regexp: /aa*/,
+      originalTable: {
+        1: {a: 2},
+        2: {a: 3},
+        3: {a: 3},
+      },
+      minimizedTable: {
+        1: {a: 2},
+        2: {a: 2},
+      },
+      newAcceptingStates: new Set([2]),
+    });
+  });
 
-    expect(minimized.getTransitionTable()).toEqual({
-      1: {a: 1},
+  it('ab', () => {
+    testMinimization({
+      regexp: /ab/,
+      originalTable: {
+        1: {a: 3},
+        2: {},
+        3: {b: 2},
+      },
+      // Stays the same, already minimal.
+      minimizedTable: {
+        1: {a: 3},
+        2: {},
+        3: {b: 2},
+      },
+      newAcceptingStates: new Set([2]),
     });
   });
 
