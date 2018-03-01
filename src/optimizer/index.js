@@ -5,6 +5,8 @@
 
 'use strict';
 
+const clone = require('clone');
+const parser = require('../parser');
 const transform = require('../transform');
 const optimizationTransforms = require('./transforms');
 
@@ -30,13 +32,14 @@ module.exports = {
       ? transformsWhitelist
       : Object.keys(optimizationTransforms);
 
+    let result = new transform.TransformResult(parser.parse(regexp));
     let prevResult;
-    let result;
+    let ast;
+
     do {
-      if (result) {
-        prevResult = result.toString();
-        regexp = prevResult;
-      }
+      prevResult = result.toString();
+      ast = clone(result.getAST());
+
       transformToApply.forEach(transformName => {
 
         if (!optimizationTransforms.hasOwnProperty(transformName)) {
@@ -49,9 +52,13 @@ module.exports = {
 
         const transformer = optimizationTransforms[transformName];
 
-        result = transform.transform(regexp, transformer);
-        regexp = result.getAST();
+        let newResult = transform.transform(ast, transformer);
+        if (newResult.toString().length <= result.toString().length) {
+          result = newResult;
+        }
+        ast = clone(result.getAST());
       });
+
     } while (result.toString() !== prevResult);
 
     return result;

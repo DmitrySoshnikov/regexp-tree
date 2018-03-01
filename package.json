@@ -27,6 +27,7 @@
   "author": "Dmitry Soshnikov",
   "dependencies": {
     "cli-table2": "^0.2.0",
+    "clone": "^2.1.1",
     "colors": "^1.1.2",
     "yargs": "^10.0.3"
   },
