@@ -53,10 +53,15 @@ module.exports = {
         const transformer = optimizationTransforms[transformName];
 
         let newResult = transform.transform(ast, transformer);
-        if (newResult.toString().length <= result.toString().length) {
-          result = newResult;
+
+        if (newResult.toString() !== result.toString()) {
+          if (newResult.toString().length <= result.toString().length) {
+            result = newResult;
+          } else {
+            // Result has changed but is not shorter: restore ast to its previous state.
+            ast = clone(result.getAST());
+          }
         }
-        ast = clone(result.getAST());
       });
 
     } while (result.toString() !== prevResult);
