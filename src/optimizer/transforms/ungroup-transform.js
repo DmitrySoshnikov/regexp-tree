@@ -20,6 +20,8 @@ module.exports = {
       return;
     }
 
+    // Don't optimize /a(?:b|c)/ to /ab|c/
+    // but /(?:b|c)/ to /b|c/ is ok
     if (
       childPath.node.type === 'Disjunction' &&
       parent.type !== 'RegExp'
@@ -27,6 +29,9 @@ module.exports = {
       return;
     }
 
+    // Don't optimize /(?:ab)+/ to /ab+/
+    // but /(?:a)+/ to /a+/ is ok
+    // and /(?:[a-d])+/ to /[a-d]+/ is ok too
     if (
       parent.type === 'Repetition' &&
       childPath.node.type !== 'Char' &&
@@ -35,6 +40,24 @@ module.exports = {
       return;
     }
 
-    path.replace(childPath.node);
+    if (childPath.node.type === 'Alternative') {
+      const parentPath = path.getParent();
+      if (parentPath.node.type === 'Alternative') {
+
+        // /abc(?:def)ghi/ When (?:def) is ungrouped its content must be merged with parent alternative
+
+        parentPath.replace({
+          type: 'Alternative',
+          expressions: [
+            ...parent.expressions.slice(0, path.index),
+            ...childPath.node.expressions,
+            ...parent.expressions.slice(path.index + 1)
+          ]
+        });
+      }
+
+    } else {
+      path.replace(childPath.node);
+    }
   }
 };
