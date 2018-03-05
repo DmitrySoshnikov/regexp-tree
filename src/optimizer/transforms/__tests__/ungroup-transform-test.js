@@ -50,6 +50,20 @@ describe('ungroup', () => {
     expect(re.toString()).toBe('/[ab]+/');
   });
 
+  it('merges Group content of type Alternative with parent Alternative', () => {
+    const re = transform(/a(?:bc)d/, [
+      ungroup,
+    ]);
+    expect(re.toString()).toBe('/abcd/');
+    const ast = re.getAST();
+    expect(
+      ast.body.type === 'Alternative' &&
+      ast.body.expressions.every(function (expression) {
+        return expression.type === 'Char';
+      })
+    ).toBe(true);
+  });
+
   it('does not ungroup groups with quantifier otherwise', () => {
     const re = transform(/(?:ab)+/, [
       ungroup,
