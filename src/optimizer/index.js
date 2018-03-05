@@ -32,9 +32,17 @@ module.exports = {
       ? transformsWhitelist
       : Object.keys(optimizationTransforms);
 
-    let result = new transform.TransformResult(parser.parse(regexp));
+    let ast = regexp;
+    if (regexp instanceof RegExp) {
+      regexp = `${regexp}`;
+    }
+
+    if (typeof regexp === 'string') {
+      ast = parser.parse(regexp);
+    }
+
+    let result = new transform.TransformResult(ast);
     let prevResult;
-    let ast;
 
     do {
       prevResult = result.toString();
