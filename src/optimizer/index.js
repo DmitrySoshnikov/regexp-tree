@@ -5,7 +5,7 @@
 
 'use strict';
 
-const clone = require('clone');
+const clone = require('../utils/clone');
 const parser = require('../parser');
 const transform = require('../transform');
 const optimizationTransforms = require('./transforms');
