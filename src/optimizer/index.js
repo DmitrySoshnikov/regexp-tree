@@ -5,6 +5,8 @@
 
 'use strict';
 
+const clone = require('../utils/clone');
+const parser = require('../parser');
 const transform = require('../transform');
 const optimizationTransforms = require('./transforms');
 
@@ -30,13 +32,25 @@ module.exports = {
       ? transformsWhitelist
       : Object.keys(optimizationTransforms);
 
-    let prevResult;
-    let result;
+    let ast = regexp;
+    if (regexp instanceof RegExp) {
+      regexp = `${regexp}`;
+    }
+
+    if (typeof regexp === 'string') {
+      ast = parser.parse(regexp);
+    }
+
+    let result = new transform.TransformResult(ast);
+    let prevResultString;
+
     do {
-      if (result) {
-        prevResult = result.toString();
-        regexp = prevResult;
-      }
+      // Get a copy of the current state here so
+      // we can compare it with the state at the
+      // end of the loop.
+      prevResultString = result.toString();
+      ast = clone(result.getAST());
+
       transformToApply.forEach(transformName => {
 
         if (!optimizationTransforms.hasOwnProperty(transformName)) {
@@ -49,10 +63,24 @@ module.exports = {
 
         const transformer = optimizationTransforms[transformName];
 
-        result = transform.transform(regexp, transformer);
-        regexp = result.getAST();
+        // Don't override result just yet since we
+        // might want to rollback the transform
+        let newResult = transform.transform(ast, transformer);
+
+        if (newResult.toString() !== result.toString()) {
+          if (newResult.toString().length <= result.toString().length) {
+            result = newResult;
+          } else {
+            // Result has changed but is not shorter:
+            // restore ast to its previous state.
+            ast = clone(result.getAST());
+          }
+        }
       });
-    } while (result.toString() !== prevResult);
+
+      // Keep running the optimizer until it stops
+      // making any change to the regexp.
+    } while (result.toString() !== prevResultString);
 
     return result;
   },
