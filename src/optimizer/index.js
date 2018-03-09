@@ -42,10 +42,13 @@ module.exports = {
     }
 
     let result = new transform.TransformResult(ast);
-    let prevResult;
+    let prevResultString;
 
     do {
-      prevResult = result.toString();
+      // Get a copy of the current state here so
+      // we can compare it with the state at the
+      // end of the loop.
+      prevResultString = result.toString();
       ast = clone(result.getAST());
 
       transformToApply.forEach(transformName => {
@@ -60,19 +63,24 @@ module.exports = {
 
         const transformer = optimizationTransforms[transformName];
 
+        // Don't override result just yet since we
+        // might want to rollback the transform
         let newResult = transform.transform(ast, transformer);
 
         if (newResult.toString() !== result.toString()) {
           if (newResult.toString().length <= result.toString().length) {
             result = newResult;
           } else {
-            // Result has changed but is not shorter: restore ast to its previous state.
+            // Result has changed but is not shorter:
+            // restore ast to its previous state.
             ast = clone(result.getAST());
           }
         }
       });
 
-    } while (result.toString() !== prevResult);
+      // Keep running the optimizer until it stops
+      // making any change to the regexp.
+    } while (result.toString() !== prevResultString);
 
     return result;
   },
