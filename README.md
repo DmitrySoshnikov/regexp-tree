@@ -333,7 +333,7 @@ const re = regexpTree.transform('/[a-z]{1,}/i', {
 
     // {1,} -> +
     if (
-      node.type === 'Range' &&
+      node.kind === 'Range' &&
       node.from === 1 &&
       !node.to
     ) {
