@@ -73,7 +73,7 @@ describe('char-class-classranges-merge', () => {
     expect(re.toString()).toBe('/[\\S]/');
   });
 
-  it('merges chars in class ranges', () => {
+  it('merges \\w chars and char codes in class ranges', () => {
     let re = transform(/[fb-eg]/, [
       charClassClassrangesMerge,
     ]);
@@ -98,6 +98,13 @@ describe('char-class-classranges-merge', () => {
       charClassClassrangesMerge,
     ]);
     expect(re.toString()).toBe('/[\\ud83d\\ude80-\\ud83d\\ude88]/u');
+  });
+
+  it('does not merge non \\w chars into class ranges to keep readability', () => {
+    let re = transform(/[@A-E]/, [
+      charClassClassrangesMerge,
+    ]);
+    expect(re.toString()).toBe('/[@A-E]/');
   });
 
   it('merges ranges together', () => {
@@ -125,7 +132,7 @@ describe('char-class-classranges-merge', () => {
     expect(re.toString()).toBe('/[\\u{1F680}-\\ud83d\\ude9b]/u');
   });
 
-  it('combines sequential chars into class ranges', () => {
+  it('combines \\w sequential chars and char codes into class ranges', () => {
     let re = transform(/[facbdemlpqno]/, [
       charClassClassrangesMerge,
     ]);
@@ -152,7 +159,7 @@ describe('char-class-classranges-merge', () => {
     expect(re.toString()).toBe('/[\\ud83d\\ude88-\\ud83d\\ude8a]/u');
   });
 
-  it('does not combine sequential chars that are nor in \\w nor number-coded', () => {
+  it('does not combine sequential chars that are nor \\w chars nor char codes', () => {
     const re = transform(/[<=>?]/, [
       charClassClassrangesMerge,
     ]);
