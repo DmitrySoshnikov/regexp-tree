@@ -30,6 +30,7 @@ You can get an overview of the tool in [this article](https://medium.com/@Dmitry
 - [Using interpreter API](#using-interpreter-api)
   - [Printing NFA/DFA tables](#printing-nfadfa-tables)
 - [AST nodes specification](#ast-nodes-specification)
+- [Examples](#examples)
 
 ### Installation
 
@@ -1959,3 +1960,8 @@ A node:
   ]
 }
 ```
+
+### Examples
+
+The `examples/` directory contains example uses of regexp-tree.
+See the [examples README](https://github.com/DmitrySoshnikov/regexp-tree/blob/master/examples/README.md) for more details.
