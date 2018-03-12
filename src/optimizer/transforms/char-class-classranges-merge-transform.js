@@ -252,8 +252,8 @@ function combinesWithPrecedingClassRange(expression, classRange) {
       return true;
 
     } else if (
-      expression.type === 'Char' &&
-      !isNaN(expression.codePoint) &&
+      // We only want \w chars or char codes to keep readability
+      isMetaWCharOrCode(expression) &&
       classRange.to.codePoint === expression.codePoint - 1
     ) {
       // [a-de] -> [a-e]
@@ -291,8 +291,8 @@ function combinesWithFollowingClassRange(expression, classRange) {
     // there is only one case to handle
     // [ab-e] -> [a-e]
     if (
-      expression.type === 'Char' &&
-      !isNaN(expression.codePoint) &&
+      // We only want \w chars or char codes to keep readability
+      isMetaWCharOrCode(expression) &&
       classRange.from.codePoint === expression.codePoint + 1
     ) {
       classRange.from = expression;
@@ -325,6 +325,7 @@ function fitsInClassRange(expression, classRange) {
  * @returns {number} - Number of characters combined with expression
  */
 function charCombinesWithPrecedingChars(expression, index, expressions) {
+  // We only want \w chars or char codes to keep readability
   if (!isMetaWCharOrCode(expression)) {
     return 0;
   }
