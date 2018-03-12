@@ -446,6 +446,8 @@ Result:
 Optimized: /\w+e+/
 ```
 
+See the [optimizer README](https://github.com/DmitrySoshnikov/regexp-tree/tree/master/src/optimizer) for more details.
+
 #### Optimizer ESLint plugin
 
 The [optimizer](https://github.com/DmitrySoshnikov/regexp-tree/tree/master/src/optimizer) module is also available as an _ESLint plugin_, which can be installed at: [eslint-plugin-optimize-regex](https://www.npmjs.com/package/eslint-plugin-optimize-regex).
