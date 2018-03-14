@@ -28,9 +28,10 @@ module.exports = {
    *   /\w+e+/
    */
   optimize(regexp, transformsWhitelist = []) {
-    const transformToApply = transformsWhitelist.length > 0
-      ? transformsWhitelist
-      : Object.keys(optimizationTransforms);
+    const transformToApply =
+      transformsWhitelist.length > 0
+        ? transformsWhitelist
+        : Object.keys(optimizationTransforms);
 
     let ast = regexp;
     if (regexp instanceof RegExp) {
@@ -52,12 +53,11 @@ module.exports = {
       ast = clone(result.getAST());
 
       transformToApply.forEach(transformName => {
-
         if (!optimizationTransforms.hasOwnProperty(transformName)) {
           throw new Error(
             `Unknown optimization-transform: ${transformName}. ` +
-            `Available transforms are: ` +
-            Object.keys(optimizationTransforms).join(', ')
+              `Available transforms are: ` +
+              Object.keys(optimizationTransforms).join(', ')
           );
         }
 
@@ -70,9 +70,13 @@ module.exports = {
         if (newResult.toString() !== result.toString()) {
           if (newResult.toString().length <= result.toString().length) {
             result = newResult;
-          } else {
+          }
+
+          else {
             // Result has changed but is not shorter:
             // restore ast to its previous state.
+
+
             ast = clone(result.getAST());
           }
         }
