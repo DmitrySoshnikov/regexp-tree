@@ -11,7 +11,7 @@
     "watch": "node scripts/build.js --watch",
     "test": "jest",
     "prepublish": "npm run build && npm test",
-    "eslint": "eslint src/ && eslint bin/regexp-tree"
+    "eslint": "eslint src/ && eslint bin/regexp-tree && eslint examples/"
   },
   "bin": {
     "regexp-tree": "./bin/regexp-tree"
