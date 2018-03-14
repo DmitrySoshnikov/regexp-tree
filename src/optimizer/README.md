@@ -35,8 +35,8 @@ const inefficient = /[0-9]/;
 
 const optimized1 = optimizer.optimize(inefficient);
 const optimized2 = optimizer.optimize(inefficient, [
-	'charClassToMeta',       // [0-9] -> [\d]
-	'charClassToSingleChar', // [\d] -> \d
+  'charClassToMeta',       // [0-9] -> [\d]
+  'charClassToSingleChar', // [\d] -> \d
 ]);
 
 console.log(`${inefficient} -> ${optimized1} === ${optimized2}`);
