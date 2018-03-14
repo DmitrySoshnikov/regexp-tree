@@ -2,9 +2,7 @@
 
 # Prettier
 
-jsfiles=$(git diff --name-only --diff-filter=ACM "*.js" | tr '\n' ' ')
-
-echo $jsfiles
+jsfiles=$(git diff HEAD --name-only --diff-filter=ACM "*.js" | tr '\n' ' ')
 
 if [ ! -z "$jsfiles" ]
 then

@@ -70,12 +70,9 @@ module.exports = {
         if (newResult.toString() !== result.toString()) {
           if (newResult.toString().length <= result.toString().length) {
             result = newResult;
-          }
-
-          else {
+          } else {
             // Result has changed but is not shorter:
             // restore ast to its previous state.
-
 
             ast = clone(result.getAST());
           }
