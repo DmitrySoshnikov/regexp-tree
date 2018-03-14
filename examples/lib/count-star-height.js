@@ -5,8 +5,8 @@
  * Star height is a heuristic for REDOS (exponential blow-up).
  */
 
-const createRegExp = require('./create-regexp'),
-      regexpTree = require('../../');
+const createRegExp = require('./create-regexp');
+const regexpTree = require('../../');
 
 /**
  * regex: String representation 'abc' or RegExp object /abc/
@@ -21,63 +21,61 @@ const createRegExp = require('./create-regexp'),
  * Returns the regex's star height: an integer >= 0.
  */
 function countStarHeight(regex, options) {
-	/* Get an ast. */
-	const re = createRegExp(regex);
-	console.error(`re: /${re.source}/`);
-	const ast = regexpTree.parse(re);
+  /* Get an ast. */
+  const re = createRegExp(regex);
+  const ast = regexpTree.parse(re);
 
-	/* Options. */
-	const default_countQuestionMarks = false;
-	const default_minimumRepetitionUpperLimit = 0;
-	if (!options) {
-		options = {};
-	}
-	// Apply defaults.
-	if (!options.countQuestionMarks) {
-		options.countQuestionMarks = default_countQuestionMarks;
-	}
-	if (!options.minimumRepetitionUpperLimit) {
-		options.minimumRepetitionUpperLimit = default_minimumRepetitionUpperLimit;
-	}
-	console.error(`countQuestionMarks ${options.countQuestionMarks} minimumRepetitionUpperLimit ${options.minimumRepetitionUpperLimit}`);
+  /* Options. */
+  const defaultCountQuestionMarks = false;
+  const defaultMinimumRepetitionUpperLimit = 0;
+  if (!options) {
+    options = {};
+  }
+  // Apply defaults.
+  if (!options.countQuestionMarks) {
+    options.countQuestionMarks = defaultCountQuestionMarks;
+  }
+  if (!options.minimumRepetitionUpperLimit) {
+    options.minimumRepetitionUpperLimit = defaultMinimumRepetitionUpperLimit;
+  }
 
-	/* Here we go! */
+  /* Here we go! */
 
-	let currentStarHeight = 0;
-	let maxObservedStarHeight = 0;
+  let currentStarHeight = 0;
+  let maxObservedStarHeight = 0;
 
-	regexpTree.traverse(ast, {
-		'Repetition': {
-			pre({node}) {
-				// Optional things to ignore
-				if (node.quantifier && node.quantifier.kind === '?' && !options.countQuestionMarks) {
-					return;
-				}
-				else if (node.quantifier.kind === 'Range' &&
-					       (!'to' in node.quantifier || node.quantifier.to < options.minimumRepetitionUpperLimit)) {
-					return;
-				}
+  regexpTree.traverse(ast, {
+    'Repetition': {
+      pre({node}) {
+        // Optional things to ignore
+        if (node.quantifier && node.quantifier.kind === '?' && !options.countQuestionMarks) {
+          return;
+        } else if (node.quantifier.kind === 'Range' &&
+                   (!('to' in node.quantifier) || node.quantifier.to < options.minimumRepetitionUpperLimit))
+        {
+          return;
+        }
 
-				currentStarHeight++;
-				if (maxObservedStarHeight < currentStarHeight) {
-					maxObservedStarHeight = currentStarHeight;
-				}
-			},
-			post({node}) {
-				if (node.quantifier && node.quantifier.kind === '?' && !options.countQuestionMarks) {
-					return;
-				}
-				else if (node.quantifier.kind === 'Range' &&
-					       (!'to' in node.quantifier || node.quantifier.to < options.minimumRepetitionUpperLimit)) {
-					return;
-				}
+        currentStarHeight++;
+        if (maxObservedStarHeight < currentStarHeight) {
+          maxObservedStarHeight = currentStarHeight;
+        }
+      },
+      post({node}) {
+        if (node.quantifier && node.quantifier.kind === '?' && !options.countQuestionMarks) {
+          return;
+        }
+        else if (node.quantifier.kind === 'Range' &&
+                 (!('to' in node.quantifier) || node.quantifier.to < options.minimumRepetitionUpperLimit)) {
+          return;
+        }
 
-				currentStarHeight--;
-			}
-		},
-	});
+        currentStarHeight--;
+      }
+    },
+  });
 
-	return maxObservedStarHeight;
+  return maxObservedStarHeight;
 }
 
 module.exports = countStarHeight;
