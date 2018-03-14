@@ -1,3 +1,7 @@
+/**
+ * The MIT License (MIT)
+ */
+
 const regexpTree = require('../../');
 
 /**

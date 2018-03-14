@@ -1,3 +1,7 @@
+/**
+ * The MIT License (MIT)
+ */
+
 /* Author: Jamie Davis <davisjam@vt.edu>
  * Description: Lib to count the star height of a regex.
  *              This is a correct and improved version of substack's safe-regex.
