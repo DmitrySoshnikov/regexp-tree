@@ -38,6 +38,6 @@
     "jest-cli": "^19.0.2",
     "prettier": "^1.11.1",
     "shelljs": "^0.7.8",
-    "syntax-cli": "^0.0.99"
+    "syntax-cli": "^0.1.1"
   }
 }
