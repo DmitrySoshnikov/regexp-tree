@@ -6,7 +6,6 @@
 .prettierignore
 .prettierrc
 .watchmanconfig
-README.md
 .gitignore
 .eslintrc
 .babelrc
