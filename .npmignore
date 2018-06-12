@@ -1,5 +1,12 @@
 /scripts/
 /src/
+.editorconfig
+.eslintignore
+.eslintrc.json
+.prettierignore
+.prettierrc
+.watchmanconfig
+README.md
 .gitignore
 .eslintrc
 .babelrc
