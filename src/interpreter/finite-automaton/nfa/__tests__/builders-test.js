@@ -8,9 +8,7 @@
 const NFA = require('../nfa');
 const NFAState = require('../nfa-state');
 
-const {
-  EPSILON,
-} = require('../../special-symbols');
+const {EPSILON} = require('../../special-symbols');
 
 const {
   alt,
@@ -18,14 +16,16 @@ const {
   e,
   or,
   rep,
+  repExplicit,
+  plusRep,
+  questionRep,
 } = require('../builders');
 
-function setIndex(set, index) {
+function getAtIndex(set, index) {
   return [...set][index];
 }
 
 describe('nfa-builders', () => {
-
   it('char', () => {
     const a = char('a');
 
@@ -53,8 +53,9 @@ describe('nfa-builders', () => {
     expect(epsilon.out.accepting).toBe(true);
 
     expect(epsilon.in.getTransitionsOnSymbol(EPSILON).size).toBe(1);
-    expect(epsilon.in.getTransitionsOnSymbol(EPSILON))
-      .toEqual(new Set([epsilon.out]));
+    expect(epsilon.in.getTransitionsOnSymbol(EPSILON)).toEqual(
+      new Set([epsilon.out])
+    );
 
     expect(epsilon.matches('')).toBe(true);
   });
@@ -79,26 +80,28 @@ describe('nfa-builders', () => {
     expect(c.out.accepting).toBe(false);
     expect(AorBorC.out.accepting).toBe(true);
 
-    const AorB = setIndex(AorBorC.in.getTransitionsOnSymbol(EPSILON), 0);
+    const AorB = getAtIndex(AorBorC.in.getTransitionsOnSymbol(EPSILON), 0);
 
-    const partA = setIndex(AorB.getTransitionsOnSymbol(EPSILON), 0);
-    const partB = setIndex(AorB.getTransitionsOnSymbol(EPSILON), 1);
+    const partA = getAtIndex(AorB.getTransitionsOnSymbol(EPSILON), 0);
+    const partB = getAtIndex(AorB.getTransitionsOnSymbol(EPSILON), 1);
 
     expect(partA).toBe(a.in);
     expect(partB).toBe(b.in);
 
-    const partC = setIndex(AorBorC.in.getTransitionsOnSymbol(EPSILON), 1);
+    const partC = getAtIndex(AorBorC.in.getTransitionsOnSymbol(EPSILON), 1);
     expect(partC).toBe(c.in);
 
-    const outFromB = setIndex(
-      setIndex(b.out.getTransitionsOnSymbol(EPSILON), 0)
-        .getTransitionsOnSymbol(EPSILON),
+    const outFromB = getAtIndex(
+      getAtIndex(
+        b.out.getTransitionsOnSymbol(EPSILON),
+        0
+      ).getTransitionsOnSymbol(EPSILON),
       0
     );
 
     expect(outFromB).toBe(AorBorC.out);
 
-    const outFromC = setIndex(c.out.getTransitionsOnSymbol(EPSILON), 0);
+    const outFromC = getAtIndex(c.out.getTransitionsOnSymbol(EPSILON), 0);
     expect(outFromC).toBe(AorBorC.out);
 
     expect(AorBorC.matches('a')).toBe(true);
@@ -128,30 +131,28 @@ describe('nfa-builders', () => {
     expect(ABC.in).toBe(a.in);
     expect(ABC.out).toBe(c.out);
 
-    expect(setIndex(a.out.getTransitionsOnSymbol(EPSILON), 0))
-      .toBe(b.in);
+    expect(getAtIndex(a.out.getTransitionsOnSymbol(EPSILON), 0)).toBe(b.in);
 
-    expect(setIndex(b.out.getTransitionsOnSymbol(EPSILON), 0))
-      .toBe(c.in);
+    expect(getAtIndex(b.out.getTransitionsOnSymbol(EPSILON), 0)).toBe(c.in);
 
     expect(ABC.matches('abc')).toBe(true);
   });
 
-  it('kleene-closure', () => {
+  it('kleene-closure-explicit', () => {
     const a = char('a');
-    const aRep = rep(a);
+    const aRep = repExplicit(a);
 
     expect(aRep).toBeInstanceOf(NFA);
 
-    const partA = setIndex(aRep.out.getTransitionsOnSymbol(EPSILON), 0);
+    const partA = getAtIndex(aRep.in.getTransitionsOnSymbol(EPSILON), 0);
     expect(partA).toBe(a.in);
 
-    const partEpsilon = setIndex(aRep.in.getTransitionsOnSymbol(EPSILON), 1);
+    const partEpsilon = getAtIndex(aRep.in.getTransitionsOnSymbol(EPSILON), 1);
 
     expect(partEpsilon.accepting).toBe(true);
     expect(partEpsilon).toBe(aRep.out);
 
-    const backToA = setIndex(aRep.out.getTransitionsOnSymbol(EPSILON), 0);
+    const backToA = getAtIndex(aRep.out.getTransitionsOnSymbol(EPSILON), 0);
     expect(backToA).toBe(a.in);
 
     expect(aRep.matches('')).toBe(true);
@@ -159,4 +160,57 @@ describe('nfa-builders', () => {
     expect(aRep.matches('aaa')).toBe(true);
   });
 
+  it('kleene-closure', () => {
+    const a = char('a');
+    const aRep = rep(a);
+
+    expect(aRep).toBe(a);
+
+    expect(aRep).toBeInstanceOf(NFA);
+
+    const partEpsilon = getAtIndex(aRep.in.getTransitionsOnSymbol(EPSILON), 0);
+
+    expect(partEpsilon.accepting).toBe(true);
+    expect(partEpsilon).toBe(aRep.out);
+
+    const backToA = getAtIndex(aRep.out.getTransitionsOnSymbol(EPSILON), 0);
+    expect(backToA).toBe(a.in);
+
+    expect(aRep.matches('')).toBe(true);
+    expect(aRep.matches('a')).toBe(true);
+    expect(aRep.matches('aaa')).toBe(true);
+  });
+
+  it('plusRep', () => {
+    const a = char('a');
+    const aPlus = plusRep(a);
+
+    expect(aPlus).toBe(a);
+    expect(aPlus).toBeInstanceOf(NFA);
+
+    const backToA = getAtIndex(aPlus.out.getTransitionsOnSymbol(EPSILON), 0);
+    expect(backToA).toBe(a.in);
+
+    expect(aPlus.matches('')).toBe(false);
+    expect(aPlus.matches('a')).toBe(true);
+    expect(aPlus.matches('aaa')).toBe(true);
+  });
+
+  it('questionRep', () => {
+    const a = char('a');
+    const aQuestion = questionRep(a);
+
+    expect(aQuestion).toBe(a);
+    expect(aQuestion).toBeInstanceOf(NFA);
+
+    const partEpsilon = getAtIndex(
+      aQuestion.in.getTransitionsOnSymbol(EPSILON),
+      0
+    );
+    expect(partEpsilon).toBe(a.out);
+
+    expect(aQuestion.matches('')).toBe(true);
+    expect(aQuestion.matches('a')).toBe(true);
+    expect(aQuestion.matches('aa')).toBe(false);
+  });
 });

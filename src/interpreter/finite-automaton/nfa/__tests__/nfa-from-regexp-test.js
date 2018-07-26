@@ -9,7 +9,6 @@ const nfaFromRegExp = require('../nfa-from-regexp');
 const NFA = require('../nfa');
 
 describe('nfa-from-regexp', () => {
-
   it('char', () => {
     const a = nfaFromRegExp.build(/a/);
 
@@ -56,7 +55,7 @@ describe('nfa-from-regexp', () => {
     expect(aRep.matches('b')).toBe(false);
   });
 
-  it('desugar a+', () => {
+  it('a+', () => {
     const aRep = nfaFromRegExp.build(/a+/);
 
     expect(aRep).toBeInstanceOf(NFA);
@@ -70,5 +69,4 @@ describe('nfa-from-regexp', () => {
     expect(aRep.matches('ab')).toBe(false);
     expect(aRep.matches('b')).toBe(false);
   });
-
 });

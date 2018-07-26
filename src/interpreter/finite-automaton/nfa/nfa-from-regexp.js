@@ -7,15 +7,7 @@
 
 const parser = require('../../../parser');
 
-const transform = require('../../../transform');
-const desugaringTransforms = require('../transforms');
-
-const {
-  alt,
-  char,
-  or,
-  rep,
-} = require('./builders');
+const {alt, char, or, rep, plusRep, questionRep} = require('./builders');
 
 /**
  * Helper `gen` function calls node type handler.
@@ -50,13 +42,16 @@ const generator = {
   },
 
   Repetition(node) {
-    // Desugaring transforms should already convert
-    // `a+` to `aa*`, so handle only `*` here.
-    if (node.quantifier.kind !== '*') {
-      throw new Error(`NFA/DFA: Only * quantifier is supported yet.`);
+    switch (node.quantifier.kind) {
+      case '*':
+        return rep(gen(node.expression));
+      case '+':
+        return plusRep(gen(node.expression));
+      case '?':
+        return questionRep(gen(node.expression));
+      default:
+        throw new Error(`Unknown repeatition: ${node.quantifier.kind}.`);
     }
-
-    return rep(gen(node.expression));
   },
 
   Char(node) {
@@ -71,15 +66,6 @@ const generator = {
     return gen(node.expression);
   },
 };
-
-function desugar(ast) {
-  let result;
-  desugaringTransforms.forEach(transformer => {
-    result = transform.transform(ast, transformer);
-    ast = result.getAST();
-  });
-  return ast;
-}
 
 module.exports = {
   /**
@@ -98,6 +84,6 @@ module.exports = {
       });
     }
 
-    return gen(desugar(ast));
-  }
+    return gen(ast);
+  },
 };

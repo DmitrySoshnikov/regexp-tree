@@ -8,9 +8,7 @@
 const NFA = require('./nfa');
 const NFAState = require('./nfa-state');
 
-const {
-  EPSILON,
-} = require('../special-symbols');
+const {EPSILON} = require('../special-symbols');
 
 // -----------------------------------------------------------------------------
 // Char NFA fragment: `c`
@@ -28,10 +26,7 @@ function char(c) {
     accepting: true,
   });
 
-  return new NFA(
-    inState.addTransition(c, outState),
-    outState
-  );
+  return new NFA(inState.addTransition(c, outState), outState);
 }
 
 // -----------------------------------------------------------------------------
@@ -120,7 +115,7 @@ function or(first, ...fragments) {
  *
  * a*
  */
-function rep(fragment) {
+function repExplicit(fragment) {
   const inState = new NFAState();
   const outState = new NFAState({
     accepting: true,
@@ -137,10 +132,41 @@ function rep(fragment) {
   return new NFA(inState, outState);
 }
 
+/**
+ * Optimized Kleene-star: just adds ε-transitions from
+ * input to the output, and back.
+ */
+function rep(fragment) {
+  fragment.in.addTransition(EPSILON, fragment.out);
+  fragment.out.addTransition(EPSILON, fragment.in);
+  return fragment;
+}
+
+/**
+ * Optimized Plus: just adds ε-transitions from
+ * the output to the input.
+ */
+function plusRep(fragment) {
+  fragment.out.addTransition(EPSILON, fragment.in);
+  return fragment;
+}
+
+/**
+ * Optimized ? repetition: just adds ε-transitions from
+ * the input to the output.
+ */
+function questionRep(fragment) {
+  fragment.in.addTransition(EPSILON, fragment.out);
+  return fragment;
+}
+
 module.exports = {
   alt,
   char,
   e,
   or,
   rep,
+  repExplicit,
+  plusRep,
+  questionRep,
 };
