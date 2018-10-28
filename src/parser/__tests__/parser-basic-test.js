@@ -441,6 +441,57 @@ describe('basic', () => {
       },
       flags: ''
     });
+
+    expect(re('/(((a)b)c)/')).toEqual({
+      type: 'RegExp',
+      body: {
+        type: 'Group',
+        capturing: true,
+        number: 1,
+        expression: {
+          type: 'Alternative',
+          expressions: [
+            {
+              type: 'Group',
+              capturing: true,
+              number: 2,
+              expression: {
+                type: 'Alternative',
+                expressions: [
+                  {
+                    type: 'Group',
+                    capturing: true,
+                    number: 3,
+                    expression: {
+                      type: 'Char',
+                      value: 'a',
+                      kind: 'simple',
+                      symbol: 'a',
+                      codePoint: 97
+                    }
+                  },
+                  {
+                    type: 'Char',
+                    value: 'b',
+                    kind: 'simple',
+                    symbol: 'b',
+                    codePoint: 98
+                  }
+                ]
+              }
+            },
+            {
+              type: 'Char',
+              value: 'c',
+              kind: 'simple',
+              symbol: 'c',
+              codePoint: 99
+            }
+          ]
+        }
+      },
+      flags: ''
+    });
   });
 
   it('empty group', () => {
