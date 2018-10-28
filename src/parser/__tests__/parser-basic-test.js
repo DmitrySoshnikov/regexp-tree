@@ -381,7 +381,7 @@ describe('basic', () => {
     );
   });
 
-  it.only('named unicode name', () => {
+  it('named unicode name', () => {
     expect(() => parser.parse('/(?<\\u{41}\\u0042>)/')).toThrowError(
       new SyntaxError(
         `invalid group Unicode name "\\u{41}\\u0042", use \`u\` flag.`
@@ -969,7 +969,7 @@ describe('basic', () => {
     expect(backspace.kind).toBe('meta');
   });
 
-  it('unicode', () => {
+  it.skip('unicode', () => {
     expect(re(/\u003B/).body).toEqual({
       type: 'Char',
       value: '\\u003B',
