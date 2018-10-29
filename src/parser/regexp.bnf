@@ -196,11 +196,23 @@ let postParsingPasses = [];
 
 let groupRenumberingPass = PostParsingPass(function renumber() {
 	let nextGroupNumber = 1;
+
+  // Renumber capturing groups.
+  // Validate numeric backreferences.
+  // Build a dictionary to update named backreferences.
+  let namedGroups = {};
 	groupRenumberingPass.nodes.forEach((node) => {
+    console.error(`groupRenumberingPass: nextGroupNumber ${nextGroupNumber} node ${JSON.stringify(node)}`);
     // Capturing group: assign the next number.
 		if (node.type === 'Group' && node.capturing) {
+      console.error(`  assigning number ${nextGroupNumber}`);
 			node.number = nextGroupNumber;
 			nextGroupNumber++;
+
+      if (node.name) {
+        console.error(`  named node ${node.name} -> ${node.number}`);
+        namedGroups[node.name] = node;
+      }
 		}
     // Backreference: keep if we've seen the group number, or convert to Char.
     else if (node.type === 'Backreference') {
@@ -208,9 +220,20 @@ let groupRenumberingPass = PostParsingPass(function renumber() {
         if (nextGroupNumber <= node.number) {
           // Reference to a not-yet-seen group.
           // Convert to a Char.
-          node = Char(text, 'decimal', textLoc);
+          node = Char(node.text, 'decimal', node.textLoc);
+        }
+        else {
+          delete node._text;
+          delete node._textLoc;
         }
       }
+      else if (node.kind === 'name') {
+        console.error(`  Getting number for named node ${node.name}`);
+        node.number = namedGroups[node.reference].number;
+      }
+    }
+    else {
+      console.error(`Error, how did I get here?`);
     }
 	});
 });
@@ -230,7 +253,10 @@ let parsingString = '';
 
 yyparse.onParseBegin = (string, lexer) => {
   parsingString = string;
+  // Reset the named groups we've seen.
   namedGroups = {};
+  // Reset the parsing pass nodes.
+  groupRenumberingPass.nodes = [];
 
   const lastSlash = string.lastIndexOf('/');
   const flags = string.slice(lastSlash);
@@ -394,6 +420,8 @@ function PreliminaryGroupRef(text, textLoc) {
     type: 'Backreference',
     kind: 'number',
     number: reference,
+    _text: text,
+    _textLoc: textLoc,
     reference,
   }, textLoc);
 
@@ -579,12 +607,14 @@ RegExp
       }, loc(@1, @4 || @3))
 
       // Apply PostParsingPass's.
+      console.error(`Before any postParsingPasses:\nregex ${JSON.stringify($$, null, 2)}`);
       let i = 0;
       postParsingPasses.forEach((ppp) => {
         console.log(`Applying ppp ${i}`);
         i++;
         ppp.cb();
       });
+      console.error(`After all postParsingPasses:\nregex ${JSON.stringify($$, null, 2)}`);
     }
   ;
 
@@ -846,10 +876,11 @@ CapturingGroup
         type: 'Group',
         capturing: true,
         name: $1,
-        number: -1
+        number: -1,
         expression: $2,
       }, @$)
-      groupRenumberingPass.nodes.append($$);
+      console.error(`Got named capture group: ${$$.name}`);
+      groupRenumberingPass.nodes.push($$);
     }
 
   | L_PAREN Disjunction R_PAREN
@@ -860,7 +891,8 @@ CapturingGroup
         number: -1,
         expression: $2,
       }, @$);
-      groupRenumberingPass.nodes.append($$);
+      console.error(`Got normal capture group`);
+      groupRenumberingPass.nodes.push($$);
     }
   ;
 

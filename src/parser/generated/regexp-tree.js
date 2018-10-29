@@ -74,6 +74,16 @@ const productions = [[-1,1,(_1,_1loc) => { __loc = yyloc(_1loc, _1loc);__ = _1 }
         body: _2,
         flags: checkFlags(_4),
       }, loc(_1loc, _4loc || _3loc))
+
+      // Apply PostParsingPass's.
+      console.error(`Before any postParsingPasses:\nregex ${JSON.stringify(__, null, 2)}`);
+      let i = 0;
+      postParsingPasses.forEach((ppp) => {
+        console.log(`Applying ppp ${i}`);
+        i++;
+        ppp.cb();
+      });
+      console.error(`After all postParsingPasses:\nregex ${JSON.stringify(__, null, 2)}`);
      }],
 [1,1,(_1,_1loc) => { __loc = yyloc(_1loc, _1loc);__ = _1 }],
 [1,0,() => { __loc = null; __ = ''  }],
@@ -164,10 +174,10 @@ const productions = [[-1,1,(_1,_1loc) => { __loc = yyloc(_1loc, _1loc);__ = _1 }
 [10,1,(_1,_1loc) => { __loc = yyloc(_1loc, _1loc); __ = Char(_1, 'control', __loc)  }],
 [10,1,(_1,_1loc) => { __loc = yyloc(_1loc, _1loc); __ = Char(_1, 'hex', __loc)  }],
 [10,1,(_1,_1loc) => { __loc = yyloc(_1loc, _1loc); __ = Char(_1, 'oct', __loc)  }],
-[10,1,(_1,_1loc) => { __loc = yyloc(_1loc, _1loc); __ = GroupRefOrDecChar(_1, __loc)  }],
+[10,1,(_1,_1loc) => { __loc = yyloc(_1loc, _1loc); __ = PreliminaryGroupRef(_1, __loc)  }],
 [10,1,(_1,_1loc) => { __loc = yyloc(_1loc, _1loc); __ = Char(_1, 'meta', __loc)  }],
 [10,1,(_1,_1loc) => { __loc = yyloc(_1loc, _1loc); __ = Char(_1, 'meta', __loc)  }],
-[10,1,(_1,_1loc) => { __loc = yyloc(_1loc, _1loc); __ = NamedGroupRefOrChars(_1, _1loc)  }],
+[10,1,(_1,_1loc) => { __loc = yyloc(_1loc, _1loc); __ = PreliminaryNamedGroupRef(_1, _1loc)  }],
 [11,1,(_1,_1loc) => { __loc = yyloc(_1loc, _1loc);__ = _1 }],
 [11,0],
 [12,1,(_1,_1loc) => { __loc = yyloc(_1loc, _1loc);__ = _1 }],
@@ -231,25 +241,28 @@ const productions = [[-1,1,(_1,_1loc) => { __loc = yyloc(_1loc, _1loc);__ = _1 }
         throw new SyntaxError(`Duplicate of the named group "${_1}".`);
       }
 
-      capturingGroupsCount++;
-      namedGroups[_1] = capturingGroupsCount;
+      // Record that we've seen this name.
+      namedGroups[_1] = -1;
 
       __ = Node({
         type: 'Group',
         capturing: true,
         name: _1,
-        number: capturingGroupsCount,
+        number: -1,
         expression: _2,
       }, __loc)
+      console.error(`Got named capture group: ${__.name}`);
+      groupRenumberingPass.nodes.push(__);
      }],
 [15,3,(_1,_2,_3,_1loc,_2loc,_3loc) => { __loc = yyloc(_1loc, _3loc);
-      capturingGroupsCount++;
       __ = Node({
         type: 'Group',
         capturing: true,
-        number: capturingGroupsCount,
+        number: -1,
         expression: _2,
-      }, __loc)
+      }, __loc);
+      console.error(`Got normal capture group`);
+      groupRenumberingPass.nodes.push(__);
      }],
 [16,3,(_1,_2,_3,_1loc,_2loc,_3loc) => { __loc = yyloc(_1loc, _3loc);
       __ = Node({
@@ -827,12 +840,79 @@ const yyparse = {
 };
 
 /**
- * Tracks capturing groups.
+ * The parsing pass resolves nodes in depth-first order.
+ * Depth-first parsing introduces difficulties that must be
+ * resolved in a subsequent pass.
+ * - Create a new PostParsingPass for each such pass.
+ * - Store the appropriate nodes in each PPP during parsing.
  */
-let capturingGroupsCount = 0;
+
+function PostParsingPass(cb) {
+	return {
+		nodes: [],
+		cb: cb
+	};
+}
+// Passes will be applied in left-to-right list order.
+let postParsingPasses = [];
 
 /**
- * Tracks named groups.
+ * groupRenumberingPass:
+ *   1. Nested capturing groups would receive inverted numbers if
+ *      we assigned numbers during parsing.
+ *   2. For the same reason, at parse-time it is hard to tell whether
+ *      a backreference refers to an already-parsed group.
+ */
+
+let groupRenumberingPass = PostParsingPass(function renumber() {
+	let nextGroupNumber = 1;
+
+  // Renumber capturing groups.
+  // Validate numeric backreferences.
+  // Build a dictionary to update named backreferences.
+  let namedGroups = {};
+	groupRenumberingPass.nodes.forEach((node) => {
+    console.error(`groupRenumberingPass: nextGroupNumber ${nextGroupNumber} node ${JSON.stringify(node)}`);
+    // Capturing group: assign the next number.
+		if (node.type === 'Group' && node.capturing) {
+      console.error(`  assigning number ${nextGroupNumber}`);
+			node.number = nextGroupNumber;
+			nextGroupNumber++;
+
+      if (node.name) {
+        console.error(`  named node ${node.name} -> ${node.number}`);
+        namedGroups[node.name] = node;
+      }
+		}
+    // Backreference: keep if we've seen the group number, or convert to Char.
+    else if (node.type === 'Backreference') {
+      if (node.kind === 'number') {
+        if (nextGroupNumber <= node.number) {
+          // Reference to a not-yet-seen group.
+          // Convert to a Char.
+          node = Char(node.text, 'decimal', node.textLoc);
+        }
+        else {
+          delete node._text;
+          delete node._textLoc;
+        }
+      }
+      else if (node.kind === 'name') {
+        console.error(`  Getting number for named node ${node.name}`);
+        node.number = namedGroups[node.reference].number;
+      }
+    }
+    else {
+      console.error(`Error, how did I get here?`);
+    }
+	});
+});
+postParsingPasses.push(groupRenumberingPass);
+
+/**
+ * Dictionary of names of named groups seen so far.
+ * Tracking this lets us identify references to the
+ * already-seen named groups in PreliminaryNamedGroupRef().
  */
 let namedGroups = {};
 
@@ -843,8 +923,10 @@ let parsingString = '';
 
 yyparse.onParseBegin = (string, lexer) => {
   parsingString = string;
-  capturingGroupsCount = 0;
+  // Reset the named groups we've seen.
   namedGroups = {};
+  // Reset the parsing pass nodes.
+  groupRenumberingPass.nodes = [];
 
   const lastSlash = string.lastIndexOf('/');
   const flags = string.slice(lastSlash);
@@ -998,22 +1080,26 @@ function checkFlags(flags) {
 }
 
 /**
- * Parses patterns like \1, \2, etc. either as a backreference
- * to a group, or a deciaml char code.
+ * Parses patterns like \1, \2, etc.
+ * In the parsing pass we interpret them as a group ref.
  */
-function GroupRefOrDecChar(text, textLoc) {
+function PreliminaryGroupRef(text, textLoc) {
   const reference = Number(text.slice(1));
 
-  if (reference > 0 && reference <= capturingGroupsCount) {
-    return Node({
-      type: 'Backreference',
-      kind: 'number',
-      number: reference,
-      reference,
-    }, textLoc);
-  }
+  const node = Node({
+    type: 'Backreference',
+    kind: 'number',
+    number: reference,
+    _text: text,
+    _textLoc: textLoc,
+    reference,
+  }, textLoc);
 
-  return Char(text, 'decimal', textLoc);
+  // In the renumbering pass we may decide this should be
+  // converted to a decimal char code.
+  groupRenumberingPass.nodes.push(node);
+
+  return node;
 }
 
 /**
@@ -1035,23 +1121,28 @@ function validateUnicodeGroupName(name, state) {
 }
 
 /**
- * Extracts from `\k<foo>` pattern either a backreference
- * to a named capturing group (if it presents), or parses it
- * as a list of char: `\k`, `<`, `f`, etc.
+ * Extracts from `\k<foo>` pattern as a backreference
+ * to a named capturing group.
  */
-function NamedGroupRefOrChars(text, textLoc) {
+function PreliminaryNamedGroupRef(text, textLoc) {
   const groupName = text.slice(3, -1);
 
   if (namedGroups.hasOwnProperty(groupName)) {
-    return Node({
+    const node = Node({
       type: 'Backreference',
       kind: 'name',
-      number: namedGroups[groupName],
+      number: -1,
       reference: groupName,
     }, textLoc);
+
+    // The assigned number may be incorrect.
+    groupRenumberingPass.nodes.push(node);
+
+    return node;
   }
 
-  // Else `\k<foo>` should be parsed as a list of `Char`s.
+  // If we have not yet seen this named group, then
+  // `\k<foo>` should be parsed as a list of `Char`s.
   // This is really a 0.01% edge case, but we should handle it.
 
   let startOffset = null;
