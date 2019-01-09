@@ -1,4 +1,17 @@
-declare namespace Node {
+declare module 'regexp-tree/ast' {
+  export type AstClass =
+    | 'Char'
+    | 'ClassRange'
+    | 'CharacterClass'
+    | 'Alternative'
+    | 'Disjunction'
+    | 'Group'
+    | 'Backreference'
+    | 'Repetition'
+    | 'Quantifier'
+    | 'Assertion'
+    | 'RegExp';
+
   interface Base<T> {
     type: T;
     loc?: {
@@ -8,97 +21,97 @@ declare namespace Node {
     };
   }
 
-  interface SimpleChar extends Base<'Char'> {
+  export interface SimpleChar extends Base<'Char'> {
     value: string;
     kind: 'simple';
     escaped?: true;
   }
 
-  interface SpecialChar extends Base<'Char'> {
+  export interface SpecialChar extends Base<'Char'> {
     value: string;
     kind: 'meta' | 'control' | 'hex' | 'decimal' | 'oct' | 'unicode';
   }
 
-  type Char = SimpleChar | SpecialChar;
+  export type Char = SimpleChar | SpecialChar;
 
-  interface ClassRange extends Base<'ClassRange'> {
+  export interface ClassRange extends Base<'ClassRange'> {
     from: Char;
     to: Char;
   }
 
-  interface CharacterClass extends Base<'CharacterClass'> {
+  export interface CharacterClass extends Base<'CharacterClass'> {
     negative?: true;
     expressions: (Char | ClassRange)[];
   }
 
-  interface Alternative extends Base<'Alternative'> {
+  export interface Alternative extends Base<'Alternative'> {
     expressions: Expression[];
   }
 
-  interface Disjunction extends Base<'Disjunction'> {
+  export interface Disjunction extends Base<'Disjunction'> {
     expressions: (Expression | null)[];
   }
 
-  interface CapturingGroup extends Base<'Group'> {
+  export interface CapturingGroup extends Base<'Group'> {
     capturing: true;
     number: number;
     name?: string;
     expression: Expression | null;
   }
 
-  interface NoncapturingGroup extends Base<'Group'> {
+  export interface NoncapturingGroup extends Base<'Group'> {
     capturing: false;
     expression: Expression | null;
   }
 
-  type Group = CapturingGroup | NoncapturingGroup;
+  export type Group = CapturingGroup | NoncapturingGroup;
 
-  interface NumericBackreference extends Base<'Backreference'> {
+  export interface NumericBackreference extends Base<'Backreference'> {
     kind: 'number';
     number: number;
     reference: number;
   }
 
-  interface NamedBackreference extends Base<'Backreference'> {
+  export interface NamedBackreference extends Base<'Backreference'> {
     kind: 'name';
     number: number;
     reference: string;
   }
 
-  type Backreference = NumericBackreference | NamedBackreference;
+  export type Backreference = NumericBackreference | NamedBackreference;
 
-  interface Repetition extends Base<'Repetition'> {
+  export interface Repetition extends Base<'Repetition'> {
     expression: Expression;
     quantifier: Quantifier;
   }
 
-  interface SimpleQuantifier extends Base<'Quantifier'> {
-    kind: '+' | '*';
+  export interface SimpleQuantifier extends Base<'Quantifier'> {
+    kind: '+' | '*' | '?';
     greedy: boolean;
   }
 
-  interface RangeQuantifier extends Base<'Quantifier'> {
+  export interface RangeQuantifier extends Base<'Quantifier'> {
     kind: 'Range';
     from: number;
-    to: number;
+    to?: number;
     greedy: boolean;
   }
 
-  type Quantifier = SimpleQuantifier | RangeQuantifier;
+  export type Quantifier = SimpleQuantifier | RangeQuantifier;
 
-  interface SimpleAssertion extends Base<'Assertion'> {
+  export interface SimpleAssertion extends Base<'Assertion'> {
     kind: '^' | '$' | '\\b' | '\\B';
   }
 
-  interface LookaroundAssertion extends Base<'Assertion'> {
+  export interface LookaroundAssertion extends Base<'Assertion'> {
     kind: 'Lookahead' | 'Lookbehind';
     negative?: true;
     assertion: Expression | null;
   }
 
-  type Assertion = SimpleAssertion | LookaroundAssertion;
+  export type Assertion = SimpleAssertion | LookaroundAssertion;
 
-  type Expression =
+  export type Expression =
     | Char
     | CharacterClass
     | Alternative
@@ -108,14 +121,21 @@ declare namespace Node {
     | Repetition
     | Assertion;
 
-  interface RegExp extends Base<'RegExp'> {
+  export interface AstRegExp extends Base<'RegExp'> {
     body: Expression | null;
     flags: string;
   }
 }
 
-interface ParserOptions {
-  captureLocations?: boolean;
-}
+declare module 'regexp-tree' {
+  import { AstRegExp } from 'regexp-tree/ast'
+  interface ParserOptions {
+    captureLocations?: boolean;
+  }
 
-export function parse(s: string | RegExp, options?: ParserOptions): Node.RegExp;
+  export function parse(s: string | RegExp, options?: ParserOptions): AstRegExp;
+
+  export function generate(ast: AstRegExp): string;
+
+  export function toRegExp(regexp: string): RegExp;
+}
