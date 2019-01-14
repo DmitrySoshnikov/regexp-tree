@@ -1,4 +1,4 @@
-declare module 'regexp-tree/ast' {
+declare module 'regexp-tree_ast' {
   export type AstClass =
     | 'Char'
     | 'ClassRange'
@@ -128,7 +128,7 @@ declare module 'regexp-tree/ast' {
 }
 
 declare module 'regexp-tree' {
-  import { AstRegExp } from 'regexp-tree/ast'
+  import { AstRegExp } from 'regexp-tree_ast'
   interface ParserOptions {
     captureLocations?: boolean;
   }
