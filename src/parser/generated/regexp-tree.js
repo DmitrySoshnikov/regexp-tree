@@ -231,25 +231,27 @@ const productions = [[-1,1,(_1,_1loc) => { __loc = yyloc(_1loc, _1loc);__ = _1 }
         throw new SyntaxError(`Duplicate of the named group "${_1}".`);
       }
 
-      capturingGroupsCount++;
-      namedGroups[_1] = capturingGroupsCount;
+      namedGroups[_1] = currentCapturingGroup;
 
       __ = Node({
         type: 'Group',
         capturing: true,
         name: _1,
-        number: capturingGroupsCount,
+        number: currentCapturingGroup,
         expression: _2,
-      }, __loc)
+      }, __loc);
+
+      updateCapturingGroupTracking();
      }],
 [15,3,(_1,_2,_3,_1loc,_2loc,_3loc) => { __loc = yyloc(_1loc, _3loc);
-      capturingGroupsCount++;
       __ = Node({
         type: 'Group',
         capturing: true,
-        number: capturingGroupsCount,
+        number: currentCapturingGroup,
         expression: _2,
-      }, __loc)
+      }, __loc);
+
+     updateCapturingGroupTracking();
      }],
 [16,3,(_1,_2,_3,_1loc,_2loc,_3loc) => { __loc = yyloc(_1loc, _3loc);
       __ = Node({
@@ -466,11 +468,11 @@ tokenizer = {
   getNextToken() {
     // Something was queued, return it.
     if (this._tokensQueue.length > 0) {
-      return this._toToken(this._tokensQueue.shift());
+      return this.onToken(this._toToken(this._tokensQueue.shift()));
     }
 
     if (!this.hasMoreTokens()) {
-      return EOF_TOKEN;
+      return this.onToken(EOF_TOKEN);
     }
 
     let string = this._string.slice(this._cursor);
@@ -508,7 +510,7 @@ tokenizer = {
           }
         }
 
-        return this._toToken(token, yytext);
+        return this.onToken(this._toToken(token, yytext));
       }
     }
 
@@ -616,6 +618,14 @@ tokenizer = {
     }
     return null;
   },
+
+  /**
+   * Allows analyzing, and transforming token. Default implementation
+   * just passes the token through.
+   */
+  onToken(token) {
+    return token;
+  },
 };
 
 /**
@@ -717,11 +727,13 @@ const yyparse = {
           };
         }
 
+        shiftedToken = this.onShift(token);
+
         stack.push(
-          {symbol: tokens[token.type], semanticValue: token.value, loc},
+          {symbol: tokens[shiftedToken.type], semanticValue: shiftedToken.value, loc},
           Number(entry.slice(1))
         );
-        shiftedToken = token;
+
         token = tokenizer.getNextToken();
       }
 
@@ -824,7 +836,30 @@ const yyparse = {
 
   onParseBegin(string, tokenizer, options) {},
   onParseEnd(parsed) {},
+
+  /**
+   * Allows analyzing, and transforming shifted token. Default implementation
+   * just passes the token through.
+   */
+  onShift(token) {
+    return token;
+  },
 };
+
+/**
+ * Lower group boundary:
+ *
+ *   /(((a)b)c)(d)(e)/
+ *
+ * The first paren in (((a)b)c) has lower bound 0, but when
+ * we reach the (d), it already 4.
+ */
+let capturingGroupsCurrentLower = 0;
+
+/**
+ * Group number to assign to a group.
+ */
+let currentCapturingGroup = 0;
 
 /**
  * Tracks capturing groups.
@@ -843,6 +878,8 @@ let parsingString = '';
 
 yyparse.onParseBegin = (string, lexer) => {
   parsingString = string;
+  capturingGroupsCurrentLower = 0;
+  currentCapturingGroup = 0;
   capturingGroupsCount = 0;
   namedGroups = {};
 
@@ -860,6 +897,28 @@ yyparse.onParseBegin = (string, lexer) => {
     }
   }
 };
+
+yyparse.onShift = token => {
+  if (token.type === 'L_PAREN' || token.type === 'NAMED_CAPTURE_GROUP') {
+    currentCapturingGroup++;
+    capturingGroupsCount++;
+  }
+  return token;
+};
+
+/**
+ * Updates the capturing groups counts.
+ */
+function updateCapturingGroupTracking() {
+  // Go up.
+  currentCapturingGroup--;
+
+  // We reached the top level, reset the current group:
+  if (currentCapturingGroup === capturingGroupsCurrentLower) {
+    currentCapturingGroup = capturingGroupsCount;
+    capturingGroupsCurrentLower = capturingGroupsCount;
+  }
+}
 
 /**
  * Extracts ranges from the range string.

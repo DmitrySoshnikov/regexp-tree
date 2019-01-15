@@ -170,6 +170,21 @@ GROUP_NAME              ([\w$]|\\'u'[0-9a-fA-F]{4}|\\'u{'[0-9a-fA-F]{1,}'}')+
 %{
 
 /**
+ * Lower group boundary:
+ *
+ *   /(((a)b)c)(d)(e)/
+ *
+ * The first paren in (((a)b)c) has lower bound 0, but when
+ * we reach the (d), it already 4.
+ */
+let capturingGroupsCurrentLower = 0;
+
+/**
+ * Group number to assign to a group.
+ */
+let currentCapturingGroup = 0;
+
+/**
  * Tracks capturing groups.
  */
 let capturingGroupsCount = 0;
@@ -186,6 +201,8 @@ let parsingString = '';
 
 yyparse.onParseBegin = (string, lexer) => {
   parsingString = string;
+  capturingGroupsCurrentLower = 0;
+  currentCapturingGroup = 0;
   capturingGroupsCount = 0;
   namedGroups = {};
 
@@ -203,6 +220,28 @@ yyparse.onParseBegin = (string, lexer) => {
     }
   }
 };
+
+yyparse.onShift = token => {
+  if (token.type === 'L_PAREN' || token.type === 'NAMED_CAPTURE_GROUP') {
+    currentCapturingGroup++;
+    capturingGroupsCount++;
+  }
+  return token;
+};
+
+/**
+ * Updates the capturing groups counts.
+ */
+function updateCapturingGroupTracking() {
+  // Go up.
+  currentCapturingGroup--;
+
+  // We reached the top level, reset the current group:
+  if (currentCapturingGroup === capturingGroupsCurrentLower) {
+    currentCapturingGroup = capturingGroupsCount;
+    capturingGroupsCurrentLower = capturingGroupsCount;
+  }
+}
 
 /**
  * Extracts ranges from the range string.
@@ -781,27 +820,29 @@ CapturingGroup
         throw new SyntaxError(`Duplicate of the named group "${$1}".`);
       }
 
-      capturingGroupsCount++;
-      namedGroups[$1] = capturingGroupsCount;
+      namedGroups[$1] = currentCapturingGroup;
 
       $$ = Node({
         type: 'Group',
         capturing: true,
         name: $1,
-        number: capturingGroupsCount,
+        number: currentCapturingGroup,
         expression: $2,
-      }, @$)
+      }, @$);
+
+      updateCapturingGroupTracking();
     }
 
   | L_PAREN Disjunction R_PAREN
     {
-      capturingGroupsCount++;
       $$ = Node({
         type: 'Group',
         capturing: true,
-        number: capturingGroupsCount,
+        number: currentCapturingGroup,
         expression: $2,
-      }, @$)
+      }, @$);
+
+     updateCapturingGroupTracking();
     }
   ;
 

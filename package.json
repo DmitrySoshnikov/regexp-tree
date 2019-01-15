@@ -1,6 +1,6 @@
 {
   "name": "regexp-tree",
-  "version": "0.0.86",
+  "version": "0.1.0",
   "license": "MIT",
   "description": "Regular Expressions parser in JavaScript",
   "repository": "DmitrySoshnikov/regexp-tree",
@@ -38,6 +38,6 @@
     "jest-cli": "^19.0.2",
     "prettier": "^1.11.1",
     "shelljs": "^0.7.8",
-    "syntax-cli": "^0.1.1"
+    "syntax-cli": "^0.1.11"
   }
 }

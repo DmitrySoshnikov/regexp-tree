@@ -6,9 +6,7 @@
 const parser = require('..');
 
 describe('extended', () => {
-
   it('x flag', () => {
-
     const re = `/
 
       # A regular expression for date.
@@ -36,7 +34,7 @@ describe('extended', () => {
                 kind: 'simple',
                 value: 'd',
                 symbol: 'd',
-                codePoint: 'd'.codePointAt(0)
+                codePoint: 'd'.codePointAt(0),
               },
               quantifier: {
                 type: 'Quantifier',
@@ -52,7 +50,7 @@ describe('extended', () => {
             kind: 'simple',
             value: '-',
             symbol: '-',
-            codePoint: '-'.codePointAt(0)
+            codePoint: '-'.codePointAt(0),
           },
           {
             type: 'Group',
@@ -66,7 +64,7 @@ describe('extended', () => {
                 kind: 'simple',
                 value: 'd',
                 symbol: 'd',
-                codePoint: 'd'.codePointAt(0)
+                codePoint: 'd'.codePointAt(0),
               },
               quantifier: {
                 type: 'Quantifier',
@@ -82,7 +80,7 @@ describe('extended', () => {
             kind: 'simple',
             value: '-',
             symbol: '-',
-            codePoint: '-'.codePointAt(0)
+            codePoint: '-'.codePointAt(0),
           },
           {
             type: 'Group',
@@ -96,7 +94,7 @@ describe('extended', () => {
                 type: 'Char',
                 value: 'd',
                 symbol: 'd',
-                codePoint: 'd'.codePointAt(0)
+                codePoint: 'd'.codePointAt(0),
               },
               quantifier: {
                 type: 'Quantifier',
@@ -106,10 +104,10 @@ describe('extended', () => {
                 to: 2,
               },
             },
-          }
+          },
         ],
       },
-      flags: 'x'
+      flags: 'x',
     });
   });
 
@@ -127,7 +125,7 @@ describe('extended', () => {
             symbol: ' ',
             kind: 'simple',
             escaped: true,
-            codePoint: ' '.codePointAt(0)
+            codePoint: ' '.codePointAt(0),
           },
           {
             type: 'Char',
@@ -135,11 +133,11 @@ describe('extended', () => {
             symbol: '#',
             kind: 'simple',
             escaped: true,
-            codePoint: '#'.codePointAt(0)
+            codePoint: '#'.codePointAt(0),
           },
         ],
       },
-      flags: 'x'
+      flags: 'x',
     });
   });
 
@@ -156,19 +154,189 @@ describe('extended', () => {
             value: ' ',
             symbol: ' ',
             kind: 'simple',
-            codePoint: ' '.codePointAt(0)
+            codePoint: ' '.codePointAt(0),
           },
           {
             type: 'Char',
             value: '#',
             symbol: '#',
             kind: 'simple',
-            codePoint: '#'.codePointAt(0)
+            codePoint: '#'.codePointAt(0),
           },
         ],
       },
-      flags: 'x'
+      flags: 'x',
     });
   });
 
+  it('group numbers', () => {
+    const re = /(((a)b)c)(d)(e)/;
+    expect(parser.parse(re)).toEqual({
+      type: 'RegExp',
+      body: {
+        type: 'Alternative',
+        expressions: [
+          {
+            type: 'Group',
+            capturing: true,
+            number: 1,
+            expression: {
+              type: 'Alternative',
+              expressions: [
+                {
+                  type: 'Group',
+                  capturing: true,
+                  number: 2,
+                  expression: {
+                    type: 'Alternative',
+                    expressions: [
+                      {
+                        type: 'Group',
+                        capturing: true,
+                        number: 3,
+                        expression: {
+                          type: 'Char',
+                          value: 'a',
+                          kind: 'simple',
+                          symbol: 'a',
+                          codePoint: 97,
+                        },
+                      },
+                      {
+                        type: 'Char',
+                        value: 'b',
+                        kind: 'simple',
+                        symbol: 'b',
+                        codePoint: 98,
+                      },
+                    ],
+                  },
+                },
+                {
+                  type: 'Char',
+                  value: 'c',
+                  kind: 'simple',
+                  symbol: 'c',
+                  codePoint: 99,
+                },
+              ],
+            },
+          },
+          {
+            type: 'Group',
+            capturing: true,
+            number: 4,
+            expression: {
+              type: 'Char',
+              value: 'd',
+              kind: 'simple',
+              symbol: 'd',
+              codePoint: 100,
+            },
+          },
+          {
+            type: 'Group',
+            capturing: true,
+            number: 5,
+            expression: {
+              type: 'Char',
+              value: 'e',
+              kind: 'simple',
+              symbol: 'e',
+              codePoint: 101,
+            },
+          },
+        ],
+      },
+      flags: '',
+    });
+  });
+
+  it('group numbers', () => {
+    const re = '/(?<c>(?<b>(?<a>a)b)c)(?<d>d)(?<e>e)/';
+    expect(parser.parse(re)).toEqual({
+      type: 'RegExp',
+      body: {
+        type: 'Alternative',
+        expressions: [
+          {
+            type: 'Group',
+            capturing: true,
+            name: 'c',
+            number: 1,
+            expression: {
+              type: 'Alternative',
+              expressions: [
+                {
+                  type: 'Group',
+                  capturing: true,
+                  name: 'b',
+                  number: 2,
+                  expression: {
+                    type: 'Alternative',
+                    expressions: [
+                      {
+                        type: 'Group',
+                        capturing: true,
+                        name: 'a',
+                        number: 3,
+                        expression: {
+                          type: 'Char',
+                          value: 'a',
+                          kind: 'simple',
+                          symbol: 'a',
+                          codePoint: 97,
+                        },
+                      },
+                      {
+                        type: 'Char',
+                        value: 'b',
+                        kind: 'simple',
+                        symbol: 'b',
+                        codePoint: 98,
+                      },
+                    ],
+                  },
+                },
+                {
+                  type: 'Char',
+                  value: 'c',
+                  kind: 'simple',
+                  symbol: 'c',
+                  codePoint: 99,
+                },
+              ],
+            },
+          },
+          {
+            type: 'Group',
+            capturing: true,
+            name: 'd',
+            number: 4,
+            expression: {
+              type: 'Char',
+              value: 'd',
+              kind: 'simple',
+              symbol: 'd',
+              codePoint: 100,
+            },
+          },
+          {
+            type: 'Group',
+            capturing: true,
+            name: 'e',
+            number: 5,
+            expression: {
+              type: 'Char',
+              value: 'e',
+              kind: 'simple',
+              symbol: 'e',
+              codePoint: 101,
+            },
+          },
+        ],
+      },
+      flags: '',
+    });
+  });
 });
