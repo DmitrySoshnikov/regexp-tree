@@ -37,8 +37,6 @@ The parser can be installed as an [npm module](https://www.npmjs.com/package/reg
 
 ```
 npm install -g regexp-tree
-
-regexp-tree --help
 ```
 
 You can also [try it online](https://astexplorer.net/#/gist/4ea2b52f0e546af6fb14f9b2f5671c1c/39b55944da3e5782396ffa1fea3ba68d126cd394) using _AST Explorer_.
@@ -60,22 +58,22 @@ git clone https://github.com/<your-github-account>/regexp-tree.git
 cd regexp-tree
 npm install
 npm run build
-
-./bin/regexp-tree --help
 ```
 
 > NOTE: JS code transpilation is used to support older versions of Node. For faster development cycle you can use `npm run watch` command, which continuously transpiles JS code.
 
 ### Usage as a CLI
 
+**Note:** the CLI is exposed as its own [regexp-tree-cli](https://www.npmjs.com/package/regexp-tree) module.
+
 Check the options available from CLI:
 
 ```
-regexp-tree --help
+regexp-tree-cli --help
 ```
 
 ```
-Usage: regexp-tree [options]
+Usage: regexp-tree-cli [options]
 
 Options:
    -e, --expression   A regular expression to be parsed
@@ -88,7 +86,7 @@ Options:
 To parse a regular expression, pass `-e` option:
 
 ```
-regexp-tree -e '/a|b/i'
+regexp-tree-cli -e '/a|b/i'
 ```
 
 Which produces an AST node corresponding to this regular expression:
@@ -154,7 +152,7 @@ regexpTree.parse('/\\n/');
 For source code transformation tools it might be useful also to capture _locations_ of the AST nodes. From the command line it's controlled via the `-l` option:
 
 ```
-regexp-tree -e '/ab/' -l
+regexp-tree-cli -e '/ab/' -l
 ```
 
 This attaches `loc` object to each AST node:
@@ -437,7 +435,7 @@ console.log(optimizedRe); // /\w+e+/
 From CLI the optimizer is available via `--optimize` (`-o`) option:
 
 ```
-regexp-tree -e '/[a-zA-Z_0-9][A-Z_\da-z]*\e{1,}/' -o
+regexp-tree-cli -e '/[a-zA-Z_0-9][A-Z_\da-z]*\e{1,}/' -o
 ```
 
 Result:
@@ -502,7 +500,7 @@ console.log(compatTranspiledRe); // /([\0-\uFFFF])\1/
 From CLI the compat-transpiler is available via `--compat` (`-c`) option:
 
 ```
-regexp-tree -e '/(?<all>.)\k<all>/s' -c
+regexp-tree-cli -e '/(?<all>.)\k<all>/s' -c
 ```
 
 Result:
@@ -656,7 +654,7 @@ The `--table` option allows displaying NFA/DFA transition tables. RegExp Tree al
 In the example below for the `/a|b|c/` regexp, we first obtain the NFA transition table, which is further converted to the original DFA transition table (down from the 10 non-deterministic states to 4 deterministic states), and eventually minimized to the final DFA table (from 4 to only 2 states).
 
 ```
-./bin/regexp-tree -e '/a|b|c/' --table all
+./bin/regexp-tree-cli -e '/a|b|c/' --table all
 ```
 
 Result:
