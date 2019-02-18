@@ -5,132 +5,20 @@
 
 'use strict';
 
-const colors = require('colors');
-const os = require('os');
-const regexpTree = require('../../index');
-
-function enforceUnique(v) {
-  return Array.isArray(v) ? v[v.length - 1] : v;
-}
-
-const options = require('yargs')
-  .usage('Usage: $0 [options]')
-  .options({
-    expression: {
-      alias: 'e',
-      describe: 'A regular expression to be parsed',
-      demandOption: true,
-      requiresArg: true,
-      coerce: enforceUnique,
-    },
-    loc: {
-      alias: 'l',
-      describe: 'Whether to capture AST node locations',
-    },
-    optimize: {
-      alias: 'o',
-      describe: 'Apply optimizer on the passed expression',
-    },
-    compat: {
-      alias: 'c',
-      describe: 'Apply compat-transpiler on the passed expression',
-    },
-    table: {
-      alias: 't',
-      describe: 'Print NFA/DFA transition tables (nfa/dfa/all)',
-      nargs: 1,
-      choices: ['nfa', 'dfa', 'all'],
-      coerce: enforceUnique,
-    }
-  })
-  .alias('help', 'h')
-  .alias('version', 'v')
-  .argv;
-
-function shouldStripQuotes(expression) {
-  return os.platform() === 'win32' && (
-    (expression[0] === `'` && expression[expression.length - 1] === `'`) ||
-    (expression[0] === '"' && expression[expression.length - 1] === '"')
-  );
-}
-
-function normalize(expression) {
-  if (!shouldStripQuotes(expression)) {
-    return expression;
-  }
-
-  // For Windows strip ' at the beginning and end.
-  return expression.slice(1, -1);
-}
-
 function main() {
-  const {
-    compat,
-    loc,
-    optimize,
-    table,
-  } = options;
+  console.info(`
+  =========================================================
+  * CLI commands are moved to the \x1b[1mregexp-tree-cli\x1b[0m package *
+  =========================================================
 
-  const expression = normalize(options.expression);
+  \x1b[1mInstallation:\x1b[0m
 
-  // ------------------------------------------------------
-  // Optimizer.
+    npm install -g regexp-tree-cli
 
-  if (optimize) {
-    const optimized = regexpTree.optimize(expression);
-    console.info('\n', colors.bold('Optimized:'), optimized.toString(), '\n');
-    return;
-  }
+  \x1b[1mUsage:\x1b[0m
 
-  // ------------------------------------------------------
-  // Compat-transpiler.
-
-  if (compat) {
-    const compatTranspiled = regexpTree.compatTranspile(expression);
-    console.info(
-      '\n', colors.bold('Compat:'),
-      compatTranspiled.toString(), '\n'
-    );
-    return;
-  }
-
-  // ------------------------------------------------------
-  // Transition table.
-  if (table) {
-    const {fa} = regexpTree;
-
-    const shouldPrintNFA = (table === 'nfa' || table === 'all');
-    const shouldPrintDFA = (table === 'dfa' || table === 'all');
-
-    console.info(`\n${colors.bold(colors.yellow('>'))} - starting`);
-    console.info(`${colors.bold(colors.green('✓'))} - accepting`);
-
-    if (shouldPrintNFA) {
-      fa.toNFA(expression).printTransitionTable();
-    }
-
-    if (shouldPrintDFA) {
-      const dfa = fa.toDFA(expression);
-      dfa.printTransitionTable('\nDFA: Original transition table:\n');
-
-      dfa.minimize();
-      dfa.printTransitionTable('\nDFA: Minimized transition table:\n');
-    }
-
-    return;
-  }
-
-  // ------------------------------------------------------
-  // Parsing.
-
-  const parseOptions = {
-    captureLocations: loc,
-  };
-
-  const parsed = regexpTree.parse(expression, parseOptions);
-
-  console.info(JSON.stringify(parsed, null, 2));
-
+    regexp-tree-cli --help
+  `);
 }
 
 module.exports = main;
