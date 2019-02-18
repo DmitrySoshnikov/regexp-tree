@@ -5,13 +5,7 @@
 
 'use strict';
 
-const TablePrinter = require('../table-printer');
-const colors = require('colors');
-
-const {
-  EPSILON,
-  EPSILON_CLOSURE,
-} = require('../special-symbols');
+const {EPSILON, EPSILON_CLOSURE} = require('../special-symbols');
 
 /**
  * NFA fragment.
@@ -46,9 +40,10 @@ class NFA {
       const table = this.getTransitionTable();
       for (const state in table) {
         const transitions = table[state];
-        for (const symbol in transitions) if (symbol !== EPSILON_CLOSURE) {
-          this._alphabet.add(symbol);
-        }
+        for (const symbol in transitions)
+          if (symbol !== EPSILON_CLOSURE) {
+            this._alphabet.add(symbol);
+          }
       }
     }
     return this._alphabet;
@@ -89,7 +84,7 @@ class NFA {
       const visited = new Set();
       const symbols = new Set();
 
-      const visitState = (state) => {
+      const visitState = state => {
         if (visited.has(state)) {
           return;
         }
@@ -121,59 +116,13 @@ class NFA {
       // Append epsilon-closure column.
       visited.forEach(state => {
         delete this._transitionTable[state.number][EPSILON];
-        this._transitionTable[state.number][EPSILON_CLOSURE] =
-          [...state.getEpsilonClosure()].map(s => s.number);
+        this._transitionTable[state.number][EPSILON_CLOSURE] = [
+          ...state.getEpsilonClosure(),
+        ].map(s => s.number);
       });
     }
 
     return this._transitionTable;
-  }
-
-  /**
-   * Prints transition table.
-   */
-  printTransitionTable() {
-    console.info(colors.bold(`\nNFA transition table:\n`));
-
-    const alphabet = [...this.getAlphabet(), EPSILON_CLOSURE];
-
-    const printer = new TablePrinter({
-      head: [''].concat(alphabet),
-    });
-
-    const table = this.getTransitionTable();
-    const acceptingStates = this.getAcceptingStateNumbers();
-
-    for (const stateNumber in table) {
-      const tableRow = table[stateNumber];
-
-      let stateLabel = acceptingStates.has(Number(stateNumber))
-        ? colors.bold(colors.green(`${stateNumber} ✓`))
-        : colors.blue(stateNumber);
-
-      if (stateNumber == 1) {
-        stateLabel += colors.yellow(' >');
-      }
-
-      const row = {[stateLabel]: []};
-
-      alphabet.forEach(symbol => {
-        let entry = '';
-
-        if (Array.isArray(tableRow[symbol])) {
-          entry = tableRow[symbol].length === 1
-            ? tableRow[symbol][0]
-            : `{${tableRow[symbol].join(',')}}`;
-        }
-
-        row[stateLabel].push(entry);
-      });
-
-      printer.push(row);
-    }
-
-    console.info(printer.toString());
-    console.info('');
   }
 }
 

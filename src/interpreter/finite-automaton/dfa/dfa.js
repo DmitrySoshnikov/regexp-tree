@@ -6,12 +6,8 @@
 'use strict';
 
 const DFAMinimizer = require('./dfa-minimizer');
-const TablePrinter = require('../table-printer');
-const colors = require('colors');
 
-const {
-  EPSILON_CLOSURE,
-} = require('../special-symbols');
+const {EPSILON_CLOSURE} = require('../special-symbols');
 
 /**
  * DFA is build by converting from NFA (subset construction).
@@ -103,9 +99,8 @@ class DFA {
 
     const dfaTable = {};
 
-
     // Determine whether the combined DFA state is accepting.
-    const updateAcceptingStates = (states) => {
+    const updateAcceptingStates = states => {
       for (const nfaAcceptingState of nfaAcceptingStates) {
         // If any of the states from NFA is accepting, DFA's
         // state is accepting as well.
@@ -205,45 +200,6 @@ class DFA {
       this.getTransitionTable();
     }
     return this._originalTransitionTable;
-  }
-
-  /**
-   * Prints transition table.
-   */
-  printTransitionTable(header = '\nDFA transition table:\n') {
-    console.info(colors.bold(header));
-
-    const alphabet = [...this.getAlphabet()];
-
-    const printer = new TablePrinter({
-      head: [''].concat(alphabet),
-    });
-
-    const table = this.getTransitionTable();
-    const acceptingStates = this.getAcceptingStateNumbers();
-
-    for (const stateNumber in table) {
-      const tableRow = table[stateNumber];
-
-      let stateLabel = acceptingStates.has(Number(stateNumber))
-        ? colors.bold(colors.green(`${stateNumber} ✓`))
-        : colors.blue(stateNumber);
-
-      if (stateNumber == 1) {
-        stateLabel += colors.yellow(' >');
-      }
-
-      const row = {[stateLabel]: []};
-
-      alphabet.forEach(symbol => {
-        row[stateLabel].push(tableRow[symbol] || '');
-      });
-
-      printer.push(row);
-    }
-
-    console.info(printer.toString());
-    console.info('');
   }
 
   /**
