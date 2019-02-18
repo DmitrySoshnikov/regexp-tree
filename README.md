@@ -64,7 +64,7 @@ npm run build
 
 ### Usage as a CLI
 
-**Note:** the CLI is exposed as its own [regexp-tree-cli](https://www.npmjs.com/package/regexp-tree) module.
+**Note:** the CLI is exposed as its own [regexp-tree-cli](https://www.npmjs.com/package/regexp-tree-cli) module.
 
 Check the options available from CLI:
 
