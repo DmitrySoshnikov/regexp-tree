@@ -341,7 +341,7 @@ let tokenizer;
  * See `--custom-tokinzer` to skip this generation, and use a custom one.
  */
 
-const lexRules = [[/^#[^\n]+/, function() { /* skip comments */ }],
+const lexRules = [[/^#[^\n]*(?=\n|\/\w*)/, function() { /* skip comments */ }],
 [/^\s+/, function() { /* skip whitespace */ }],
 [/^\\-/, function() { return 'ESC_CHAR' }],
 [/^-/, function() { return 'DASH' }],

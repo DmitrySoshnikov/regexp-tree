@@ -64,7 +64,7 @@ GROUP_NAME              ([\w$]|\\'u'[0-9a-fA-F]{4}|\\'u{'[0-9a-fA-F]{1,}'}')+
 
 %%
 
-<x,xu>'#'[^\n]+                      /* skip comments */
+<x,xu>'#'[^\n]*(?=\n|\/\w*)          /* skip comments */
 <x,xu>\s+                            /* skip whitespace */
 
 <class,u_class>{ESC}'-'              return 'ESC_CHAR'

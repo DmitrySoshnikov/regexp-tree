@@ -13,9 +13,7 @@ describe('extended', () => {
 
       (?<year>\d{4})-    # year part of a date
       (?<month>\d{2})-   # month part of a date
-      (?<day>\d{2})      # day part of a date
-
-    /x`;
+      (?<day>\d{2})      # day part of a date /x`;
 
     expect(parser.parse(re)).toEqual({
       type: 'RegExp',
