@@ -43,4 +43,32 @@ describe('compat-named-capturing-groups-transform', () => {
       e: 5,
     });
   });
+
+  it('adjucent group numbers', () => {
+    const re = transform('/((?<a>a)(?<b>b))\\k<a>\\k<b>/', [
+      compatNamedCapturingGroups,
+    ]);
+
+    expect(re.toString()).toBe(/((a)(b))\2\3/.toString());
+
+    // Collected group names.
+    expect(compatNamedCapturingGroups.getExtra()).toEqual({
+      a: 2,
+      b: 3,
+    });
+  });
+
+  it('adjucent nested group numbers', () => {
+    const re = transform('/((?<a>a)((?<b>b)))\\k<a>\\k<b>/', [
+      compatNamedCapturingGroups,
+    ]);
+
+    expect(re.toString()).toBe(/((a)((b)))\2\4/.toString());
+
+    // Collected group names.
+    expect(compatNamedCapturingGroups.getExtra()).toEqual({
+      a: 2,
+      b: 4,
+    });
+  });
 });

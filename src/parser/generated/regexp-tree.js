@@ -231,27 +231,23 @@ const productions = [[-1,1,(_1,_1loc) => { __loc = yyloc(_1loc, _1loc);__ = _1 }
         throw new SyntaxError(`Duplicate of the named group "${_1}".`);
       }
 
-      namedGroups[_1] = currentCapturingGroup;
+      namedGroups[_1] = _1.groupNumber;
 
       __ = Node({
         type: 'Group',
         capturing: true,
         name: _1,
-        number: currentCapturingGroup,
+        number:  _1.groupNumber,
         expression: _2,
       }, __loc);
-
-      updateCapturingGroupTracking();
      }],
 [15,3,(_1,_2,_3,_1loc,_2loc,_3loc) => { __loc = yyloc(_1loc, _3loc);
       __ = Node({
         type: 'Group',
         capturing: true,
-        number: currentCapturingGroup,
+        number:  _1.groupNumber,
         expression: _2,
       }, __loc);
-
-     updateCapturingGroupTracking();
      }],
 [16,3,(_1,_2,_3,_1loc,_2loc,_3loc) => { __loc = yyloc(_1loc, _3loc);
       __ = Node({
@@ -847,21 +843,6 @@ const yyparse = {
 };
 
 /**
- * Lower group boundary:
- *
- *   /(((a)b)c)(d)(e)/
- *
- * The first paren in (((a)b)c) has lower bound 0, but when
- * we reach the (d), it already 4.
- */
-let capturingGroupsCurrentLower = 0;
-
-/**
- * Group number to assign to a group.
- */
-let currentCapturingGroup = 0;
-
-/**
  * Tracks capturing groups.
  */
 let capturingGroupsCount = 0;
@@ -878,8 +859,6 @@ let parsingString = '';
 
 yyparse.onParseBegin = (string, lexer) => {
   parsingString = string;
-  capturingGroupsCurrentLower = 0;
-  currentCapturingGroup = 0;
   capturingGroupsCount = 0;
   namedGroups = {};
 
@@ -898,27 +877,16 @@ yyparse.onParseBegin = (string, lexer) => {
   }
 };
 
+/**
+ * On shifting `(` remember its number to used on reduce.
+ */
 yyparse.onShift = token => {
   if (token.type === 'L_PAREN' || token.type === 'NAMED_CAPTURE_GROUP') {
-    currentCapturingGroup++;
-    capturingGroupsCount++;
+    token.value = new String(token.value);
+    token.value.groupNumber = ++capturingGroupsCount;
   }
   return token;
 };
-
-/**
- * Updates the capturing groups counts.
- */
-function updateCapturingGroupTracking() {
-  // Go up.
-  currentCapturingGroup--;
-
-  // We reached the top level, reset the current group:
-  if (currentCapturingGroup === capturingGroupsCurrentLower) {
-    currentCapturingGroup = capturingGroupsCount;
-    capturingGroupsCurrentLower = capturingGroupsCount;
-  }
-}
 
 /**
  * Extracts ranges from the range string.
