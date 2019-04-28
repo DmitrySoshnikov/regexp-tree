@@ -21,9 +21,7 @@ const generator = {
   },
 
   Alternative(node) {
-    return (node.expressions || [])
-      .map(gen)
-      .join('');
+    return (node.expressions || []).map(gen).join('');
   },
 
   Disjunction(node) {
@@ -34,7 +32,6 @@ const generator = {
     const expression = gen(node.expression);
 
     if (node.capturing) {
-
       // A named group.
       if (node.name) {
         return `(?<${node.name}>${expression})`;
@@ -91,9 +88,7 @@ const generator = {
   },
 
   CharacterClass(node) {
-    const expressions = node.expressions
-      .map(gen)
-      .join('');
+    const expressions = node.expressions.map(gen).join('');
 
     if (node.negative) {
       return `[^${expressions}]`;
@@ -163,6 +158,19 @@ const generator = {
       default:
         throw new TypeError(`Unknown Char kind: ${node.kind}`);
     }
+  },
+
+  UnicodeProperty(node) {
+    const escapeChar = node.negative ? 'P' : 'p';
+    let namePart;
+
+    if (!node.shorthand && !node.binary) {
+      namePart = `${node.name}=`;
+    } else {
+      namePart = '';
+    }
+
+    return `\\${escapeChar}{${namePart}${node.value}}`;
   },
 };
 
