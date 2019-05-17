@@ -733,6 +733,7 @@ Below are the AST node types for different regular expressions patterns:
   - [Positive character class](#positive-character-class)
   - [Negative character class](#negative-character-class)
   - [Character class ranges](#character-class-ranges)
+- [Unicode properties](#unicode-properties)
 - [Alternative](#alternative)
 - [Disjunction](#disjunction)
 - [Groups](#groups)
