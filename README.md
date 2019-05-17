@@ -1118,6 +1118,57 @@ The range value can be the same for `from` and `to`, and the special range `-` c
 [a-zA-Z0-9]+
 ```
 
+#### Unicode properties
+
+Unicode property escapes are a new type of escape sequence available in regular expressions that have the `u` flag set. With this feature it is possible to write Unicode expressions as:
+
+```js
+const greekSymbolRe = /\p{Script=Greek}/u;
+
+greekSymbolRe.test('π'); // true
+```
+
+The AST node for this expression is:
+
+```js
+{
+  type: 'RegExp',
+  body: {
+    type: 'UnicodeProperty',
+    name: 'Script',
+    value: 'Greek',
+    negative: false,
+    shorthand: false,
+    binary: false,
+    canonicalName: 'Script',
+    canonicalValue: 'Greek'
+  },
+  'flags': 'u'
+}
+```
+
+All possible property names, values, and their aliases can be found at the [specification](https://tc39.github.io/proposal-regexp-unicode-property-escapes/#table-nonbinary-unicode-properties).
+
+For `General_Category` it is possible to use a shorthand:
+
+```js
+/\p{Letter}/u;   // Shorthand
+
+/\p{General_Category=Letter}/u; // Full notation
+```
+
+Binary names use the single value as well:
+
+```js
+/\p{ASCII_Hex_Digit}/u; // Same as: /[0-9A-Fa-f]/
+```
+
+The capitalized `P` defines the negation of the expression:
+
+```js
+/\P{ASCII_Hex_Digit}/u; // NOT a ASCII Hex digit
+```
+
 #### Alternative
 
 An _alternative_ (or _concatenation_) defines a chain of patterns followed one after another:

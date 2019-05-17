@@ -24,6 +24,8 @@ U_TRAIL_SURROGATE       [dD][c-fC-F][0-9a-fA-F]{2}
 
 GROUP_NAME              ([\w$]|\\'u'[0-9a-fA-F]{4}|\\'u{'[0-9a-fA-F]{1,}'}')+
 
+NAME                    \w+
+
 /**
  * Lexer state for character class.
  *
@@ -100,6 +102,8 @@ GROUP_NAME              ([\w$]|\\'u'[0-9a-fA-F]{4}|\\'u{'[0-9a-fA-F]{1,}'}')+
 <u,xu,u_class>{ESC}'u{'{U}{1,}'}'   return 'U_CODE'
 
 {ESC}'u'{U}{4}                      return 'U_CODE'
+
+<u,xu,u_class>{ESC}[pP]'{'{NAME}(?:\={NAME})?'}' return 'U_PROP_VALUE_EXP'
 
 {ESC}'x'{U}{2}                      return 'HEX_CODE'
 
@@ -236,6 +240,60 @@ function checkClassRange(from, to) {
     throw new SyntaxError(`Range ${from.value}-${to.value} out of order in character class`);
   }
 }
+
+// ---------------------- Unicode property -------------------------------------------
+
+const unicodeProperties = require('../unicode/parser-unicode-properties.js');
+
+/**
+ * Unicode property.
+ */
+function UnicodeProperty(matched, loc) {
+  const negative = matched[1] === 'P';
+  const separatorIdx = matched.indexOf('=');
+
+  let name = matched.slice(3, separatorIdx !== -1 ? separatorIdx : -1);
+  let value;
+
+  // General_Category allows using only value as a shorthand.
+  const isShorthand = separatorIdx === -1 &&
+    unicodeProperties.isGeneralCategoryValue(name);
+
+  // Binary propery name.
+  const isBinaryProperty = separatorIdx === -1 &&
+    unicodeProperties.isBinaryPropertyName(name);
+
+  if (isShorthand) {
+    value = name;
+    name = 'General_Category';
+  } else if (isBinaryProperty) {
+    value = name;
+  } else {
+    if (!unicodeProperties.isValidName(name)) {
+      throw new SyntaxError(`Invalid unicode property name: ${name}.`);
+    }
+
+    value = matched.slice(separatorIdx + 1, -1);
+
+    if (!unicodeProperties.isValidValue(name, value)) {
+      throw new SyntaxError(`Invalid ${name} unicode property value: ${value}.`);
+    }
+  }
+
+  return Node({
+    type: 'UnicodeProperty',
+    name,
+    value,
+    negative,
+    shorthand: isShorthand,
+    binary: isBinaryProperty,
+    canonicalName: unicodeProperties.getCanonicalName(name) || name,
+    canonicalValue: unicodeProperties.getCanonicalValue(value) || value,
+  }, loc);
+}
+
+// ----------------------------------------------------------------------------------
+
 
 /**
  * Creates a character node.
@@ -679,6 +737,9 @@ SourceCharacter
 
   | U_CODE
     { $$ = Char($1, 'unicode', @$) }
+
+  | U_PROP_VALUE_EXP
+    { $$ = UnicodeProperty($1, @$) }
 
   | CTRL_CH
     { $$ = Char($1, 'control', @$) }
