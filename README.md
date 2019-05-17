@@ -733,7 +733,6 @@ Below are the AST node types for different regular expressions patterns:
   - [Positive character class](#positive-character-class)
   - [Negative character class](#negative-character-class)
   - [Character class ranges](#character-class-ranges)
-- [Unicode properties](#unicode-properties)
 - [Alternative](#alternative)
 - [Disjunction](#disjunction)
 - [Groups](#groups)
@@ -1148,7 +1147,7 @@ The AST node for this expression is:
 }
 ```
 
-All possible property names, values, and their aliases can be found at the [specification](https://tc39.github.io/proposal-regexp-unicode-property-escapes/#table-nonbinary-unicode-properties).
+All possible property names, values, and their aliases can be found at the [specification](https://tc39.github.io/ecma262/#sec-runtime-semantics-unicodematchproperty-p).
 
 For `General_Category` it is possible to use a shorthand:
 
