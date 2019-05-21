@@ -733,6 +733,7 @@ Below are the AST node types for different regular expressions patterns:
   - [Positive character class](#positive-character-class)
   - [Negative character class](#negative-character-class)
   - [Character class ranges](#character-class-ranges)
+- [Unicode properties](#unicode-properties)
 - [Alternative](#alternative)
 - [Disjunction](#disjunction)
 - [Groups](#groups)
@@ -1132,18 +1133,14 @@ The AST node for this expression is:
 
 ```js
 {
-  type: 'RegExp',
-  body: {
-    type: 'UnicodeProperty',
-    name: 'Script',
-    value: 'Greek',
-    negative: false,
-    shorthand: false,
-    binary: false,
-    canonicalName: 'Script',
-    canonicalValue: 'Greek'
-  },
-  'flags': 'u'
+  type: 'UnicodeProperty',
+  name: 'Script',
+  value: 'Greek',
+  negative: false,
+  shorthand: false,
+  binary: false,
+  canonicalName: 'Script',
+  canonicalValue: 'Greek'
 }
 ```
 
