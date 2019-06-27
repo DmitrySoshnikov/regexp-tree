@@ -14,4 +14,7 @@ module.exports = {
 
   // `x` flag
   xFlag: require('./compat-x-flag-transform'),
+
+  // \p{...} and \P{...}
+  unicodeProperties: require('./compat-unicode-property-transform'),
 };
