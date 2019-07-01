@@ -31,6 +31,15 @@ describe('compat-unicode-property-transform', () => {
     );
   });
 
+  it('should support single property in character class', () => {
+    const re = transform('/[\\p{ASCII_Hex_Digit}]/u', [
+      compatUnicodePropertyTransform,
+    ]);
+    expect(re.toString()).toBe(
+      '/[\\u0030-\\u0039\\u0041-\\u0046\\u0061-\\u0066]/u'
+    );
+  });
+
   it('should support multiple property in character class', () => {
     const re = transform('/[\\p{ASCII}\\p{ASCII_Hex_Digit}]/u', [
       compatUnicodePropertyTransform,
