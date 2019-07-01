@@ -19,7 +19,18 @@ function getRegenerateSets(node) {
 }
 
 function negateCodepoints(codepoints) {
-  return [0, ...codepoints, 0x110000];
+  const newCodepoints = codepoints.slice();
+  if (newCodepoints[0] !== 0) {
+    newCodepoints.unshift(0);
+  } else {
+    newCodepoints.shift();
+  }
+  if (newCodepoints[newCodepoints.length - 1] !== 0x110000) {
+    newCodepoints.push(0x110000);
+  } else {
+    newCodepoints.pop();
+  }
+  return newCodepoints;
 }
 
 function printCodepoint(codepoint) {

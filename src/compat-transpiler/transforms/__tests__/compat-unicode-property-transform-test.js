@@ -13,6 +13,11 @@ describe('compat-unicode-property-transform', () => {
     );
   });
 
+  it('should support negation of binary property: \\P{ASCII}', () => {
+    const re = transform('/\\P{ASCII}/u', [compatUnicodePropertyTransform]);
+    expect(re.toString()).toBe('/[\\u0080-\\u{10FFFF}]/u');
+  });
+
   it('should support binary property negation: \\P{ASCII_Hex_Digit}', () => {
     const re = transform('/\\P{ASCII_Hex_Digit}/u', [
       compatUnicodePropertyTransform,
@@ -47,6 +52,11 @@ describe('compat-unicode-property-transform', () => {
     expect(re.toString()).toBe(
       '/[\\u0000-\\u007F\\u0030-\\u0039\\u0041-\\u0046\\u0061-\\u0066]/u'
     );
+  });
+
+  it('should support negation of binary property: \\P{Any}', () => {
+    const re = transform('/\\P{Any}/u', [compatUnicodePropertyTransform]);
+    expect(re.toString()).toBe('/[]/u');
   });
 
   it('should not run when no "u" flag is inposed', () => {
