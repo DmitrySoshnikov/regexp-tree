@@ -34,5 +34,8 @@
     "prettier": "^1.17.1",
     "shelljs": "^0.7.8",
     "syntax-cli": "^0.1.11"
+  },
+  "dependencies": {
+    "regenerate-unicode-properties": "^8.1.0"
   }
 }
