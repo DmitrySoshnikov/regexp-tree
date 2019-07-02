@@ -34,7 +34,7 @@ function negateCodepoints(codepoints) {
 }
 
 function printCodepoint(codepoint) {
-  if (codepoint < 65536) {
+  if (codepoint <= 0xffff) {
     return `\\u${codepoint
       .toString(16)
       .toUpperCase()
