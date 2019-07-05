@@ -232,12 +232,14 @@ const productions = [[-1,1,(_1,_1loc) => { __loc = yyloc(_1loc, _1loc);__ = _1 }
         throw new SyntaxError(`Duplicate of the named group "${_1}".`);
       }
 
-      namedGroups[_1] = _1.groupNumber;
+      const name = String(_1);
+
+      namedGroups[name] = _1.groupNumber;
 
       __ = Node({
         type: 'Group',
         capturing: true,
-        name: _1,
+        name,
         number:  _1.groupNumber,
         expression: _2,
       }, __loc);

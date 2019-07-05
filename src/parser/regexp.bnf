@@ -853,12 +853,14 @@ CapturingGroup
         throw new SyntaxError(`Duplicate of the named group "${$1}".`);
       }
 
-      namedGroups[$1] = $1.groupNumber;
+      const name = String($1);
+
+      namedGroups[name] = $1.groupNumber;
 
       $$ = Node({
         type: 'Group',
         capturing: true,
-        name: $1,
+        name,
         number:  $1.groupNumber,
         expression: $2,
       }, @$);
