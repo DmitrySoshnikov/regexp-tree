@@ -30,7 +30,6 @@ function ut(message) {
 }
 
 describe('test262', () => {
-
   it('invalid char range', () => {
     // 15.10.2.15-6-1
     invalid('/^[z-a]$/', 'out of order');
@@ -134,5 +133,16 @@ describe('test262', () => {
 
   it('invalid unicode escape', () => {
     invalid('/\\u{11FFFF}/u', 'Bad character escape');
+  });
+
+  it('unicode group names', () => {
+    valid('/(?<π>a)/u');
+    valid('/(?<\\u{03C0}>a)/u');
+    valid('/(?<$𐒤>a)/u');
+    valid('/(?<_\\u200C>a)/u');
+    valid('/(?<_\\u200D>a)/u');
+    valid('/(?<ಠ_ಠ>a)/u');
+    valid('/(?<$>a)/u');
+    valid('/(?<_>a)/u');
   });
 });
