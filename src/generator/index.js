@@ -34,7 +34,7 @@ const generator = {
     if (node.capturing) {
       // A named group.
       if (node.name) {
-        return `(?<${node.name}>${expression})`;
+        return `(?<${node.nameRaw || node.name}>${expression})`;
       }
 
       return `(${expression})`;
@@ -48,7 +48,7 @@ const generator = {
       case 'number':
         return `\\${node.reference}`;
       case 'name':
-        return `\\k<${node.reference}>`;
+        return `\\k<${node.referenceRaw || node.reference}>`;
       default:
         throw new TypeError(`Unknown Backreference kind: ${node.kind}`);
     }

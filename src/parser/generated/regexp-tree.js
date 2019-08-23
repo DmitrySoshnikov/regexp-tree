@@ -228,11 +228,11 @@ const productions = [[-1,1,(_1,_1loc) => { __loc = yyloc(_1loc, _1loc);__ = _1 }
 [14,1,(_1,_1loc) => { __loc = yyloc(_1loc, _1loc);__ = _1 }],
 [14,1,(_1,_1loc) => { __loc = yyloc(_1loc, _1loc);__ = _1 }],
 [15,3,(_1,_2,_3,_1loc,_2loc,_3loc) => { __loc = yyloc(_1loc, _3loc);
-      if (namedGroups.hasOwnProperty(_1)) {
-        throw new SyntaxError(`Duplicate of the named group "${_1}".`);
+      const nameRaw = String(_1);
+      const name = decodeUnicodeGroupName(nameRaw);
+      if (namedGroups.hasOwnProperty(name)) {
+        throw new SyntaxError(`Duplicate of the named group "${name}".`);
       }
-
-      const name = String(_1);
 
       namedGroups[name] = _1.groupNumber;
 
@@ -240,6 +240,7 @@ const productions = [[-1,1,(_1,_1loc) => { __loc = yyloc(_1loc, _1loc);__ = _1 }
         type: 'Group',
         capturing: true,
         name,
+        nameRaw,
         number:  _1.groupNumber,
         expression: _2,
       }, __loc);
@@ -1104,19 +1105,68 @@ function GroupRefOrDecChar(text, textLoc) {
 /**
  * Unicode names.
  */
-const uRe = /^\\u[0-9a-fA-F]{4}/;
-const ucpRe = /^\\u\{[0-9a-fA-F]{1,}\}/;
+const uReStart = /^\\u[0-9a-fA-F]{4}/; // only matches start of string
+const ucpReStart = /^\\u\{[0-9a-fA-F]{1,}\}/; // only matches start of string
+const ucpReAnywhere = /\\u\{[0-9a-fA-F]{1,}\}/; // matches anywhere in string
 
 /**
  * Validates Unicode group name.
  */
 function validateUnicodeGroupName(name, state) {
-  const isUnicodeName = uRe.test(name) || ucpRe.test(name);
+  const isUnicodeName = ucpReAnywhere.test(name);
   const isUnicodeState = (state === 'u' || state === 'xu' || state === 'u_class');
 
   if (isUnicodeName && !isUnicodeState) {
     throw new SyntaxError(`invalid group Unicode name "${name}", use \`u\` flag.`);
   }
+  
+  return name;
+}
+
+// Matches the following production: https://tc39.es/ecma262/#prod-RegExpUnicodeEscapeSequence
+//
+//  RegExpUnicodeEscapeSequence ::
+//    `u` LeadSurrogate `\u` TrailSurrogate   # as 'leadSurrogate', 'trailSurrogate'
+//    `u` LeadSurrogate                       # as 'leadSurrogateOnly'
+//    `u` TrailSurrogate                      # as 'trailSurrogateOnly'
+//    `u` NonSurrogate                        # as 'nonSurrogate'
+//    `u` `{` CodePoint `}`                   # as 'codePoint'
+//
+//  LeadSurrogate ::
+//    Hex4Digits but only if the SV of Hex4Digits is in the inclusive range 0xD800 to 0xDBFF        # [dD][89aAbB][0-9a-fA-F]{2}
+//
+//  TrailSurrogate ::
+//    Hex4Digits but only if the SV of Hex4Digits is in the inclusive range 0xDC00 to 0xDFFF        # [dD][c-fC-F][0-9a-fA-F]{2}
+//
+//  NonSurrogate ::
+//    Hex4Digits but only if the SV of Hex4Digits is not in the inclusive range 0xD800 to 0xDFFF    # [0-9a-ce-fA-CE-F][0-9a-fA-F]{3}|[dD][0-7][0-9a-fA-F]{2}
+//
+//  CodePoint ::
+//    HexDigits but only if MV of HexDigits ≤ 0x10FFFF                                              # 0*(?:[0-9a-fA-F]{1,5}|10[0-9a-fA-F]{4})
+//
+const uidRe = /\\u(?:([dD][89aAbB][0-9a-fA-F]{2})\\u([dD][c-fC-F][0-9a-fA-F]{2})|([dD][89aAbB][0-9a-fA-F]{2})|([dD][c-fC-F][0-9a-fA-F]{2})|([0-9a-ce-fA-CE-F][0-9a-fA-F]{3}|[dD][0-7][0-9a-fA-F]{2})|\{(0*(?:[0-9a-fA-F]{1,5}|10[0-9a-fA-F]{4}))\})/;
+
+function decodeUnicodeGroupName(name) {
+  return name.replace(new RegExp(uidRe, 'g'), function (_, leadSurrogate, trailSurrogate, leadSurrogateOnly, trailSurrogateOnly, nonSurrogate, codePoint) {
+    if (leadSurrogate) {
+      return String.fromCodePoint(parseInt(leadSurrogate, 16), parseInt(trailSurrogate, 16));
+    }
+    if (leadSurrogateOnly) {
+      return String.fromCodePoint(parseInt(leadSurrogateOnly, 16));
+    }
+    if (trailSurrogateOnly) {
+      // TODO: Per the spec: https://tc39.es/ecma262/#prod-RegExpUnicodeEscapeSequence
+      // > Each `\u` TrailSurrogate for which the choice of associated `u` LeadSurrogate is ambiguous shall be associated with the nearest possible `u` LeadSurrogate that would otherwise have no corresponding `\u` TrailSurrogate.
+      return String.fromCodePoint(parseInt(trailSurrogateOnly, 16));
+    }
+    if (nonSurrogate) {
+      return String.fromCodePoint(parseInt(nonSurrogate, 16));
+    }
+    if (codePoint) {
+      return String.fromCodePoint(parseInt(codePoint, 16));
+    }
+    return _;
+  });
 }
 
 /**
@@ -1125,14 +1175,16 @@ function validateUnicodeGroupName(name, state) {
  * as a list of char: `\k`, `<`, `f`, etc.
  */
 function NamedGroupRefOrChars(text, textLoc) {
-  const groupName = text.slice(3, -1);
+  const referenceRaw = text.slice(3, -1);
+  const reference = decodeUnicodeGroupName(referenceRaw);
 
-  if (namedGroups.hasOwnProperty(groupName)) {
+  if (namedGroups.hasOwnProperty(reference)) {
     return Node({
       type: 'Backreference',
       kind: 'name',
-      number: namedGroups[groupName],
-      reference: groupName,
+      number: namedGroups[reference],
+      reference,
+      referenceRaw,
     }, textLoc);
   }
 
@@ -1182,7 +1234,7 @@ function NamedGroupRefOrChars(text, textLoc) {
     let matched = null;
 
     // Unicode, \u003B or \u{003B}
-    if ((matched = text.match(uRe)) || (matched = text.match(ucpRe))) {
+    if ((matched = text.match(uReStart)) || (matched = text.match(ucpReStart))) {
       if (startOffset) {
         loc = {
           startLine,

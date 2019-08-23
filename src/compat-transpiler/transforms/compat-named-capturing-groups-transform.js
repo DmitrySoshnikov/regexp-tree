@@ -9,7 +9,6 @@
  * A regexp-tree plugin to translate `/(?<name>a)\k<name>/` to `/(a)\1/`.
  */
 module.exports = {
-
   // To track the names of the groups, and return them
   // in the transform result state.
   //
@@ -41,6 +40,7 @@ module.exports = {
     this._groupNames[node.name] = node.number;
 
     delete node.name;
+    delete node.nameRaw;
   },
 
   Backreference(path) {
@@ -52,5 +52,6 @@ module.exports = {
 
     node.kind = 'number';
     node.reference = node.number;
+    delete node.referenceRaw;
   },
 };

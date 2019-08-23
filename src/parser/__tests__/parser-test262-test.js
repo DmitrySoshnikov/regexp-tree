@@ -138,6 +138,7 @@ describe('test262', () => {
   it('unicode group names', () => {
     valid('/(?<π>a)/u');
     valid('/(?<\\u{03C0}>a)/u');
+    invalid('/(?<π>a)(?<\\u{03C0}>a)/u', 'Duplicate of the named group');
     valid('/(?<$𐒤>a)/u');
     valid('/(?<_\\u200C>a)/u');
     valid('/(?<_\\u200D>a)/u');

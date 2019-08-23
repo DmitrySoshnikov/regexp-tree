@@ -1336,6 +1336,34 @@ We have the following node (the `name` property with value `foo` is added):
   type: 'Group',
   capturing: true,
   name: 'foo',
+  nameRaw: 'foo',
+  number: 1,
+  expression: {
+    type: 'Char',
+    value: 'x',
+    symbol: 'x',
+    kind: 'simple',
+    codePoint: 120
+  }
+}
+```
+
+Note: The `nameRaw` property represents the name *as parsed from the original source*, including escape sequences. The `name` property represents the canonical decoded form of the name.
+
+For example, given the `/u` flag and the following group:
+
+```regexp
+(?<\u{03C0}>x)
+```
+
+We would have the following node:
+
+```js
+{
+  type: 'Group',
+  capturing: true,
+  name: 'π',
+  nameRaw: '\\u{03C0}',
   number: 1,
   expression: {
     type: 'Char',
@@ -1465,6 +1493,7 @@ A node:
       type: 'Group',
       capturing: true,
       name: 'foo',
+      nameRaw: 'foo',
       number: 1,
       expression: {
         type: 'Char',
@@ -1478,7 +1507,8 @@ A node:
       type: 'Backreference',
       kind: 'name',
       number: 1,
-      reference: 'foo'
+      reference: 'foo',
+      referenceRaw: 'foo'
     },
     {
       type: 'Backreference',
@@ -1489,6 +1519,52 @@ A node:
   ]
 }
 ```
+
+Note: The `referenceRaw` property represents the reference *as parsed from the original source*, including escape sequences. The `reference` property represents the canonical decoded form of the reference.
+
+For example, given the `/u` flag and the following pattern (matches `www`):
+
+```regexp
+(?<π>w)\k<\u{03C0}>\1
+```
+
+We would have the following node:
+
+```js
+{
+  type: 'Alternative',
+  expressions: [
+    {
+      type: 'Group',
+      capturing: true,
+      name: 'π',
+      nameRaw: 'π',
+      number: 1,
+      expression: {
+        type: 'Char',
+        value: 'w',
+        symbol: 'w',
+        kind: 'simple',
+        codePoint: 119
+      }
+    },
+    {
+      type: 'Backreference',
+      kind: 'name',
+      number: 1,
+      reference: 'π',
+      referenceRaw: '\\u{03C0}'
+    },
+    {
+      type: 'Backreference',
+      kind: 'number',
+      number: 1,
+      reference: 1
+    }
+  ]
+}
+```
+
 
 #### Quantifiers
 
