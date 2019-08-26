@@ -10,7 +10,6 @@ function re(regexp) {
 }
 
 describe('basic', () => {
-
   it('char', () => {
     expect(re(/a/)).toEqual({
       type: 'RegExp',
@@ -37,7 +36,7 @@ describe('basic', () => {
             symbol: '(',
             kind: 'simple',
             escaped: true,
-            codePoint: '('.codePointAt(0)
+            codePoint: '('.codePointAt(0),
           },
           {
             type: 'Char',
@@ -45,9 +44,9 @@ describe('basic', () => {
             symbol: ')',
             kind: 'simple',
             escaped: true,
-            codePoint: ')'.codePointAt(0)
+            codePoint: ')'.codePointAt(0),
           },
-        ]
+        ],
       },
       flags: '',
     });
@@ -63,15 +62,15 @@ describe('basic', () => {
           value: 'a',
           symbol: 'a',
           kind: 'simple',
-          codePoint: 'a'.codePointAt(0)
+          codePoint: 'a'.codePointAt(0),
         },
         right: {
           type: 'Char',
           value: 'b',
           symbol: 'b',
           kind: 'simple',
-          codePoint: 'b'.codePointAt(0)
-        }
+          codePoint: 'b'.codePointAt(0),
+        },
       },
       flags: '',
     });
@@ -88,15 +87,15 @@ describe('basic', () => {
             value: 'a',
             symbol: 'a',
             kind: 'simple',
-            codePoint: 'a'.codePointAt(0)
+            codePoint: 'a'.codePointAt(0),
           },
           {
             type: 'Char',
             value: 'b',
             symbol: 'b',
             kind: 'simple',
-            codePoint: 'b'.codePointAt(0)
-          }
+            codePoint: 'b'.codePointAt(0),
+          },
         ],
       },
       flags: '',
@@ -116,23 +115,23 @@ describe('basic', () => {
               value: 'a',
               symbol: 'a',
               kind: 'simple',
-              codePoint: 'a'.codePointAt(0)
+              codePoint: 'a'.codePointAt(0),
             },
             to: {
               type: 'Char',
               value: 'z',
               symbol: 'z',
               kind: 'simple',
-              codePoint: 'z'.codePointAt(0)
-            }
+              codePoint: 'z'.codePointAt(0),
+            },
           },
           {
             type: 'Char',
             value: '\\d',
             kind: 'meta',
-            codePoint: NaN
-          }
-        ]
+            codePoint: NaN,
+          },
+        ],
       },
       flags: 'i',
     });
@@ -161,7 +160,7 @@ describe('basic', () => {
   });
 
   it('character class with punctuation symbols', () => {
-    expect(re('/[!"#$%&\'()*+,./:;<=>?@\^_`{|}~-]/')).toEqual({
+    expect(re('/[!"#$%&\'()*+,./:;<=>?@^_`{|}~-]/')).toEqual({
       type: 'RegExp',
       body: {
         type: 'CharacterClass',
@@ -171,48 +170,51 @@ describe('basic', () => {
             kind: 'simple',
             value: '!',
             symbol: '!',
-            codePoint: '!'.codePointAt(0)
+            codePoint: '!'.codePointAt(0),
           },
           {
             type: 'Char',
             kind: 'simple',
             value: '"',
             symbol: '"',
-            codePoint: '"'.codePointAt(0)
+            codePoint: '"'.codePointAt(0),
           },
           {
             type: 'Char',
             kind: 'simple',
             value: '#',
             symbol: '#',
-            codePoint: '#'.codePointAt(0)
+            codePoint: '#'.codePointAt(0),
           },
           {
             type: 'Char',
             kind: 'simple',
             value: '$',
             symbol: '$',
-            codePoint: '$'.codePointAt(0)
+            codePoint: '$'.codePointAt(0),
           },
           {
             type: 'Char',
             kind: 'simple',
             value: '%',
             symbol: '%',
-            codePoint: '%'.codePointAt(0)
+            codePoint: '%'.codePointAt(0),
           },
           {
             type: 'Char',
             kind: 'simple',
             value: '&',
             symbol: '&',
-            codePoint: '&'.codePointAt(0)
+            codePoint: '&'.codePointAt(0),
           },
           {
             type: 'Char',
             kind: 'simple',
+            // prettier-ignore
             value: '\'',
+            // prettier-ignore
             symbol: '\'',
+            // prettier-ignore
             codePoint: '\''.codePointAt(0)
           },
           {
@@ -220,158 +222,158 @@ describe('basic', () => {
             kind: 'simple',
             value: '(',
             symbol: '(',
-            codePoint: '('.codePointAt(0)
+            codePoint: '('.codePointAt(0),
           },
           {
             type: 'Char',
             kind: 'simple',
             value: ')',
             symbol: ')',
-            codePoint: ')'.codePointAt(0)
+            codePoint: ')'.codePointAt(0),
           },
           {
             type: 'Char',
             kind: 'simple',
             value: '*',
             symbol: '*',
-            codePoint: '*'.codePointAt(0)
+            codePoint: '*'.codePointAt(0),
           },
           {
             type: 'Char',
             kind: 'simple',
             value: '+',
             symbol: '+',
-            codePoint: '+'.codePointAt(0)
+            codePoint: '+'.codePointAt(0),
           },
           {
             type: 'Char',
             kind: 'simple',
             value: ',',
             symbol: ',',
-            codePoint: ','.codePointAt(0)
+            codePoint: ','.codePointAt(0),
           },
           {
             type: 'Char',
             kind: 'simple',
             value: '.',
             symbol: '.',
-            codePoint: '.'.codePointAt(0)
+            codePoint: '.'.codePointAt(0),
           },
           {
             type: 'Char',
             kind: 'simple',
             value: '/',
             symbol: '/',
-            codePoint: '/'.codePointAt(0)
+            codePoint: '/'.codePointAt(0),
           },
           {
             type: 'Char',
             kind: 'simple',
             value: ':',
             symbol: ':',
-            codePoint: ':'.codePointAt(0)
+            codePoint: ':'.codePointAt(0),
           },
           {
             type: 'Char',
             kind: 'simple',
             value: ';',
             symbol: ';',
-            codePoint: ';'.codePointAt(0)
+            codePoint: ';'.codePointAt(0),
           },
           {
             type: 'Char',
             kind: 'simple',
             value: '<',
             symbol: '<',
-            codePoint: '<'.codePointAt(0)
+            codePoint: '<'.codePointAt(0),
           },
           {
             type: 'Char',
             kind: 'simple',
             value: '=',
             symbol: '=',
-            codePoint: '='.codePointAt(0)
+            codePoint: '='.codePointAt(0),
           },
           {
             type: 'Char',
             kind: 'simple',
             value: '>',
             symbol: '>',
-            codePoint: '>'.codePointAt(0)
+            codePoint: '>'.codePointAt(0),
           },
           {
             type: 'Char',
             kind: 'simple',
             value: '?',
             symbol: '?',
-            codePoint: '?'.codePointAt(0)
+            codePoint: '?'.codePointAt(0),
           },
           {
             type: 'Char',
             kind: 'simple',
             value: '@',
             symbol: '@',
-            codePoint: '@'.codePointAt(0)
+            codePoint: '@'.codePointAt(0),
           },
           {
             type: 'Char',
             kind: 'simple',
             value: '^',
             symbol: '^',
-            codePoint: '^'.codePointAt(0)
+            codePoint: '^'.codePointAt(0),
           },
           {
             type: 'Char',
             kind: 'simple',
             value: '_',
             symbol: '_',
-            codePoint: '_'.codePointAt(0)
+            codePoint: '_'.codePointAt(0),
           },
           {
             type: 'Char',
             kind: 'simple',
             value: '`',
             symbol: '`',
-            codePoint: '`'.codePointAt(0)
+            codePoint: '`'.codePointAt(0),
           },
           {
             type: 'Char',
             kind: 'simple',
             value: '{',
             symbol: '{',
-            codePoint: '{'.codePointAt(0)
+            codePoint: '{'.codePointAt(0),
           },
           {
             type: 'Char',
             kind: 'simple',
             value: '|',
             symbol: '|',
-            codePoint: '|'.codePointAt(0)
+            codePoint: '|'.codePointAt(0),
           },
           {
             type: 'Char',
             kind: 'simple',
             value: '}',
             symbol: '}',
-            codePoint: '}'.codePointAt(0)
+            codePoint: '}'.codePointAt(0),
           },
           {
             type: 'Char',
             kind: 'simple',
             value: '~',
             symbol: '~',
-            codePoint: '~'.codePointAt(0)
+            codePoint: '~'.codePointAt(0),
           },
           {
             type: 'Char',
             kind: 'simple',
             value: '-',
             symbol: '-',
-            codePoint: '-'.codePointAt(0)
-          }
-        ]
+            codePoint: '-'.codePointAt(0),
+          },
+        ],
       },
-      flags: ''
+      flags: '',
     });
   });
 
@@ -381,7 +383,7 @@ describe('basic', () => {
     );
   });
 
-  it.only('named unicode name', () => {
+  it('named unicode name', () => {
     expect(() => parser.parse('/(?<\\u{41}\\u0042>)/')).toThrowError(
       new SyntaxError(
         `invalid group Unicode name "\\u{41}\\u0042", use \`u\` flag.`
@@ -405,7 +407,7 @@ describe('basic', () => {
           {
             type: 'Group',
             capturing: false,
-            expression: null
+            expression: null,
           },
           {
             type: 'Group',
@@ -416,30 +418,31 @@ describe('basic', () => {
               value: 'a',
               symbol: 'a',
               kind: 'simple',
-              codePoint: 'a'.codePointAt(0)
-            }
+              codePoint: 'a'.codePointAt(0),
+            },
           },
           {
             type: 'Group',
             capturing: false,
-            expression: null
+            expression: null,
           },
           {
             type: 'Group',
             capturing: true,
             name: 'name',
+            nameRaw: 'name',
             number: 2,
             expression: {
               type: 'Char',
               value: 'b',
               symbol: 'b',
               kind: 'simple',
-              codePoint: 'b'.codePointAt(0)
-            }
-          }
-        ]
+              codePoint: 'b'.codePointAt(0),
+            },
+          },
+        ],
       },
-      flags: ''
+      flags: '',
     });
   });
 
@@ -462,6 +465,7 @@ describe('basic', () => {
         type: 'Group',
         capturing: true,
         name: 'foo',
+        nameRaw: 'foo',
         number: 1,
         expression: null,
       },
@@ -491,7 +495,7 @@ describe('basic', () => {
           value: 'a',
           symbol: 'a',
           kind: 'simple',
-          codePoint: 'a'.codePointAt(0)
+          codePoint: 'a'.codePointAt(0),
         },
       },
       flags: '',
@@ -503,6 +507,7 @@ describe('basic', () => {
       body: {
         type: 'Group',
         name: 'foo',
+        nameRaw: 'foo',
         capturing: true,
         number: 1,
         expression: {
@@ -510,7 +515,7 @@ describe('basic', () => {
           value: 'a',
           symbol: 'a',
           kind: 'simple',
-          codePoint: 'a'.codePointAt(0)
+          codePoint: 'a'.codePointAt(0),
         },
       },
       flags: '',
@@ -526,7 +531,7 @@ describe('basic', () => {
           value: 'a',
           symbol: 'a',
           kind: 'simple',
-          codePoint: 'a'.codePointAt(0)
+          codePoint: 'a'.codePointAt(0),
         },
       },
       flags: '',
@@ -567,7 +572,7 @@ describe('basic', () => {
           value: 'a',
           symbol: 'a',
           kind: 'simple',
-          codePoint: 'a'.codePointAt(0)
+          codePoint: 'a'.codePointAt(0),
         },
       },
       flags: '',
@@ -584,7 +589,7 @@ describe('basic', () => {
           value: 'a',
           symbol: 'a',
           kind: 'simple',
-          codePoint: 'a'.codePointAt(0)
+          codePoint: 'a'.codePointAt(0),
         },
       },
       flags: '',
@@ -629,7 +634,7 @@ describe('basic', () => {
           value: 'a',
           symbol: 'a',
           kind: 'simple',
-          codePoint: 'a'.codePointAt(0)
+          codePoint: 'a'.codePointAt(0),
         },
       },
       flags: '',
@@ -646,7 +651,7 @@ describe('basic', () => {
           value: 'a',
           symbol: 'a',
           kind: 'simple',
-          codePoint: 'a'.codePointAt(0)
+          codePoint: 'a'.codePointAt(0),
         },
       },
       flags: '',
@@ -668,23 +673,23 @@ describe('basic', () => {
               value: 'a',
               symbol: 'a',
               kind: 'simple',
-              codePoint: 'a'.codePointAt(0)
-            }
+              codePoint: 'a'.codePointAt(0),
+            },
           },
           {
             type: 'Backreference',
             kind: 'number',
             number: 1,
-            reference: 1
+            reference: 1,
           },
           {
             type: 'Char',
             value: '\\2',
             kind: 'decimal',
             symbol: String.fromCodePoint(2),
-            codePoint: 2
-          }
-        ]
+            codePoint: 2,
+          },
+        ],
       },
       flags: '',
     });
@@ -702,19 +707,21 @@ describe('basic', () => {
             capturing: true,
             number: 1,
             name: 'x',
+            nameRaw: 'x',
             expression: {
               type: 'Char',
               value: 'y',
               symbol: 'y',
               kind: 'simple',
-              codePoint: 'y'.codePointAt(0)
-            }
+              codePoint: 'y'.codePointAt(0),
+            },
           },
           {
             type: 'Backreference',
             kind: 'name',
             number: 1,
-            reference: 'x'
+            reference: 'x',
+            referenceRaw: 'x',
           },
           {
             type: 'Char',
@@ -722,104 +729,33 @@ describe('basic', () => {
             symbol: 'k',
             kind: 'simple',
             escaped: true,
-            codePoint: 'k'.codePointAt(0)
+            codePoint: 'k'.codePointAt(0),
           },
           {
             type: 'Char',
             value: '<',
             symbol: '<',
             kind: 'simple',
-            codePoint: '<'.codePointAt(0)
+            codePoint: '<'.codePointAt(0),
           },
           {
             type: 'Char',
             value: 'z',
             symbol: 'z',
             kind: 'simple',
-            codePoint: 'z'.codePointAt(0)
+            codePoint: 'z'.codePointAt(0),
           },
           {
             type: 'Char',
             value: '>',
             symbol: '>',
             kind: 'simple',
-            codePoint: '>'.codePointAt(0)
+            codePoint: '>'.codePointAt(0),
           },
-        ]
+        ],
       },
       flags: '',
     });
-  });
-
-  it('non-named-backreferences with unicode', () => {
-    // Just a list of chars.
-    expect(re(/\k<ab\u003B\u{003B}c>/)).toEqual({
-      type: 'RegExp',
-      body: {
-        type: 'Alternative',
-        expressions: [
-          {
-            type: 'Char',
-            value: 'k',
-            symbol: 'k',
-            kind: 'simple',
-            escaped: true,
-            codePoint: 'k'.codePointAt(0)
-          },
-          {
-            type: 'Char',
-            value: '<',
-            symbol: '<',
-            kind: 'simple',
-            codePoint: '<'.codePointAt(0)
-          },
-          {
-            type: 'Char',
-            value: 'a',
-            symbol: 'a',
-            kind: 'simple',
-            codePoint: 'a'.codePointAt(0)
-          },
-          {
-            type: 'Char',
-            value: 'b',
-            symbol: 'b',
-            kind: 'simple',
-            codePoint: 'b'.codePointAt(0)
-          },
-          {
-            type: 'Char',
-            value: '\\u003B',
-            kind: 'unicode',
-            symbol: String.fromCodePoint(0x003B),
-            codePoint: 0x003B
-          },
-          {
-            type: 'Char',
-            value: '\\u{003B}',
-            kind: 'unicode',
-            symbol: String.fromCodePoint(0x003B),
-            codePoint: 0x003B
-          },
-          {
-            type: 'Char',
-            value: 'c',
-            symbol: 'c',
-            kind: 'simple',
-            codePoint: 'c'.codePointAt(0)
-          },
-          {
-            type: 'Char',
-            value: '>',
-            symbol: '>',
-            kind: 'simple',
-            codePoint: '>'.codePointAt(0)
-          },
-        ]
-      },
-      flags: ''
-    });
-
   });
 
   it('non-backreferences', () => {
@@ -836,15 +772,15 @@ describe('basic', () => {
               value: 'a',
               symbol: 'a',
               kind: 'simple',
-              codePoint: 'a'.codePointAt(0)
-            }
+              codePoint: 'a'.codePointAt(0),
+            },
           },
           {
             type: 'Char',
             value: '\\1',
             symbol: String.fromCodePoint(1),
             kind: 'decimal',
-            codePoint: 1
+            codePoint: 1,
           },
           {
             type: 'Char',
@@ -852,37 +788,36 @@ describe('basic', () => {
             symbol: 'k',
             kind: 'simple',
             escaped: true,
-            codePoint: 'k'.codePointAt(0)
+            codePoint: 'k'.codePointAt(0),
           },
           {
             type: 'Char',
             value: '<',
             symbol: '<',
             kind: 'simple',
-            codePoint: '<'.codePointAt(0)
+            codePoint: '<'.codePointAt(0),
           },
           {
             type: 'Char',
             value: 'z',
             symbol: 'z',
             kind: 'simple',
-            codePoint: 'z'.codePointAt(0)
+            codePoint: 'z'.codePointAt(0),
           },
           {
             type: 'Char',
             value: '>',
             symbol: '>',
             kind: 'simple',
-            codePoint: '>'.codePointAt(0)
+            codePoint: '>'.codePointAt(0),
           },
-        ]
+        ],
       },
       flags: '',
     });
   });
 
   it('meta chars', () => {
-
     function LettersRange(start, stop) {
       const range = [];
 
@@ -898,8 +833,17 @@ describe('basic', () => {
     }
 
     const metaChars = new Set([
-      't', 'n', 'r', 'd', 'D', 's',
-      'S', 'w', 'W', 'v', 'f',
+      't',
+      'n',
+      'r',
+      'd',
+      'D',
+      's',
+      'S',
+      'w',
+      'W',
+      'v',
+      'f',
     ]);
 
     const azAZRange = LettersRange('a', 'z').concat(LettersRange('A', 'Z'));
@@ -924,7 +868,7 @@ describe('basic', () => {
       value: '\\u003B',
       symbol: String.fromCodePoint(0x003b),
       kind: 'unicode',
-      codePoint: 0x003b
+      codePoint: 0x003b,
     });
 
     // Using `u` flag, 1 digit.
@@ -933,7 +877,7 @@ describe('basic', () => {
       value: '\\u{9}',
       symbol: String.fromCodePoint(9),
       kind: 'unicode',
-      codePoint: 9
+      codePoint: 9,
     });
 
     // Using `u` flag, 6 digits, 10FFFF is max.
@@ -942,7 +886,7 @@ describe('basic', () => {
       value: '\\u{10FFFF}',
       symbol: String.fromCodePoint(0x10ffff),
       kind: 'unicode',
-      codePoint: 0x10ffff
+      codePoint: 0x10ffff,
     });
 
     // Using `u` flag, leading zeros.
@@ -951,7 +895,7 @@ describe('basic', () => {
       value: '\\u{000001D306}',
       symbol: String.fromCodePoint(0x000001d306),
       kind: 'unicode',
-      codePoint: 0x000001d306
+      codePoint: 0x000001d306,
     });
 
     // Not using `u` flag, not parsed as a unicode code point,
@@ -964,15 +908,15 @@ describe('basic', () => {
         symbol: 'u',
         kind: 'simple',
         escaped: true,
-        codePoint: 'u'.codePointAt(0)
+        codePoint: 'u'.codePointAt(0),
       },
       quantifier: {
         type: 'Quantifier',
         kind: 'Range',
         from: 1234,
         to: 1234,
-        greedy: true
-      }
+        greedy: true,
+      },
     });
 
     // Using `u` flag, surrogate pairs.
@@ -980,40 +924,45 @@ describe('basic', () => {
       type: 'Char',
       value: '\\ud83d\\ude80',
       kind: 'unicode',
-      symbol: String.fromCodePoint(0x1F680),
-      codePoint: 0x1F680,
-      isSurrogatePair: true
+      symbol: String.fromCodePoint(0x1f680),
+      codePoint: 0x1f680,
+      isSurrogatePair: true,
     });
 
     // Using `u` flag, surrogate pairs in character class.
     expect(re(/[\ud83d\ude80]/u).body).toEqual({
       type: 'CharacterClass',
-      expressions: [{
-        type: 'Char',
-        value: '\\ud83d\\ude80',
-        kind: 'unicode',
-        symbol: String.fromCodePoint(0x1F680),
-        codePoint: 0x1F680,
-        isSurrogatePair: true
-      }]
+      expressions: [
+        {
+          type: 'Char',
+          value: '\\ud83d\\ude80',
+          kind: 'unicode',
+          symbol: String.fromCodePoint(0x1f680),
+          codePoint: 0x1f680,
+          isSurrogatePair: true,
+        },
+      ],
     });
 
     // Not using `u` flag, surrogate pairs are treated as two characters
     expect(re(/\ud83d\ude80/).body).toEqual({
       type: 'Alternative',
-      expressions: [{
-        type: 'Char',
-        value: '\\ud83d',
-        kind: 'unicode',
-        symbol: String.fromCodePoint(0xd83d),
-        codePoint: 0xd83d
-      }, {
-        type: 'Char',
-        value: '\\ude80',
-        kind: 'unicode',
-        symbol: String.fromCodePoint(0xde80),
-        codePoint: 0xde80
-      }]
+      expressions: [
+        {
+          type: 'Char',
+          value: '\\ud83d',
+          kind: 'unicode',
+          symbol: String.fromCodePoint(0xd83d),
+          codePoint: 0xd83d,
+        },
+        {
+          type: 'Char',
+          value: '\\ude80',
+          kind: 'unicode',
+          symbol: String.fromCodePoint(0xde80),
+          codePoint: 0xde80,
+        },
+      ],
     });
   });
 
@@ -1025,7 +974,7 @@ describe('basic', () => {
         value: 'a',
         symbol: 'a',
         kind: 'simple',
-        codePoint: 'a'.codePointAt(0)
+        codePoint: 'a'.codePointAt(0),
       },
       flags: 'gimuy',
     });
@@ -1040,7 +989,7 @@ describe('basic', () => {
         value: 'a',
         symbol: 'a',
         kind: 'simple',
-        codePoint: 'a'.codePointAt(0)
+        codePoint: 'a'.codePointAt(0),
       },
       flags: 'gimuy',
     });
@@ -1054,7 +1003,7 @@ describe('basic', () => {
         value: '\\x33',
         kind: 'hex',
         symbol: String.fromCodePoint(0x33),
-        codePoint: 0x33
+        codePoint: 0x33,
       },
       flags: '',
     });
@@ -1068,7 +1017,7 @@ describe('basic', () => {
         value: '\\99',
         kind: 'decimal',
         symbol: String.fromCodePoint(99),
-        codePoint: 99
+        codePoint: 99,
       },
       flags: '',
     });
@@ -1083,7 +1032,7 @@ describe('basic', () => {
         value: 'a',
         symbol: 'a',
         kind: 'simple',
-        codePoint: 'a'.codePointAt(0)
+        codePoint: 'a'.codePointAt(0),
       },
       flags: 's',
     });
@@ -1094,5 +1043,4 @@ describe('basic', () => {
     expect(() => parser.parse('/\\e/u')).toThrowError(SyntaxError);
     expect(() => parser.parse('/\\g/u')).toThrowError(SyntaxError);
   });
-
 });
