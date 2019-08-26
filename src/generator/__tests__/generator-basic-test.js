@@ -14,7 +14,6 @@ function test(re) {
 }
 
 describe('generator-basic', () => {
-
   it('simple char', () => {
     test(/a/);
   });
@@ -81,11 +80,11 @@ describe('generator-basic', () => {
   });
 
   it('named group', () => {
-    test('/(?<foo\\u003B\\u{003B}>bar)/');
+    test('/(?<foo\\u003B\\u{003B}>bar)/u');
   });
 
   it('empty named group', () => {
-    test('/(?<foo\\u003B\\u{003B}>)/');
+    test('/(?<foo\\u003B\\u{003B}>)/u');
   });
 
   it('empty non-capturing group', () => {
@@ -97,7 +96,7 @@ describe('generator-basic', () => {
   });
 
   it('named backreference', () => {
-    test('/(?<foo\\u003B\\u{003B}>)\\k<foo\\u003B\\u{003B}>/');
+    test('/(?<foo\\u003B\\u{003B}>)\\k<foo\\u003B\\u{003B}>/u');
   });
 
   it('basic-assertion', () => {
@@ -179,5 +178,4 @@ describe('generator-basic', () => {
     test(/a{1,}?/);
     test(/a{1,3}?/);
   });
-
 });

@@ -62,6 +62,7 @@ declare module 'regexp-tree/ast' {
     capturing: true;
     number: number;
     name?: string;
+    nameRaw?: string;
     expression: Expression | null;
   }
 
@@ -84,6 +85,7 @@ declare module 'regexp-tree/ast' {
     kind: 'name';
     number: number;
     reference: string;
+    referenceRaw: string;
   }
 
   export type Backreference =

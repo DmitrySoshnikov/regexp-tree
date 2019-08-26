@@ -25,6 +25,7 @@ describe('extended', () => {
           {
             type: 'Group',
             name: 'year',
+            nameRaw: 'year',
             number: 1,
             capturing: true,
             expression: {
@@ -55,6 +56,7 @@ describe('extended', () => {
           {
             type: 'Group',
             name: 'month',
+            nameRaw: 'month',
             number: 2,
             capturing: true,
             expression: {
@@ -85,6 +87,7 @@ describe('extended', () => {
           {
             type: 'Group',
             name: 'day',
+            nameRaw: 'day',
             number: 3,
             capturing: true,
             expression: {
@@ -263,6 +266,7 @@ describe('extended', () => {
             type: 'Group',
             capturing: true,
             name: 'c',
+            nameRaw: 'c',
             number: 1,
             expression: {
               type: 'Alternative',
@@ -271,6 +275,7 @@ describe('extended', () => {
                   type: 'Group',
                   capturing: true,
                   name: 'b',
+                  nameRaw: 'b',
                   number: 2,
                   expression: {
                     type: 'Alternative',
@@ -279,6 +284,7 @@ describe('extended', () => {
                         type: 'Group',
                         capturing: true,
                         name: 'a',
+                        nameRaw: 'a',
                         number: 3,
                         expression: {
                           type: 'Char',
@@ -312,6 +318,7 @@ describe('extended', () => {
             type: 'Group',
             capturing: true,
             name: 'd',
+            nameRaw: 'd',
             number: 4,
             expression: {
               type: 'Char',
@@ -325,6 +332,7 @@ describe('extended', () => {
             type: 'Group',
             capturing: true,
             name: 'e',
+            nameRaw: 'e',
             number: 5,
             expression: {
               type: 'Char',
