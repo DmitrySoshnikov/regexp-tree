@@ -81,7 +81,6 @@ NAME                    \w+
 <x,xu>'#'[^\n]+                      /* skip comments */
 <x,xu>\s+                            /* skip whitespace */
 
-<class,u_class>{ESC}'-'              return 'ESC_CHAR'
 <class,u_class>'-'                   return 'DASH'
 <class,u_class>'/'                   return 'CHAR'
 <class,u_class>'#'                   return 'CHAR'
@@ -125,6 +124,8 @@ NAME                    \w+
 
 <xu>{ESC}[ #]                       return 'ESC_CHAR'
 
+{ESC}[\^\$\.\*\+\?\(\)\\\[\]\{\}\|\/]     return 'ESC_CHAR'
+
 {ESC}{CHAR}                         {
                                       const s = this.getCurrentState();
                                       if (s === 'u' || s === 'xu' || s === 'u_class') {
@@ -133,7 +134,6 @@ NAME                    \w+
                                       return 'ESC_CHAR';
                                     }
 
-{ESC}[*?+\[()\\|]                   return 'ESC_CHAR'
 
 <class,u_class>'('                  return 'CHAR'
 <class,u_class>')'                  return 'CHAR'
@@ -457,7 +457,7 @@ function validateUnicodeGroupName(name, state) {
   if (isUnicodeName && !isUnicodeState) {
     throw new SyntaxError(`invalid group Unicode name "${name}", use \`u\` flag.`);
   }
-  
+
   return name;
 }
 

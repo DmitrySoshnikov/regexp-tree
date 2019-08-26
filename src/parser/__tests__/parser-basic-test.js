@@ -1042,5 +1042,10 @@ describe('basic', () => {
     expect(() => parser.parse('/\\p/u')).toThrowError(SyntaxError);
     expect(() => parser.parse('/\\e/u')).toThrowError(SyntaxError);
     expect(() => parser.parse('/\\g/u')).toThrowError(SyntaxError);
+    expect(() => parser.parse('/\\-/u')).toThrowError(SyntaxError);
+  });
+
+  it('should not throw when identity escape is a syntax character', () => {
+    expect(() => parser.parse('/\\./u')).not.toThrowError();
   });
 });
