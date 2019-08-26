@@ -48,7 +48,7 @@ shell.ln('-s', '../../scripts/git-pre-push', '.git/hooks/pre-push');
 console.info(colors.bold('[3/3] Transpiling JS code...\n'));
 
 shell.exec(
-  `"node_modules/.bin/babel" ${process.argv[2] ||
+  `NODE_ENV=production "node_modules/.bin/babel" ${process.argv[2] ||
     ''} src/ --out-dir dist/ --ignore __tests__`
 );
 
