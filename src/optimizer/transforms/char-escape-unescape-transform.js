@@ -27,7 +27,7 @@ module.exports = {
     if (shouldUnescape(path, this._hasXFlag)) {
       delete node.escaped;
     }
-  }
+  },
 };
 
 function shouldUnescape(path, hasXFlag) {
@@ -74,7 +74,8 @@ function preservesEscape(value, index, parent, hasXFlag) {
 
 function consumeNumbers(startIndex, parent, rtl) {
   let i = startIndex;
-  let siblingNode = (rtl ? i >= 0 : i < parent.expressions.length) && parent.expressions[i];
+  let siblingNode =
+    (rtl ? i >= 0 : i < parent.expressions.length) && parent.expressions[i];
 
   while (
     siblingNode &&
@@ -84,34 +85,40 @@ function consumeNumbers(startIndex, parent, rtl) {
     /\d/.test(siblingNode.value)
   ) {
     rtl ? i-- : i++;
-    siblingNode = (rtl ? i >= 0 : i < parent.expressions.length) && parent.expressions[i];
+    siblingNode =
+      (rtl ? i >= 0 : i < parent.expressions.length) && parent.expressions[i];
   }
 
   return Math.abs(startIndex - i);
 }
 
 function isSimpleChar(node, value) {
-  return node &&
+  return (
+    node &&
     node.type === 'Char' &&
     node.kind === 'simple' &&
     !node.escaped &&
-    node.value === value;
+    node.value === value
+  );
 }
 
 function preservesOpeningCurlyBraceEscape(index, parent) {
+  // (?:\{) -> (?:{)
+  if (index == null) {
+    return false;
+  }
+
   let nbFollowingNumbers = consumeNumbers(index + 1, parent);
   let i = index + nbFollowingNumbers + 1;
   let nextSiblingNode = i < parent.expressions.length && parent.expressions[i];
 
   if (nbFollowingNumbers) {
-
     // Avoid \{3} turning into {3}
     if (isSimpleChar(nextSiblingNode, '}')) {
       return true;
     }
 
     if (isSimpleChar(nextSiblingNode, ',')) {
-
       nbFollowingNumbers = consumeNumbers(i + 1, parent);
       i = i + nbFollowingNumbers + 1;
       nextSiblingNode = i < parent.expressions.length && parent.expressions[i];
@@ -124,6 +131,11 @@ function preservesOpeningCurlyBraceEscape(index, parent) {
 }
 
 function preservesClosingCurlyBraceEscape(index, parent) {
+  // (?:\{) -> (?:{)
+  if (index == null) {
+    return false;
+  }
+
   let nbPrecedingNumbers = consumeNumbers(index - 1, parent, true);
   let i = index - nbPrecedingNumbers - 1;
   let previousSiblingNode = i >= 0 && parent.expressions[i];
@@ -134,10 +146,10 @@ function preservesClosingCurlyBraceEscape(index, parent) {
   }
 
   if (isSimpleChar(previousSiblingNode, ',')) {
-
     nbPrecedingNumbers = consumeNumbers(i - 1, parent, true);
     i = i - nbPrecedingNumbers - 1;
-    previousSiblingNode = i < parent.expressions.length && parent.expressions[i];
+    previousSiblingNode =
+      i < parent.expressions.length && parent.expressions[i];
 
     // Avoid {3,\} turning into {3,}
     return nbPrecedingNumbers && isSimpleChar(previousSiblingNode, '{');
