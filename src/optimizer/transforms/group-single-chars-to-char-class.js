@@ -23,10 +23,7 @@ module.exports = {
 
     const charset = new Map();
 
-    if (
-      !shouldProcess(node, charset) ||
-      !charset.size
-    ) {
+    if (!shouldProcess(node, charset) || !charset.size) {
       return;
     }
 
@@ -34,11 +31,11 @@ module.exports = {
       type: 'CharacterClass',
       expressions: Array.from(charset.keys())
         .sort()
-        .map(key => charset.get(key))
+        .map(key => charset.get(key)),
     };
 
     handlers[parent.type](path.getParent(), characterClass);
-  }
+  },
 };
 
 const handlers = {
@@ -70,17 +67,17 @@ function shouldProcess(expression, charset) {
   if (type === 'Disjunction') {
     const {left, right} = expression;
 
-    return shouldProcess(left, charset)
-      && shouldProcess(right, charset);
+    return shouldProcess(left, charset) && shouldProcess(right, charset);
   } else if (type === 'Char') {
     const {value} = expression;
 
     charset.set(value, expression);
 
     return true;
-  } else if (type === 'CharacterClass') {
-    return expression.expressions
-      .every(expression => shouldProcess(expression, charset));
+  } else if (type === 'CharacterClass' && !expression.negative) {
+    return expression.expressions.every(expression =>
+      shouldProcess(expression, charset)
+    );
   }
 
   return false;
