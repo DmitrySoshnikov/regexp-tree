@@ -9,78 +9,64 @@ const {transform} = require('../../../transform');
 const charClassToSingleChar = require('../char-class-to-single-char-transform');
 
 describe('char-class-to-single-char', () => {
-
   it('simple char', () => {
-    const re = transform('/[a]/', [
-      charClassToSingleChar,
-    ]);
+    const re = transform('/[a]/', [charClassToSingleChar]);
     expect(re.toString()).toBe('/a/');
   });
 
   it('only one char', () => {
-    const re = transform('/[ab]/', [
-      charClassToSingleChar,
-    ]);
+    const re = transform('/[ab]/', [charClassToSingleChar]);
     expect(re.toString()).toBe('/[ab]/');
   });
 
   it('escaped char', () => {
-    const re = transform('/[\\a]/', [
-      charClassToSingleChar,
-    ]);
+    const re = transform('/[\\a]/', [charClassToSingleChar]);
     expect(re.toString()).toBe('/\\a/');
   });
 
   it('should escape', () => {
-    const re = transform('/[(]/', [
-      charClassToSingleChar,
-    ]);
+    const re = transform('/[(]/', [charClassToSingleChar]);
     expect(re.toString()).toBe('/\\(/');
   });
 
   it('meta', () => {
-    let re = transform('/[\\n]/', [
-      charClassToSingleChar,
-    ]);
+    let re = transform('/[\\n]/', [charClassToSingleChar]);
     expect(re.toString()).toBe('/\\n/');
 
-    re = transform('/[\\d]/', [
-      charClassToSingleChar,
-    ]);
+    re = transform('/[\\d]/', [charClassToSingleChar]);
     expect(re.toString()).toBe('/\\d/');
   });
 
   it('backspace', () => {
-    const re = transform('/[\\b]/', [
-      charClassToSingleChar,
-    ]);
+    const re = transform('/[\\b]/', [charClassToSingleChar]);
 
     // Stays the same, since \b would have different semantics.
     expect(re.toString()).toBe('/[\\b]/');
   });
 
   it('inverse meta', () => {
-    let re = transform('/[^\\d]/', [
-      charClassToSingleChar,
-    ]);
+    let re = transform('/[^\\d]/', [charClassToSingleChar]);
     expect(re.toString()).toBe('/\\D/');
 
-    re = transform('/[^\\w]/', [
-      charClassToSingleChar,
-    ]);
+    re = transform('/[^\\w]/', [charClassToSingleChar]);
     expect(re.toString()).toBe('/\\W/');
 
-    re = transform('/[^\\W]/', [
-      charClassToSingleChar,
-    ]);
+    re = transform('/[^\\W]/', [charClassToSingleChar]);
     expect(re.toString()).toBe('/\\w/');
   });
 
   it('do not extract simple negative', () => {
-    const re = transform('/[^a]/', [
-      charClassToSingleChar,
-    ]);
+    const re = transform('/[^a]/', [charClassToSingleChar]);
     expect(re.toString()).toBe('/[^a]/');
   });
 
+  it('does not extract with reference sibling', () => {
+    const re = transform('/(.)\\1[0]/', [charClassToSingleChar]);
+    expect(re.toString()).toBe('/(.)\\1[0]/');
+  });
+
+  it('does not extract with char number sibling', () => {
+    const re = transform('/(.)\\2[0]/', [charClassToSingleChar]);
+    expect(re.toString()).toBe('/(.)\\2[0]/');
+  });
 });
