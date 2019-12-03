@@ -27,11 +27,13 @@ module.exports = {
    *
    *   /\w+e+/
    */
-  optimize(regexp, transformsWhitelist = []) {
-    const transformToApply =
-      transformsWhitelist.length > 0
-        ? transformsWhitelist
-        : Object.keys(optimizationTransforms);
+  optimize(regexp, {whitelist = [], blacklist = []} = {}) {
+    const transformsRaw =
+      whitelist.length > 0 ? whitelist : Object.keys(optimizationTransforms);
+
+    const transformToApply = transformsRaw.filter(
+      transform => !blacklist.includes(transform)
+    );
 
     let ast = regexp;
     if (regexp instanceof RegExp) {

@@ -68,9 +68,9 @@ const regexpTree = {
    *       ...
    *     },
    *   });
-	 *
-	 * The value for a node type may also be an object with functions pre and post.
-	 * This enables more context-aware analyses, e.g. measuring star height.
+   *
+   * The value for a node type may also be an object with functions pre and post.
+   * This enables more context-aware analyses, e.g. measuring star height.
    */
   traverse(ast, handlers, options) {
     return traverse.traverse(ast, handlers, options);
@@ -123,8 +123,8 @@ const regexpTree = {
    *
    * @return TransformResult object
    */
-  optimize(regexp, whitelist) {
-    return optimizer.optimize(regexp, whitelist);
+  optimize(regexp, whitelist, {blacklist} = {}) {
+    return optimizer.optimize(regexp, {whitelist, blacklist});
   },
 
   /**

@@ -82,8 +82,26 @@ describe('optimizer-integration-test', () => {
     const original = '/(?:[a])/';
     const optimized = '/[a]/';
 
-    expect(optimizer.optimize(original, ['ungroup']).toString()).toBe(
-      optimized.toString()
-    );
+    expect(
+      optimizer.optimize(original, {whitelist: ['ungroup']}).toString()
+    ).toBe(optimized.toString());
+  });
+
+  it('sorts characters', () => {
+    const original = /[åä]/;
+    const optimized = /[äå]/;
+
+    expect(optimizer.optimize(original).toString()).toBe(optimized.toString());
+  });
+
+  it('preserves character order when blacklisted charClassClassrangesMerge', () => {
+    const original = /[åä]/;
+    const optimized = /[åä]/;
+
+    expect(
+      optimizer
+        .optimize(original, {blacklist: ['charClassClassrangesMerge']})
+        .toString()
+    ).toBe(optimized.toString());
   });
 });
