@@ -21,8 +21,8 @@ describe('optimizer-integration-test', () => {
 
     expect(optimizer.optimize(original).toString()).toBe(optimized.toString());
 
-    original = '/[0-9-a-z]/';
-    optimized = '/[\\d-a-z]/';
+    original = '/[0-9\\-a-z]/';
+    optimized = '/[\\d\\-a-z]/';
 
     expect(optimizer.optimize(original).toString()).toBe(optimized.toString());
   });
