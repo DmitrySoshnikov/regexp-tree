@@ -24,6 +24,14 @@ describe('e -> e', () => {
     expect(re.toString()).toBe(/{}/.toString());
   });
 
+  it('preserves dash', () => {
+    let re = transform('/[^a-zа-яё -]+gi/', [charUnescape]);
+    expect(re.toString()).toBe('/[^a-zа-яё -]+gi/');
+
+    re = transform('/[0-9-a-z]/', [charUnescape]);
+    expect(re.toString()).toBe('/[0-9-a-z]/');
+  });
+
   it('unescapes curly in parent with no index', () => {
     let re = transform(/(?:\{)/, [charUnescape]);
     expect(re.toString()).toBe(/(?:{)/.toString());

@@ -15,6 +15,18 @@ describe('optimizer-integration-test', () => {
     expect(optimizer.optimize(original).toString()).toBe(optimized.toString());
   });
 
+  it('preserves dash', () => {
+    let original = '/[^a-zа-яё -]+gi/';
+    let optimized = '/[^ -a-zа-яё]+gi/';
+
+    expect(optimizer.optimize(original).toString()).toBe(optimized.toString());
+
+    original = '/[0-9-a-z]/';
+    optimized = '/[\\d-a-z]/';
+
+    expect(optimizer.optimize(original).toString()).toBe(optimized.toString());
+  });
+
   it('handles a named capturing group', () => {
     const original = '/(?<any>.*)/';
     const optimized = '/(?<any>.*)/';

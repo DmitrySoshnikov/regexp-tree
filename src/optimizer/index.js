@@ -29,7 +29,9 @@ module.exports = {
    */
   optimize(regexp, {whitelist = [], blacklist = []} = {}) {
     const transformsRaw =
-      whitelist.length > 0 ? whitelist : Object.keys(optimizationTransforms);
+      whitelist.length > 0
+        ? whitelist
+        : Array.from(optimizationTransforms.keys());
 
     const transformToApply = transformsRaw.filter(
       transform => !blacklist.includes(transform)
@@ -55,15 +57,15 @@ module.exports = {
       ast = clone(result.getAST());
 
       transformToApply.forEach(transformName => {
-        if (!optimizationTransforms.hasOwnProperty(transformName)) {
+        if (!optimizationTransforms.has(transformName)) {
           throw new Error(
             `Unknown optimization-transform: ${transformName}. ` +
               `Available transforms are: ` +
-              Object.keys(optimizationTransforms).join(', ')
+              Array.from(optimizationTransforms.keys()).join(', ')
           );
         }
 
-        const transformer = optimizationTransforms[transformName];
+        const transformer = optimizationTransforms.get(transformName);
 
         // Don't override result just yet since we
         // might want to rollback the transform
