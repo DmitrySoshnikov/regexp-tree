@@ -25,6 +25,11 @@ describe('optimizer-integration-test', () => {
     optimized = '/[\\d\\-a-z]/';
 
     expect(optimizer.optimize(original).toString()).toBe(optimized.toString());
+
+    original = /^[a-z][a-z0-9\-]{5,29}$/;
+    optimized = /^[a-z][\d\-a-z]{5,29}$/;
+
+    expect(optimizer.optimize(original).toString()).toBe(optimized.toString());
   });
 
   it('handles a named capturing group', () => {

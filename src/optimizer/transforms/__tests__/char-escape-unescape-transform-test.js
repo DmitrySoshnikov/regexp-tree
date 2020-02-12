@@ -30,6 +30,9 @@ describe('e -> e', () => {
 
     re = transform('/[0-9-a-z]/', [charUnescape]);
     expect(re.toString()).toBe('/[0-9-a-z]/');
+
+    re = transform(/^[a-z][a-z0-9\-]{5,29}$/, [charUnescape]);
+    expect(re.toString()).toBe('/^[a-z][a-z0-9\\-]{5,29}$/');
   });
 
   it('unescapes curly in parent with no index', () => {
@@ -78,7 +81,7 @@ describe('e -> e', () => {
     const re = transform(/[\e\*\(\]\ \^\$\/-\?\-]\(\n/, [charUnescape]);
     // Can't use native toString() conversion on a regexp here
     // because Node 6 stringifies /[/]/ as /[\/]/
-    expect(re.toString()).toBe('/[e*(\\] ^$/-?-]\\(\\n/');
+    expect(re.toString()).toBe('/[e*(\\] ^$/-?\\-]\\(\\n/');
   });
 
   it('does not unescape ^ in char class when in first position', () => {

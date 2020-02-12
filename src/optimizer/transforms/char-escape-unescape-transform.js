@@ -31,7 +31,11 @@ module.exports = {
 };
 
 function shouldUnescape(path, hasXFlag) {
-  const {node: {value}, index, parent} = path;
+  const {
+    node: {value},
+    index,
+    parent,
+  } = path;
 
   // In char class (, etc are allowed.
   if (parent.type !== 'CharacterClass' && parent.type !== 'ClassRange') {
@@ -51,7 +55,7 @@ function preservesInCharClass(value, index, parent) {
   }
   if (value === '-') {
     // Avoid [a\-z] turning into [a-z]
-    return index !== 0 && index !== parent.expressions.length - 1;
+    return true;
   }
   return /[\]\\]/.test(value);
 }
