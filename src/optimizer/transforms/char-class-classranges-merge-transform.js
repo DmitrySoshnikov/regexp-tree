@@ -42,12 +42,16 @@ module.exports = {
         expressions.splice(i, 1);
         i--;
       } else {
-        const nbMergedChars = charCombinesWithPrecedingChars(expression, i, expressions);
+        const nbMergedChars = charCombinesWithPrecedingChars(
+          expression,
+          i,
+          expressions
+        );
         expressions.splice(i - nbMergedChars + 1, nbMergedChars);
         i -= nbMergedChars;
       }
     }
-  }
+  },
 };
 
 /**
@@ -77,10 +81,7 @@ function sortCharClass(a, b) {
     if (a.type === 'ClassRange' && b.type === 'ClassRange') {
       return getSortValue(a.to) - getSortValue(b.to);
     }
-    if (
-      (isMeta(a) && isMeta(b)) ||
-      (isControl(a) && isControl(b))
-    ) {
+    if ((isMeta(a) && isMeta(b)) || (isControl(a) && isControl(b))) {
       return a.value < b.value ? -1 : 1;
     }
   }
@@ -93,6 +94,9 @@ function sortCharClass(a, b) {
  */
 function getSortValue(expression) {
   if (expression.type === 'Char') {
+    if (expression.value === '-') {
+      return Infinity;
+    }
     if (expression.kind === 'control') {
       return Infinity;
     }
@@ -112,9 +116,11 @@ function getSortValue(expression) {
  * @returns {boolean}
  */
 function isMeta(expression, value = null) {
-  return expression.type === 'Char' &&
+  return (
+    expression.type === 'Char' &&
     expression.kind === 'meta' &&
-    (value ? expression.value === value : /^\\[dws]$/i.test(expression.value));
+    (value ? expression.value === value : /^\\[dws]$/i.test(expression.value))
+  );
 }
 
 /**
@@ -122,8 +128,7 @@ function isMeta(expression, value = null) {
  * @returns {boolean}
  */
 function isControl(expression) {
-  return expression.type === 'Char' &&
-    expression.kind === 'control';
+  return expression.type === 'Char' && expression.kind === 'control';
 }
 
 /**
@@ -149,16 +154,25 @@ function fitsInMetas(expression, metas, hasIUFlags) {
  */
 function fitsInMeta(expression, meta, hasIUFlags) {
   if (expression.type === 'ClassRange') {
-    return fitsInMeta(expression.from, meta, hasIUFlags) && fitsInMeta(expression.to, meta, hasIUFlags);
+    return (
+      fitsInMeta(expression.from, meta, hasIUFlags) &&
+      fitsInMeta(expression.to, meta, hasIUFlags)
+    );
   }
 
   // Special cases:
   // \S contains \w and \d
-  if (meta === '\\S' && (isMeta(expression, '\\w') || isMeta(expression, '\\d'))) {
+  if (
+    meta === '\\S' &&
+    (isMeta(expression, '\\w') || isMeta(expression, '\\d'))
+  ) {
     return true;
   }
   // \D contains \W and \s
-  if (meta === '\\D' && (isMeta(expression, '\\W') || isMeta(expression, '\\s'))) {
+  if (
+    meta === '\\D' &&
+    (isMeta(expression, '\\W') || isMeta(expression, '\\s'))
+  ) {
     return true;
   }
   // \w contains \d
@@ -200,7 +214,8 @@ function fitsInMeta(expression, meta, hasIUFlags) {
  * @returns {boolean}
  */
 function fitsInMetaS(expression) {
-  return expression.codePoint === 0x0009 || // \t
+  return (
+    expression.codePoint === 0x0009 || // \t
     expression.codePoint === 0x000a || // \n
     expression.codePoint === 0x000b || // \v
     expression.codePoint === 0x000c || // \f
@@ -214,7 +229,8 @@ function fitsInMetaS(expression) {
     expression.codePoint === 0x202f || // part of Zs
     expression.codePoint === 0x205f || // part of Zs
     expression.codePoint === 0x3000 || // part of Zs
-    expression.codePoint === 0xfeff; // zwnbsp
+    expression.codePoint === 0xfeff
+  ); // zwnbsp
 }
 
 /**
@@ -231,11 +247,14 @@ function fitsInMetaD(expression) {
  * @returns {boolean}
  */
 function fitsInMetaW(expression, hasIUFlags) {
-  return fitsInMetaD(expression) ||
+  return (
+    fitsInMetaD(expression) ||
     (expression.codePoint >= 0x41 && expression.codePoint <= 0x5a) || // A-Z
     (expression.codePoint >= 0x61 && expression.codePoint <= 0x7a) || // a-z
     expression.value === '_' ||
-    (hasIUFlags && (expression.codePoint === 0x017f || expression.codePoint === 0x212a));
+    (hasIUFlags &&
+      (expression.codePoint === 0x017f || expression.codePoint === 0x212a))
+  );
 }
 
 /**
@@ -245,12 +264,10 @@ function fitsInMetaW(expression, hasIUFlags) {
  */
 function combinesWithPrecedingClassRange(expression, classRange) {
   if (classRange && classRange.type === 'ClassRange') {
-
     if (fitsInClassRange(expression, classRange)) {
       // [a-gc] -> [a-g]
       // [a-gc-e] -> [a-g]
       return true;
-
     } else if (
       // We only want \w chars or char codes to keep readability
       isMetaWCharOrCode(expression) &&
@@ -259,7 +276,6 @@ function combinesWithPrecedingClassRange(expression, classRange) {
       // [a-de] -> [a-e]
       classRange.to = expression;
       return true;
-
     } else if (
       expression.type === 'ClassRange' &&
       expression.from.codePoint <= classRange.to.codePoint + 1 &&
@@ -313,9 +329,15 @@ function fitsInClassRange(expression, classRange) {
     return false;
   }
   if (expression.type === 'ClassRange') {
-    return fitsInClassRange(expression.from, classRange) && fitsInClassRange(expression.to, classRange);
+    return (
+      fitsInClassRange(expression.from, classRange) &&
+      fitsInClassRange(expression.to, classRange)
+    );
   }
-  return expression.codePoint >= classRange.from.codePoint && expression.codePoint <= classRange.to.codePoint;
+  return (
+    expression.codePoint >= classRange.from.codePoint &&
+    expression.codePoint <= classRange.to.codePoint
+  );
 }
 
 /**
@@ -348,7 +370,7 @@ function charCombinesWithPrecedingChars(expression, index, expressions) {
     expressions[index] = {
       type: 'ClassRange',
       from: expressions[index],
-      to: expression
+      to: expression,
     };
     return nbMergedChars;
   }
@@ -356,14 +378,14 @@ function charCombinesWithPrecedingChars(expression, index, expressions) {
 }
 
 function isMetaWCharOrCode(expression) {
-  return expression &&
+  return (
+    expression &&
     expression.type === 'Char' &&
     !isNaN(expression.codePoint) &&
-    (
-      fitsInMetaW(expression, false) ||
+    (fitsInMetaW(expression, false) ||
       expression.kind === 'unicode' ||
       expression.kind === 'hex' ||
       expression.kind === 'oct' ||
-      expression.kind === 'decimal'
-    );
+      expression.kind === 'decimal')
+  );
 }

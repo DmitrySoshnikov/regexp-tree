@@ -17,7 +17,6 @@ module.exports = {
     this._hasUFlag = ast.flags.includes('u');
   },
   CharacterClass(path) {
-
     // [0-9] -> \d
     rewriteNumberRanges(path);
 
@@ -26,7 +25,7 @@ module.exports = {
 
     // [ \t\r\n\f] -> \s
     rewriteWhitespaceRanges(path);
-  }
+  },
 };
 
 /**
@@ -62,7 +61,6 @@ function rewriteWordRanges(path, hasIFlag, hasUFlag) {
   let u212aPath = null;
 
   node.expressions.forEach((expression, i) => {
-
     // \d
     if (isMetaChar(expression, '\\d')) {
       numberPath = path.getChild(i);
@@ -81,13 +79,9 @@ function rewriteWordRanges(path, hasIFlag, hasUFlag) {
     // _
     else if (isUnderscore(expression)) {
       underscorePath = path.getChild(i);
-    }
-
-    else if (hasIFlag && hasUFlag && isU017fPath(expression)) {
+    } else if (hasIFlag && hasUFlag && isU017fPath(expression)) {
       u017fPath = path.getChild(i);
-    }
-
-    else if (hasIFlag && hasUFlag && isU212aPath(expression)) {
+    } else if (hasIFlag && hasUFlag && isU212aPath(expression)) {
       u212aPath = path.getChild(i);
     }
   });
@@ -95,14 +89,11 @@ function rewriteWordRanges(path, hasIFlag, hasUFlag) {
   // If we found the whole pattern, replace it.
   if (
     numberPath &&
-    (
-      (lowerCasePath && upperCasePath) ||
-      (hasIFlag && (lowerCasePath || upperCasePath))
-    ) &&
+    ((lowerCasePath && upperCasePath) ||
+      (hasIFlag && (lowerCasePath || upperCasePath))) &&
     underscorePath &&
     (!hasUFlag || !hasIFlag || (u017fPath && u212aPath))
   ) {
-
     // Put \w in place of \d.
     numberPath.replace({
       type: 'Char',
@@ -140,7 +131,6 @@ function rewriteWhitespaceRanges(path) {
   let fPath = null;
 
   node.expressions.forEach((expression, i) => {
-
     // Space
     if (isChar(expression, ' ')) {
       spacePath = path.getChild(i);
@@ -165,20 +155,15 @@ function rewriteWhitespaceRanges(path) {
     else if (isMetaChar(expression, '\\f')) {
       fPath = path.getChild(i);
     }
-
   });
 
   // If we found the whole pattern, replace it.
   // Make \f optional.
-  if (
-    spacePath &&
-    tPath &&
-    nPath &&
-    rPath
-  ) {
-
+  if (spacePath && tPath && nPath && rPath) {
     // Put \s in place of \n.
     nPath.node.value = '\\s';
+    nPath.node.symbol = undefined;
+    nPath.node.codePoint = NaN;
 
     // Other paths are removed.
     spacePath.remove();
@@ -200,11 +185,7 @@ function isFullNumberRange(node) {
 }
 
 function isChar(node, value, kind = 'simple') {
-  return (
-    node.type === 'Char' &&
-    node.value === value &&
-    node.kind === kind
-  );
+  return node.type === 'Char' && node.value === value && node.kind === kind;
 }
 
 function isMetaChar(node, value) {
@@ -228,24 +209,16 @@ function isUpperCaseRange(node) {
 }
 
 function isUnderscore(node) {
-  return (
-    node.type === 'Char' &&
-    node.value === '_' &&
-    node.kind === 'simple'
-  );
+  return node.type === 'Char' && node.value === '_' && node.kind === 'simple';
 }
 
 function isU017fPath(node) {
   return (
-    node.type === 'Char' &&
-    node.kind === 'unicode' &&
-    node.codePoint === 0x017f
+    node.type === 'Char' && node.kind === 'unicode' && node.codePoint === 0x017f
   );
 }
 function isU212aPath(node) {
   return (
-    node.type === 'Char' &&
-    node.kind === 'unicode' &&
-    node.codePoint === 0x212a
+    node.type === 'Char' && node.kind === 'unicode' && node.codePoint === 0x212a
   );
 }

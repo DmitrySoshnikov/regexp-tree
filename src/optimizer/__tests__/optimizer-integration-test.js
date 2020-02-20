@@ -17,17 +17,22 @@ describe('optimizer-integration-test', () => {
 
   it('preserves dash', () => {
     let original = '/[^a-zа-яё -]+gi/';
-    let optimized = '/[^ -a-zа-яё]+gi/';
+    let optimized = '/[^ a-zа-яё-]+gi/';
 
     expect(optimizer.optimize(original).toString()).toBe(optimized.toString());
 
     original = '/[0-9\\-a-z]/';
-    optimized = '/[\\d\\-a-z]/';
+    optimized = '/[\\da-z\\-]/';
 
     expect(optimizer.optimize(original).toString()).toBe(optimized.toString());
 
     original = /^[a-z][a-z0-9\-]{5,29}$/;
-    optimized = /^[a-z][\d\-a-z]{5,29}$/;
+    optimized = /^[a-z][\da-z\-]{5,29}$/;
+
+    expect(optimizer.optimize(original).toString()).toBe(optimized.toString());
+
+    original = /[-\da-z]/;
+    optimized = /[\da-z-]/;
 
     expect(optimizer.optimize(original).toString()).toBe(optimized.toString());
   });
@@ -56,6 +61,13 @@ describe('optimizer-integration-test', () => {
   it('whitespace', () => {
     const original = /[ \n\r\t\f]+/;
     const optimized = /\s+/;
+
+    expect(optimizer.optimize(original).toString()).toBe(optimized.toString());
+  });
+
+  it('whitespace group', () => {
+    const original = /[ \n\t\r\]]/g;
+    const optimized = /[\s\]]/g;
 
     expect(optimizer.optimize(original).toString()).toBe(optimized.toString());
   });
