@@ -59,6 +59,7 @@ const optimized2 = optimizer.optimize(original, { // [åä] (does not change)
     'charClassClassrangesMerge'
   ]
 });
+```
 
 ### Transforms
 
