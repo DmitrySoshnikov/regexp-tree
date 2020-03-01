@@ -23,7 +23,7 @@ becomes:
 
 ## API
 
-`optimize(regexp, [transformsWhitelist])`: Optimize the regexp. Optionally request specific transforms.
+`optimize(regexp, {whitelist: [transformsWhitelist], blacklist: [transformsWhitelist]})`: Optimize the regexp. Optionally request specific transforms.
 
 Transforms will be applied until no further optimization progress is made.
 
@@ -34,12 +34,31 @@ const optimizer = require('./index.js');
 const inefficient = /[0-9]/;
 
 const optimized1 = optimizer.optimize(inefficient);
-const optimized2 = optimizer.optimize(inefficient, [
-  'charClassToMeta',       // [0-9] -> [\d]
-  'charClassToSingleChar', // [\d] -> \d
-]);
+const optimized2 = optimizer.optimize(inefficient, {
+  whitelist: [
+    'charClassToMeta',       // [0-9] -> [\d]
+    'charClassToSingleChar', // [\d] -> \d
+  ]
+});
 
 console.log(`${inefficient} -> ${optimized1} === ${optimized2}`);
+```
+
+You can also add a `blacklist`, e.g., to disable the defaults (which are all enabled if no whitelist is provided):
+
+```js
+const optimizer = require('./index.js');
+
+const original = /[åä]/;
+const optimized = /[åä]/;
+
+
+const optimized1 = optimizer.optimize(original); // [åä] -> [äå]
+const optimized2 = optimizer.optimize(original, { // [åä] (does not change)
+  blacklist: [
+    'charClassClassrangesMerge'
+  ]
+});
 ```
 
 ### Transforms
