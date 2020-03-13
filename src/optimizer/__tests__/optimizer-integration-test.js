@@ -59,14 +59,14 @@ describe('optimizer-integration-test', () => {
   });
 
   it('whitespace', () => {
-    const original = /[ \n\r\t\f]+/;
+    const original = /[ \f\n\r\t\v\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff]+/;
     const optimized = /\s+/;
 
     expect(optimizer.optimize(original).toString()).toBe(optimized.toString());
   });
 
   it('whitespace group', () => {
-    const original = /[ \n\t\r\]]/g;
+    const original = /[ \f\n\r\t\v\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff\]]/g;
     const optimized = /[\s\]]/g;
 
     expect(optimizer.optimize(original).toString()).toBe(optimized.toString());
