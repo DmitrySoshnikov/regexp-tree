@@ -29,11 +29,13 @@ declare module 'regexp-tree/ast' {
     value: string;
     kind: 'simple';
     escaped?: true;
+    codePoint: number;
   }
 
   export interface SpecialChar extends Base<'Char'> {
     value: string;
     kind: 'meta' | 'control' | 'hex' | 'decimal' | 'oct' | 'unicode';
+    codePoint: number;
   }
 
   export type Char =
