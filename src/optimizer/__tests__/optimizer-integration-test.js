@@ -116,6 +116,18 @@ describe('optimizer-integration-test', () => {
     ).toBe(optimized.toString());
   });
 
+  it('preserves shorter patterns', () => {
+    let original = /\s?\s?/;
+    let optimized = /\s?\s?/;
+
+    expect(optimizer.optimize(original).toString()).toBe(optimized.toString());
+
+    original = /\s?\s?\s?/;
+    optimized = /\s{0,3}/;
+
+    expect(optimizer.optimize(original).toString()).toBe(optimized.toString());
+  });
+
   it('sorts characters', () => {
     const original = /[åä]/;
     const optimized = /[äå]/;

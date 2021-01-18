@@ -43,7 +43,7 @@ module.exports = {
 
       index++;
     }
-  }
+  },
 };
 
 // abcabc -> (?:abc){2}
@@ -63,12 +63,12 @@ function combineRepeatingPatternLeft(alternative, child, index) {
     } else {
       right = NodePath.getForNode({
         type: 'Alternative',
-        expressions: [...node.expressions.slice(index - i, index), child.node]
+        expressions: [...node.expressions.slice(index - i, index), child.node],
       });
 
       left = NodePath.getForNode({
         type: 'Alternative',
-        expressions: [...node.expressions.slice(startIndex, index - i)]
+        expressions: [...node.expressions.slice(startIndex, index - i)],
       });
     }
 
@@ -79,18 +79,21 @@ function combineRepeatingPatternLeft(alternative, child, index) {
 
       child.replace({
         type: 'Repetition',
-        expression: i === 0 ? right.node : {
-          type: 'Group',
-          capturing: false,
-          expression: right.node
-        },
+        expression:
+          i === 0 && right.node.type !== 'Repetition'
+            ? right.node
+            : {
+                type: 'Group',
+                capturing: false,
+                expression: right.node,
+              },
         quantifier: {
           type: 'Quantifier',
           kind: 'Range',
           from: 2,
           to: 2,
-          greedy: true
-        }
+          greedy: true,
+        },
       });
       return startIndex;
     }
@@ -109,7 +112,10 @@ function combineWithPreviousRepetition(alternative, child, index) {
   while (i < index) {
     let previousChild = alternative.getChild(i);
 
-    if (previousChild.node.type === 'Repetition' && previousChild.node.quantifier.greedy) {
+    if (
+      previousChild.node.type === 'Repetition' &&
+      previousChild.node.quantifier.greedy
+    ) {
       let left = previousChild.getChild();
       let right;
 
@@ -125,12 +131,11 @@ function combineWithPreviousRepetition(alternative, child, index) {
       } else {
         right = NodePath.getForNode({
           type: 'Alternative',
-          expressions: [...node.expressions.slice(i + 1, index + 1)]
+          expressions: [...node.expressions.slice(i + 1, index + 1)],
         });
       }
 
       if (left.hasEqualSource(right)) {
-
         for (let j = i; j < index; j++) {
           alternative.getChild(i + 1).remove();
         }
@@ -163,7 +168,7 @@ function combineRepetitionWithPrevious(alternative, child, index) {
       rightLength = right.node.expressions.length;
       left = NodePath.getForNode({
         type: 'Alternative',
-        expressions: [...node.expressions.slice(index - rightLength, index)]
+        expressions: [...node.expressions.slice(index - rightLength, index)],
       });
     } else {
       rightLength = 1;
