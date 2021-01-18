@@ -23,7 +23,7 @@ module.exports = {
     // [a-zA-Z_0-9] -> \w
     rewriteWordRanges(path, this._hasIFlag, this._hasUFlag);
 
-    // [ \t\r\n\f] -> \s
+    // [ \f\n\r\t\v\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff] -> \s
     rewriteWhitespaceRanges(path);
   },
 };
@@ -79,9 +79,9 @@ function rewriteWordRanges(path, hasIFlag, hasUFlag) {
     // _
     else if (isUnderscore(expression)) {
       underscorePath = path.getChild(i);
-    } else if (hasIFlag && hasUFlag && isU017fPath(expression)) {
+    } else if (hasIFlag && hasUFlag && isCodePoint(expression, 0x017f)) {
       u017fPath = path.getChild(i);
-    } else if (hasIFlag && hasUFlag && isU212aPath(expression)) {
+    } else if (hasIFlag && hasUFlag && isCodePoint(expression, 0x212a)) {
       u212aPath = path.getChild(i);
     }
   });
@@ -119,61 +119,60 @@ function rewriteWordRanges(path, hasIFlag, hasUFlag) {
 }
 
 /**
- * Rewrites whitespace ranges: [ \t\r\n\f] -> \s.
+ * Rewrites whitespace ranges: [ \f\n\r\t\v\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff] -> \s.
  */
+const whitespaceRangeTests = [
+  node => isChar(node, ' '),
+  ...['\\f', '\\n', '\\r', '\\t', '\\v'].map(char => node =>
+    isMetaChar(node, char)
+  ),
+  ...[
+    0x00a0,
+    0x1680,
+    0x2028,
+    0x2029,
+    0x202f,
+    0x205f,
+    0x3000,
+    0xfeff,
+  ].map(codePoint => node => isCodePoint(node, codePoint)),
+  node =>
+    node.type === 'ClassRange' &&
+    isCodePoint(node.from, 0x2000) &&
+    isCodePoint(node.to, 0x200a),
+];
+
 function rewriteWhitespaceRanges(path) {
   const {node} = path;
 
-  let spacePath = null;
-  let tPath = null;
-  let nPath = null;
-  let rPath = null;
-  let fPath = null;
-
-  node.expressions.forEach((expression, i) => {
-    // Space
-    if (isChar(expression, ' ')) {
-      spacePath = path.getChild(i);
-    }
-
-    // \t
-    else if (isMetaChar(expression, '\\t')) {
-      tPath = path.getChild(i);
-    }
-
-    // \n
-    else if (isMetaChar(expression, '\\n')) {
-      nPath = path.getChild(i);
-    }
-
-    // \r
-    else if (isMetaChar(expression, '\\r')) {
-      rPath = path.getChild(i);
-    }
-
-    // \f
-    else if (isMetaChar(expression, '\\f')) {
-      fPath = path.getChild(i);
-    }
-  });
+  if (
+    node.expressions.length < whitespaceRangeTests.length ||
+    !whitespaceRangeTests.every(test =>
+      node.expressions.some(expression => test(expression))
+    )
+  ) {
+    return;
+  }
 
   // If we found the whole pattern, replace it.
-  // Make \f optional.
-  if (spacePath && tPath && nPath && rPath) {
-    // Put \s in place of \n.
-    nPath.node.value = '\\s';
-    nPath.node.symbol = undefined;
-    nPath.node.codePoint = NaN;
 
-    // Other paths are removed.
-    spacePath.remove();
-    tPath.remove();
-    rPath.remove();
+  // Put \s in place of \n.
+  const nNode = node.expressions.find(expression =>
+    isMetaChar(expression, '\\n')
+  );
+  nNode.value = '\\s';
+  nNode.symbol = undefined;
+  nNode.codePoint = NaN;
 
-    if (fPath) {
-      fPath.remove();
-    }
-  }
+  // Other paths are removed.
+  node.expressions
+    .map((expression, i) =>
+      whitespaceRangeTests.some(test => test(expression))
+        ? path.getChild(i)
+        : undefined
+    )
+    .filter(Boolean)
+    .forEach(path => path.remove());
 }
 
 function isFullNumberRange(node) {
@@ -212,13 +211,10 @@ function isUnderscore(node) {
   return node.type === 'Char' && node.value === '_' && node.kind === 'simple';
 }
 
-function isU017fPath(node) {
+function isCodePoint(node, codePoint) {
   return (
-    node.type === 'Char' && node.kind === 'unicode' && node.codePoint === 0x017f
-  );
-}
-function isU212aPath(node) {
-  return (
-    node.type === 'Char' && node.kind === 'unicode' && node.codePoint === 0x212a
+    node.type === 'Char' &&
+    node.kind === 'unicode' &&
+    node.codePoint === codePoint
   );
 }

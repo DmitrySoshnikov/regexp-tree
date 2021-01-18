@@ -25,6 +25,10 @@ becomes:
 
 `optimize(regexp, {whitelist: [transformsWhitelist], blacklist: [transformsWhitelist]})`: Optimize the regexp. Optionally request specific transforms.
 
+Note that this API of the optimizer differs from the API of `regexp-tree`'s `optimize`
+method which instead expects its first argument to be an array (the `whitelist`) and
+its second argument as an object with `blacklist` as a property.
+
 Transforms will be applied until no further optimization progress is made.
 
 If you wish to specify a whitelist, give an array of transform names from the table below.
