@@ -15,6 +15,7 @@ You can get an overview of the tool in [this article](https://medium.com/@Dmitry
 - [Usage as a CLI](#usage-as-a-cli)
 - [Usage from Node](#usage-from-node)
 - [Capturing locations](#capturing-locations)
+- [Parsing options](#parsing-options)
 - [Using traversal API](#using-traversal-api)
 - [Using transform API](#using-transform-api)
   - [Transform plugins](#transform-plugins)
@@ -250,6 +251,46 @@ const regexpTree = require('regexp-tree');
 const parsed = regexpTree.parse(/a|b/, {
   captureLocations: true,
 });
+```
+
+### Parsing options
+
+The parser supports several options which can be set globally via the `setOptions` method on the parser, or by passing them with each `parse` method invocation.
+
+Example:
+
+```js
+const regexpTree = require('regexp-tree');
+
+const parsed = regexpTree.parse(/a|b/, {
+  allowGroupNameDuplicates: true,
+});
+```
+
+The following options are supported:
+
+- `captureLocations: boolean` -- whether to capture AST node [locations](#capturing-locations) (`false` by default)
+- `allowGroupNameDuplicates: boolean` -- whether to skip duplicates check of the [named capturing groups](#named-capturing-group)
+
+Set `allowGroupNameDuplicates` would make the following expression possible:
+
+```regexp
+/
+  # YYY-MM-DD date format:
+
+  (?<year>  \d{4}) -
+  (?<month> \d{2}) -
+  (?<day>   \d{2})
+
+  |
+
+  # DD.MM.YYY date format
+
+  (?<day>   \d{2}) .
+  (?<month> \d{2}) .
+  (?<year>  \d{4})
+
+/x
 ```
 
 ### Using traversal API
@@ -517,11 +558,11 @@ Note, the plugin also includes [extended regexp](#regexp-extensions) features.
 
 ### RegExp extensions
 
-Besides future proposals, like [named capturing group](#named-capturing-group), and other which are being currently standardized, _regexp-tree_ also supports _non-standard_ features.
+Some of the _non-standard_ feature are also supported by _regexp-tree_.
 
 > NOTE: _"non-standard"_ means specifically ECMAScript standard, since in other regexp egnines, e.g. PCRE, Python, etc. these features are standard.
 
-One of such featurs is `x` flag, which enables _extended_ mode of regular expressions. In this mode most of whitespaces are ignored, and expressions can use #-comments.
+One of such features is the `x` flag, which enables _extended_ mode of regular expressions. In this mode most of whitespaces are ignored, and expressions can use #-comments.
 
 Example:
 
@@ -1312,8 +1353,6 @@ Another example:
 ```
 
 ##### Named capturing group
-
-> NOTE: _Named capturing groups_ are not yet supported by JavaScript RegExp. It is an ECMAScript [proposal](https://tc39.github.io/proposal-regexp-named-groups/) which is at stage 3 at the moment.
 
 A capturing group can be given a name using the `(?<name>...)` syntax, for any identifier `name`.
 

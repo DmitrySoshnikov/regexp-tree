@@ -383,6 +383,12 @@ describe('basic', () => {
     );
   });
 
+  it('allow named capturing group duplicate', () => {
+    expect(() =>
+      parser.parse('/(?<foo>)(?<foo>)/', {allowGroupNameDuplicates: true})
+    ).not.toThrow();
+  });
+
   it('named unicode name', () => {
     expect(() => parser.parse('/(?<\\u{41}\\u0042>)/')).toThrowError(
       new SyntaxError(

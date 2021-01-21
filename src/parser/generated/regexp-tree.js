@@ -230,7 +230,7 @@ const productions = [[-1,1,(_1,_1loc) => { __loc = yyloc(_1loc, _1loc);__ = _1 }
 [15,3,(_1,_2,_3,_1loc,_2loc,_3loc) => { __loc = yyloc(_1loc, _3loc);
       const nameRaw = String(_1);
       const name = decodeUnicodeGroupName(nameRaw);
-      if (namedGroups.hasOwnProperty(name)) {
+      if (!yy.options.allowGroupNameDuplicates && namedGroups.hasOwnProperty(name)) {
         throw new SyntaxError(`Duplicate of the named group "${name}".`);
       }
 
