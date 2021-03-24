@@ -161,6 +161,7 @@ declare module 'regexp-tree' {
 
   export interface ParserOptions {
     captureLocations?: boolean;
+    allowGroupNameDuplicates?: boolean;
   }
 
   /**
