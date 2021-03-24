@@ -62,8 +62,8 @@ declare module 'regexp-tree/ast' {
   }
 
   export interface Disjunction extends Base<'Disjunction'> {
-    left: Expression;
-    right: Expression;
+    left: Expression | null;
+    right: Expression | null;
   }
 
   export interface CapturingGroup extends Base<'Group'> {
