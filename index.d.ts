@@ -15,13 +15,18 @@ declare module 'regexp-tree/ast' {
 
   export type AstClass = keyof AstClassMap;
   export type AstNode = AstClassMap[AstClass];
+  export type AstNodeLocation = {
+    line: number;
+    column: number;
+    offset: number;
+  };
 
   export interface Base<T extends AstClass> {
     type: T;
     loc?: {
       source: string;
-      start: number;
-      end: number;
+      start: AstNodeLocation;
+      end: AstNodeLocation;
     };
   }
 
@@ -57,8 +62,8 @@ declare module 'regexp-tree/ast' {
   }
 
   export interface Disjunction extends Base<'Disjunction'> {
-    left: Expression;
-    right: Expression;
+    left: Expression | null;
+    right: Expression | null;
   }
 
   export interface CapturingGroup extends Base<'Group'> {
@@ -156,6 +161,7 @@ declare module 'regexp-tree' {
 
   export interface ParserOptions {
     captureLocations?: boolean;
+    allowGroupNameDuplicates?: boolean;
   }
 
   /**
