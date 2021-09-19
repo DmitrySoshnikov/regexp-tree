@@ -135,6 +135,38 @@ describe('basic', () => {
       },
       flags: 'i',
     });
+
+    expect(re(/[a\-z]/u)).toEqual({
+      type: 'RegExp',
+      body: {
+        type: 'CharacterClass',
+        expressions: [
+          {
+            type: 'Char',
+            value: 'a',
+            symbol: 'a',
+            kind: 'simple',
+            codePoint: 'a'.codePointAt(0),
+          },
+          {
+            type: 'Char',
+            value: '-',
+            symbol: '-',
+            kind: 'simple',
+            escaped: true,
+            codePoint: '-'.codePointAt(0),
+          },
+          {
+            type: 'Char',
+            value: 'z',
+            symbol: 'z',
+            kind: 'simple',
+            codePoint: 'z'.codePointAt(0),
+          },
+        ],
+      },
+      flags: 'u',
+    });
   });
 
   it('empty class', () => {
