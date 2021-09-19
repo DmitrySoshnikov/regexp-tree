@@ -374,7 +374,10 @@ const lexRules = [[/^#[^\n]+/, function() { /* skip comments */ }],
 [/^\\[\^\$\.\*\+\?\(\)\\\[\]\{\}\|\/]/, function() { return 'ESC_CHAR' }],
 [/^\\[^*?+\[()\\|]/, function() { 
                                       const s = this.getCurrentState();
-                                      if (s === 'u' || s === 'xu' || s === 'u_class') {
+                                      if (s === 'u_class' && yytext === "\\-") {
+                                        return 'ESC_CHAR';
+                                      }
+                                      else if (s === 'u' || s === 'xu' || s === 'u_class') {
                                         throw new SyntaxError(`invalid Unicode escape ${yytext}`);
                                       }
                                       return 'ESC_CHAR';
