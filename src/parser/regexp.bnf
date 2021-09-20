@@ -128,7 +128,10 @@ NAME                    \w+
 
 {ESC}{CHAR}                         {
                                       const s = this.getCurrentState();
-                                      if (s === 'u' || s === 'xu' || s === 'u_class') {
+                                      if (s === 'u_class' && yytext === "\\-") {
+                                        return 'ESC_CHAR';
+                                      }
+                                      else if (s === 'u' || s === 'xu' || s === 'u_class') {
                                         throw new SyntaxError(`invalid Unicode escape ${yytext}`);
                                       }
                                       return 'ESC_CHAR';
