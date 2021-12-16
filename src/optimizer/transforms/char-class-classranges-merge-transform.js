@@ -95,10 +95,13 @@ function sortCharClass(a, b) {
 function getSortValue(expression) {
   if (expression.type === 'Char') {
     if (expression.value === '-') {
-      return Infinity;
+      return Number.MAX_SAFE_INTEGER;
+    }
+    if (expression.value === '^') {
+      return Number.MAX_SAFE_INTEGER - 1;
     }
     if (expression.kind === 'control') {
-      return Infinity;
+      return Number.MAX_SAFE_INTEGER - 2;
     }
     if (expression.kind === 'meta' && isNaN(expression.codePoint)) {
       return -1;

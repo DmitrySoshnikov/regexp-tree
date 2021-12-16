@@ -15,7 +15,7 @@ describe('optimizer-integration-test', () => {
     expect(optimizer.optimize(original).toString()).toBe(optimized.toString());
   });
 
-  it('preserves dash', () => {
+  it('preserves dash and caret', () => {
     let original = '/[^a-zа-яё -]+gi/';
     let optimized = '/[^ a-zа-яё-]+gi/';
 
@@ -33,6 +33,21 @@ describe('optimizer-integration-test', () => {
 
     original = /[-\da-z]/;
     optimized = /[\da-z-]/;
+
+    expect(optimizer.optimize(original).toString()).toBe(optimized.toString());
+
+    original = /[-0^]/;
+    optimized = /[0^-]/;
+
+    expect(optimizer.optimize(original).toString()).toBe(optimized.toString());
+
+    original = /[0-^]/;
+    optimized = /[0-^]/;
+
+    expect(optimizer.optimize(original).toString()).toBe(optimized.toString());
+
+    original = /[0^-]/;
+    optimized = /[0^-]/;
 
     expect(optimizer.optimize(original).toString()).toBe(optimized.toString());
   });
