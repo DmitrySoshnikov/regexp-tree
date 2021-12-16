@@ -50,6 +50,17 @@ describe('optimizer-integration-test', () => {
     optimized = /[0^-]/;
 
     expect(optimizer.optimize(original).toString()).toBe(optimized.toString());
+
+    original = /[^-]/;
+    optimized = /[^-]/;
+
+    expect(optimizer.optimize(original).toString()).toBe(optimized.toString());
+
+    // TODO: Fix this
+    original = /[-^]/;
+    optimized = /[^-]/;
+
+    expect(optimizer.optimize(original).toString()).toBe(optimized.toString());
   });
 
   it('handles a named capturing group', () => {
