@@ -16,7 +16,7 @@
 
 %lex
 
-CHAR                    [^*?+\[()\\|]
+CHAR                    [^*?+\[\]()\\|.^${}]
 ESC                     \\
 U                       [0-9a-fA-F]
 U_LEAD_SURROGATE        [dD][89abAB][0-9a-fA-F]{2}
