@@ -145,4 +145,14 @@ describe('optimizer-integration-test', () => {
         .toString()
     ).toBe(optimized.toString());
   });
+
+  [
+    /(?:.|\s)*/,
+    /^import ((?:.|\s)*?) from "(.*)";/gm,
+    /(.|[\n\r])/, // from https://github.com/sindresorhus/eslint-plugin-unicorn/issues/1231#issue-870010385
+  ].map(regexp =>
+    it(`can recognise dot as "any single character" token in ${regexp}`, () => {
+      expect(optimizer.optimize(regexp).toString()).toBe(regexp.toString());
+    })
+  );
 });

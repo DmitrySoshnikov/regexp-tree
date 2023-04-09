@@ -69,6 +69,10 @@ function shouldProcess(expression, charset) {
 
     return shouldProcess(left, charset) && shouldProcess(right, charset);
   } else if (type === 'Char') {
+    if (expression.kind === 'meta' && expression.symbol === '.') {
+      return false;
+    }
+
     const {value} = expression;
 
     charset.set(value, expression);
