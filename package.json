@@ -1,17 +1,17 @@
 {
   "name": "regexp-tree",
-  "version": "0.1.26",
+  "version": "0.1.27",
   "license": "MIT",
   "description": "Regular Expressions parser in JavaScript",
   "repository": "DmitrySoshnikov/regexp-tree",
   "homepage": "https://github.com/DmitrySoshnikov/regexp-tree",
   "bugs": "https://github.com/DmitrySoshnikov/regexp-tree/issues",
   "scripts": {
-    "build": "node scripts/build.js",
-    "watch": "node scripts/build.js --watch",
+    "build": "node ./scripts/build.js",
+    "watch": "node ./scripts/build.js --watch",
     "test": "jest",
     "prepublish": "npm run build && npm test",
-    "eslint": "eslint src/ && eslint bin/regexp-tree"
+    "eslint": "eslint ./src/ && eslint ./bin/regexp-tree"
   },
   "bin": {
     "regexp-tree": "./bin/regexp-tree"
