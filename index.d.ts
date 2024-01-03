@@ -11,6 +11,7 @@ declare module 'regexp-tree/ast' {
     'Group': Group;
     'Repetition': Repetition;
     'Quantifier': Quantifier;
+    'UnicodeProperty': UnicodeProperty;
   }
 
   export type AstClass = keyof AstClassMap;
@@ -54,7 +55,7 @@ declare module 'regexp-tree/ast' {
 
   export interface CharacterClass extends Base<'CharacterClass'> {
     negative?: true;
-    expressions: (Char | ClassRange)[];
+    expressions: (Char | ClassRange | UnicodeProperty)[];
   }
 
   export interface Alternative extends Base<'Alternative'> {
@@ -135,6 +136,16 @@ declare module 'regexp-tree/ast' {
     | SimpleAssertion
     | LookaroundAssertion;
 
+  export interface UnicodeProperty extends Base<'UnicodeProperty'> {
+    name: string;
+    value: string;
+    negative?: true;
+    shorthand?: true;
+    binary?: true;
+    canonicalName?: string;
+    canonicalValue?: string;
+  }
+
   export type Expression =
     | Char
     | CharacterClass
@@ -143,7 +154,8 @@ declare module 'regexp-tree/ast' {
     | Group
     | Backreference
     | Repetition
-    | Assertion;
+    | Assertion
+    | UnicodeProperty;
 
   export interface AstRegExp extends Base<'RegExp'> {
     body: Expression | null;
