@@ -24,7 +24,7 @@ module.exports = {
 
     const metas = [];
     // Extract metas
-    expressions.forEach(expression => {
+    expressions.forEach((expression) => {
       if (isMeta(expression)) {
         metas.push(expression.value);
       }
@@ -89,7 +89,7 @@ function sortCharClass(a, b) {
 }
 
 /**
- * @param {Object} expression - Char or ClassRange node
+ * @param {Object} expression - Char, ClassRange or UnicodeProperty node
  * @returns {number}
  */
 function getSortValue(expression) {
@@ -105,6 +105,11 @@ function getSortValue(expression) {
     }
     return expression.codePoint;
   }
+
+  if (expression.type === 'UnicodeProperty') {
+    return -1;
+  }
+
   // ClassRange
   return expression.from.codePoint;
 }
