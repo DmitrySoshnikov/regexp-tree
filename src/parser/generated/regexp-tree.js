@@ -1066,7 +1066,7 @@ function Char(value, kind, loc) {
  * Valid flags per current ECMAScript spec and
  * stage 3+ proposals.
  */
-const validFlags = 'gimsuxy';
+const validFlags = 'gimsuxyd';
 
 /**
  * Checks the flags are valid, and that

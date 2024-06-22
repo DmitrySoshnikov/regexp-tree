@@ -1076,6 +1076,22 @@ describe('basic', () => {
     });
   });
 
+  it('hasIndices (/d) flag', () => {
+    // Warning: Only supported in ES2022 or later (Node.JS v16)\
+    // Not using `re` helper here, since ESLint is only setup for ES6.
+    expect(parser.parse('/a/d')).toEqual({
+      type: 'RegExp',
+      body: {
+        type: 'Char',
+        value: 'a',
+        symbol: 'a',
+        kind: 'simple',
+        codePoint: 'a'.codePointAt(0),
+      },
+      flags: 'd',
+    });
+  });
+
   it('throws error on invalid Unicode escape', () => {
     expect(() => parser.parse('/\\p/u')).toThrowError(SyntaxError);
     expect(() => parser.parse('/\\e/u')).toThrowError(SyntaxError);
