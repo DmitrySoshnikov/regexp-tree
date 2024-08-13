@@ -159,6 +159,13 @@ describe('char-class-classranges-merge', () => {
     expect(re.toString()).toBe('/[\\ud83d\\ude88-\\ud83d\\ude8a]/u');
   });
 
+  it('does not combine unicode property chars with \\w chars', () => {
+    const re = transform('/[\\w\\p{L}]/u', [
+      charClassClassrangesMerge,
+    ]);
+    expect(re.toString()).toBe('/[\\w\\p{L}]/u');
+  });
+
   it('does not combine sequential chars that are nor \\w chars nor char codes', () => {
     const re = transform(/[<=>?]/, [
       charClassClassrangesMerge,
