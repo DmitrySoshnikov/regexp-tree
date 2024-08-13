@@ -48,6 +48,7 @@ class RegExpTree {
     this.multiline = re.multiline;
     this.sticky = re.sticky;
     this.unicode = re.unicode;
+    this.hasIndices = re.hasIndices;
   }
 
   /**
