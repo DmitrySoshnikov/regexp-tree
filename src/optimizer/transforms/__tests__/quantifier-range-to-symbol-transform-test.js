@@ -45,4 +45,11 @@ describe('quantifier range to symbol', () => {
     expect(re.toString()).toBe('/[a-z]{3}/');
   });
 
+  it('a{0,1} -> a?', () => {
+    const re = transform('/[a-z]{0,1}/', [
+      quantifierRangeToSymbol
+    ]);
+    expect(re.toString()).toBe('/[a-z]?/');
+  });
+
 });
