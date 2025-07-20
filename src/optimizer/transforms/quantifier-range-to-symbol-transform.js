@@ -12,6 +12,7 @@
  * a{0,} -> a*
  * a{1,} -> a+
  * a{1} -> a
+ * a{0,1} -> a?
  *
  * NOTE: the following is automatically handled in the generator:
  *
@@ -33,6 +34,9 @@ module.exports = {
 
     // a{1} -> a
     rewriteExactOne(path);
+
+    // a{0,1} -> a?
+    rewriteZeroOne(path);
   }
 };
 
@@ -66,4 +70,15 @@ function rewriteExactOne(path) {
   }
 
   path.parentPath.replace(path.parentPath.node.expression);
+}
+
+function rewriteZeroOne(path) {
+  const {node} = path;
+
+  if (node.from !== 0 || node.to !== 1) {
+    return;
+  }
+
+  node.kind = '?';
+  delete node.from;
 }
