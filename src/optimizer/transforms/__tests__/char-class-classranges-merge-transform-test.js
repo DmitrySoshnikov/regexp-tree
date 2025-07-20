@@ -130,6 +130,22 @@ describe('char-class-classranges-merge', () => {
       ]
     );
     expect(re.toString()).toBe('/[\\u{1F680}-\\ud83d\\ude9b]/u');
+
+    re = transform(
+      '/[a-zA-Z]/',
+      [
+        charClassClassrangesMerge,
+      ]
+    );
+    expect(re.toString()).toBe('/[A-Za-z]/');
+
+    re = transform(
+      '/[A-Za-z]/',
+      [
+        charClassClassrangesMerge,
+      ]
+    );
+    expect(re.toString()).toBe('/[A-Za-z]/');
   });
 
   it('combines \\w sequential chars and char codes into class ranges', () => {
