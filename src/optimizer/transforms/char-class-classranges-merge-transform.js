@@ -66,6 +66,9 @@ module.exports = {
  * @returns {number}
  */
 function sortCharClass(a, b) {
+  if (!a || !b) {
+    return 0;
+  }
   const aValue = getSortValue(a);
   const bValue = getSortValue(b);
 
@@ -93,6 +96,9 @@ function sortCharClass(a, b) {
  * @returns {number}
  */
 function getSortValue(expression) {
+  if (!expression) {
+    return -1;
+  }
   if (expression.type === 'Char') {
     if (expression.value === '-') {
       return Infinity;
