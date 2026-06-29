@@ -88,13 +88,23 @@ const generator = {
   },
 
   CharacterClass(node) {
-    const expressions = node.expressions.map(gen).join('');
+    const expressions = node.expressions.map(gen);
 
-    if (node.negative) {
-      return `[^${expressions}]`;
+    // A non-negative class whose first element is a literal `^` must escape
+    // it, otherwise the generated `[^...]` is parsed back as a negative class.
+    // This surfaces when a transform reorders the class (e.g. the optimizer
+    // sorting `[a^]` into `[^a]`) or when generating from a hand-built AST.
+    if (!node.negative && isLeadingCaret(node.expressions[0])) {
+      expressions[0] = '\\' + expressions[0];
     }
 
-    return `[${expressions}]`;
+    const body = expressions.join('');
+
+    if (node.negative) {
+      return `[^${body}]`;
+    }
+
+    return `[${body}]`;
   },
 
   ClassRange(node) {
@@ -173,6 +183,20 @@ const generator = {
     return `\\${escapeChar}{${namePart}${node.value}}`;
   },
 };
+
+/**
+ * Whether a node is an unescaped literal `^` char, which is special when it
+ * appears first in a non-negative character class.
+ */
+function isLeadingCaret(node) {
+  return (
+    node != null &&
+    node.type === 'Char' &&
+    node.kind === 'simple' &&
+    node.value === '^' &&
+    !node.escaped
+  );
+}
 
 module.exports = {
   /**
