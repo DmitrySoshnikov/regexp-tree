@@ -189,4 +189,25 @@ describe('char-class-classranges-merge', () => {
     expect(re.toString()).toBe('/[<=>?]/');
   });
 
+  it('keeps a `^` sorted to the front escaped, not turning the class negative', () => {
+    // `^` (0x5e) sorts before `a` (0x61), so the class is reordered to put
+    // `^` first. The leading `^` must be escaped, otherwise `[^a]` would be a
+    // negative class matching the opposite set.
+    let re = transform(/[a^]/, [
+      charClassClassrangesMerge,
+    ]);
+    expect(re.toString()).toBe('/[\\^a]/');
+
+    re = transform(/[a^bc]/, [
+      charClassClassrangesMerge,
+    ]);
+    expect(re.toString()).toBe('/[\\^a-c]/');
+
+    // A genuine negative class is left untouched.
+    re = transform(/[^a]/, [
+      charClassClassrangesMerge,
+    ]);
+    expect(re.toString()).toBe('/[^a]/');
+  });
+
 });
