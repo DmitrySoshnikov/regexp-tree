@@ -75,7 +75,7 @@ Here is the list of transforms supported by the Optimizer module.
 | charCodeToSimpleChar                                  | Don't use fancy char codes unless we have to                   | `\u0061` -> `a`               |
 | charCaseInsensitiveLowerCaseTransform                 | If regex is case insensitive, use lower-case everywhere        |  `/Aa/i` -> `/aa/i`           |
 | charClassRemoveDuplicates                             | Remove duplicates from char classes                            |  `[\d\d]` -> `[\d]`           |
-| quantifiersMerge                                      | Merge quantifiers where possible                               |  `a{1,2}a{2,3}` -> `a{3,5}`   |
+| quantifiersMerge                                      | Merge quantifiers where possible                               |  `a{1,2}a{0,3}` -> `a{1,5}`   |
 | quantifierRangeToSymbol                               | Reduce visual of quantifier ranges                             |  `a{1,}` -> `a+`              |
 | charClassClassrangesToChars                           | Replace char class ranges with chars                           |  `[a-a]` -> `[a]`             |
 | charClassClassrangesMerge                             | Merge adjacent class ranges                                    |  `[a-de-f]` -> `[a-f]`        |
