@@ -123,6 +123,20 @@ describe('generator-basic', () => {
     test(/[^]/);
   });
 
+  it('escapes a leading `^` in a non-negative character class', () => {
+    // An AST whose first class member is a literal `^` (e.g. after a
+    // transform reorders `[a^]`) must be generated as `[\^a]`, otherwise
+    // `[^a]` would be read back as a negative class.
+    const ast = parser.parse('/[a^]/');
+    ast.body.expressions.reverse();
+    const generated = generator.generate(ast);
+    expect(generated).toBe('/[\\^a]/');
+
+    // The escaped output round-trips to a non-negative class.
+    const reparsed = parser.parse(generated);
+    expect(reparsed.body.negative).toBeFalsy();
+  });
+
   it('positive lookahead assertion', () => {
     test(/(?=abc)/);
   });
