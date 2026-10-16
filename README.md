@@ -2046,7 +2046,7 @@ A node is similar, just `negative` flag is added:
 
 ##### Lookbehind assertions
 
-> NOTE: _Lookbehind assertions_ are not yet supported by JavaScript RegExp. It is an ECMAScript [proposal](https://tc39.github.io/proposal-regexp-lookbehind/) which is at stage 3 at the moment.
+> NOTE: Modern JavaScript runtimes (including Node.js 24) support _lookbehind assertions_; older runtimes (including Node.js 6, listed in this project's Travis configuration) may not. The parser can represent lookbehind assertions independently of the host runtime.
 
 These assertions check whether a pattern is _preceded_ (or not preceded for the negative assertion) by another pattern.
 
