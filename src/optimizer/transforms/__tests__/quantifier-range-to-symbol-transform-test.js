@@ -17,6 +17,20 @@ describe('quantifier range to symbol', () => {
     expect(re.toString()).toBe('/[a-z]*/');
   });
 
+  it('a{0} is not a*', () => {
+    const re = transform('/[a-z]{0}/', [
+      quantifierRangeToSymbol,
+    ]);
+    expect(re.toString()).toBe('/[a-z]{0}/');
+  });
+
+  it('a{0,0} is not a*', () => {
+    const re = transform('/[a-z]{0,0}/', [
+      quantifierRangeToSymbol,
+    ]);
+    expect(re.toString()).toBe('/[a-z]{0}/');
+  });
+
   it('a{1,} -> a+', () => {
     const re = transform(/[a-z]{1,}/, [
       quantifierRangeToSymbol,
