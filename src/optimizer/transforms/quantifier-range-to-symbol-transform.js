@@ -43,7 +43,10 @@ module.exports = {
 function rewriteOpenZero(path) {
   const {node} = path;
 
-  if (node.from !== 0 || node.to) {
+  // Only the unbounded `a{0,}` is equivalent to `a*`. An exact `a{0}` (or its
+  // `a{0,0}` spelling) matches an empty string and no occurrence at all: it is
+  // not `a*`, which matches any number of occurrences.
+  if (node.from !== 0 || 'to' in node) {
     return;
   }
 
