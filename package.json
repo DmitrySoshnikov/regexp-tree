@@ -5,6 +5,9 @@
   "description": "Regular Expressions parser in JavaScript",
   "repository": "DmitrySoshnikov/regexp-tree",
   "homepage": "https://github.com/DmitrySoshnikov/regexp-tree",
+  "engines": {
+    "node": ">=24"
+  },
   "bugs": "https://github.com/DmitrySoshnikov/regexp-tree/issues",
   "scripts": {
     "build": "node ./scripts/build.js",

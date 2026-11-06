@@ -34,6 +34,8 @@ You can get an overview of the tool in [this article](https://medium.com/@Dmitry
 
 ### Installation
 
+Node.js 24 or later is required.
+
 The parser can be installed as an [npm module](https://www.npmjs.com/package/regexp-tree):
 
 ```
@@ -2046,7 +2048,7 @@ A node is similar, just `negative` flag is added:
 
 ##### Lookbehind assertions
 
-> NOTE: _Lookbehind assertions_ are not yet supported by JavaScript RegExp. It is an ECMAScript [proposal](https://tc39.github.io/proposal-regexp-lookbehind/) which is at stage 3 at the moment.
+> NOTE: Node.js 24 and later support _lookbehind assertions_. The parser can represent lookbehind assertions independently of the host runtime.
 
 These assertions check whether a pattern is _preceded_ (or not preceded for the negative assertion) by another pattern.
 
