@@ -98,4 +98,21 @@ describe('e -> e', () => {
     const re = transform('/\\ \\#[\\ \\#]/x', [charUnescape]);
     expect(re.toString()).toBe('/\\ \\#[ #]/x');
   });
+
+  it('preserves the escape of {, } and ] with the u flag', () => {
+    [
+      '/\\{/u',
+      '/\\}/u',
+      '/\\]/u',
+      '/(?:\\{)/u',
+      '/a\\{b\\}|\\[c\\]/u',
+    ].forEach(source => {
+      const re = transform(source, [charUnescape]);
+      expect(re.toString()).toBe(source);
+      expect(() => re.toRegExp()).not.toThrow();
+    });
+
+    const re = transform('/[\\{\\}]/u', [charUnescape]);
+    expect(re.toString()).toBe('/[{}]/u');
+  });
 });

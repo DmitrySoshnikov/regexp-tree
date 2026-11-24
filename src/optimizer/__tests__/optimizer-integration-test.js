@@ -193,4 +193,11 @@ describe('optimizer-integration-test', () => {
       expect(optimizer.optimize(regexp).toString()).toBe(regexp.toString());
     })
   );
+
+  it('keeps regexps with the u flag valid', () => {
+    expect(optimizer.optimize('/[{]a{1}[\\]]/u').toString()).toBe('/\\{a\\]/u');
+    expect(optimizer.optimize('/\\$\\{(?:\\w)+\\}/u').toString()).toBe(
+      '/\\$\\{\\w+\\}/u'
+    );
+  });
 });
