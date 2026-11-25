@@ -14,8 +14,10 @@
  */
 module.exports = {
   _hasXFlag: false,
+  _hasUFlag: false,
   init(ast) {
     this._hasXFlag = ast.flags.includes('x');
+    this._hasUFlag = ast.flags.includes('u');
   },
   Char(path) {
     const {node} = path;
@@ -24,13 +26,13 @@ module.exports = {
       return;
     }
 
-    if (shouldUnescape(path, this._hasXFlag)) {
+    if (shouldUnescape(path, this._hasXFlag, this._hasUFlag)) {
       delete node.escaped;
     }
   },
 };
 
-function shouldUnescape(path, hasXFlag) {
+function shouldUnescape(path, hasXFlag, hasUFlag) {
   const {
     node: {value},
     index,
@@ -39,7 +41,7 @@ function shouldUnescape(path, hasXFlag) {
 
   // In char class (, etc are allowed.
   if (parent.type !== 'CharacterClass' && parent.type !== 'ClassRange') {
-    return !preservesEscape(value, index, parent, hasXFlag);
+    return !preservesEscape(value, index, parent, hasXFlag, hasUFlag);
   }
 
   return !preservesInCharClass(value, index, parent);
@@ -60,7 +62,12 @@ function preservesInCharClass(value, index, parent) {
   return /[\]\\]/.test(value);
 }
 
-function preservesEscape(value, index, parent, hasXFlag) {
+function preservesEscape(value, index, parent, hasXFlag, hasUFlag) {
+  // With the u flag a lone {, } or ] is a syntax error.
+  if (hasUFlag && /[{}\]]/.test(value)) {
+    return true;
+  }
+
   if (value === '{') {
     return preservesOpeningCurlyBraceEscape(index, parent);
   }
