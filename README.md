@@ -34,7 +34,7 @@ You can get an overview of the tool in [this article](https://medium.com/@Dmitry
 
 ### Installation
 
-Node.js 24 or later is required.
+The published package is transpiled to ES5 in `dist`, so using it as a library does not require a recent Node.js.
 
 The parser can be installed as an [npm module](https://www.npmjs.com/package/regexp-tree):
 
@@ -53,6 +53,8 @@ You can also [try it online](https://astexplorer.net/#/gist/4ea2b52f0e546af6fb14
 5. Submit a PR
 
 The _regexp-tree_ parser is implemented as an automatic LR parser using [Syntax](https://www.npmjs.com/package/syntax-cli) tool. The parser module is generated from the [regexp grammar](https://github.com/DmitrySoshnikov/regexp-tree/blob/master/src/parser/regexp.bnf), which is based on the regular expressions grammar used in ECMAScript.
+
+Development and testing currently target Node.js 22, 24, and 26, the lines listed in `.travis.yml`. The full test suite has been run locally on each of those lines.
 
 For development from the github repository, run `build` command to generate the parser module, and transpile JS code:
 
@@ -2048,7 +2050,7 @@ A node is similar, just `negative` flag is added:
 
 ##### Lookbehind assertions
 
-> NOTE: Node.js 24 and later support _lookbehind assertions_. The parser can represent lookbehind assertions independently of the host runtime.
+> NOTE: _Lookbehind assertions_ are supported by modern JavaScript runtimes, so `/(?<=a)b/` can be passed as an actual `RegExp` object there. Parsing is independent of that: the parser recognizes lookbehind syntax from a pattern string even on runtimes whose own `RegExp` engine predates it, and the AST does not depend on the host being able to execute the pattern.
 
 These assertions check whether a pattern is _preceded_ (or not preceded for the negative assertion) by another pattern.
 

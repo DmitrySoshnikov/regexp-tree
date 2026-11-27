@@ -100,6 +100,44 @@ describe('optimizer-integration-test', () => {
     expect(optimizer.optimize(original).toString()).toBe(optimized.toString());
   });
 
+  it('quantifier {0}', () => {
+    const original = /[a-z0-9A-Za-z_]{0}/;
+    const optimized = /\w{0}/;
+
+    expect(optimizer.optimize(original).toString()).toBe(optimized.toString());
+  });
+
+  it('quantifier {0,0}', () => {
+    const original = /[a-z0-9A-Za-z_]{0,0}/;
+    const optimized = /\w{0}/;
+
+    expect(optimizer.optimize(original).toString()).toBe(optimized.toString());
+  });
+
+  it('quantifier {0} keeps the match semantics', () => {
+    const original = '/^a{0}b$/';
+    const optimized = optimizer.optimize(original);
+
+    // `a{0}` is zero occurrences: only "b" matches, while `a*b` also
+    // matches "ab", "aab" and so on.
+    expect(optimized.toString()).toBe(original);
+    expect(optimized.toRegExp().exec('ab')).toBe(null);
+    expect(optimized.toRegExp().exec('aab')).toBe(null);
+    expect(optimized.toRegExp().exec('b')[0]).toBe('b');
+  });
+
+  it('quantifier {0} does not capture', () => {
+    const original = '/^(a){0}b$/';
+    const optimized = optimizer.optimize(original);
+
+    // `(a){0}` never sets the group, while `(a)*` captures "a".
+    expect(optimized.toRegExp().exec('ab')).toBe(null);
+    expect(optimized.toRegExp().exec('b')[1]).toBeUndefined();
+    expect(optimized.toRegExp().exec('b')[0]).toBe(
+      new RegExp('^(a){0}b$').exec('b')[0]
+    );
+  });
+
   it('finds the best optimization', () => {
     const original = /a|a/;
     const optimized = /a/;
